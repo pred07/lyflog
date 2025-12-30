@@ -6,11 +6,14 @@ import { getUserLogs } from '@/lib/firebase/firestore';
 import { DailyLog } from '@/lib/types/log';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { format, subDays, startOfDay, isToday } from 'date-fns';
+import { HelpCircle } from 'lucide-react';
+import DashboardGuide from '@/components/onboarding/DashboardGuide';
 
 export default function DashboardPage() {
     const { user } = useAuth();
     const [logs, setLogs] = useState<DailyLog[]>([]);
     const [loading, setLoading] = useState(true);
+    const [showGuide, setShowGuide] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -78,6 +81,16 @@ export default function DashboardPage() {
             <h1 className="text-2xl font-bold mb-6" style={{ color: 'var(--text-primary)' }}>
                 {format(new Date(), 'EEEE, MMM d')}
             </h1>
+
+            <button
+                onClick={() => setShowGuide(true)}
+                className="absolute top-6 right-6 p-2 text-gray-400 hover:text-indigo-500 transition-colors"
+                aria-label="Show Guide"
+            >
+                <HelpCircle size={20} />
+            </button>
+
+            <DashboardGuide isOpen={showGuide} onClose={() => setShowGuide(false)} />
 
             {/* Small Cards Grid */}
             <div className="grid grid-cols-2 gap-3 mb-8">
