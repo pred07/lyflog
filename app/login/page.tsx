@@ -11,6 +11,7 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showTestLogin, setShowTestLogin] = useState(false);
 
     const { loginGoogle, loginTest } = useAuth();
     const router = useRouter();
@@ -95,52 +96,67 @@ export default function LoginPage() {
                         </div>
 
                         {/* Test Account Login */}
-                        <form onSubmit={handleTestLogin} className="space-y-4">
-                            <div>
-                                <label htmlFor="username" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                                    Username
-                                </label>
-                                <input
-                                    id="username"
-                                    type="text"
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                    className="input-field"
-                                    autoComplete="username"
-                                />
-                            </div>
-
-                            <div>
-                                <label htmlFor="password" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                                    Password
-                                </label>
-                                <input
-                                    id="password"
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="input-field"
-                                    autoComplete="current-password"
-                                />
-                            </div>
-
-                            {error && (
-                                <div className="p-3 rounded" style={{
-                                    backgroundColor: 'var(--bg-tertiary)',
-                                    border: '1px solid var(--border)'
-                                }}>
-                                    <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{error}</p>
-                                </div>
-                            )}
-
+                        {/* Test Account Login Toggle */}
+                        <div className="text-center">
                             <button
-                                type="submit"
-                                className="btn-secondary w-full"
-                                disabled={loading}
+                                onClick={() => setShowTestLogin(!showTestLogin)}
+                                className="text-sm underline decoration-dotted transition-colors"
+                                style={{ color: 'var(--text-tertiary)' }}
                             >
-                                {loading ? 'Signing in...' : 'Sign in with test account'}
+                                {showTestLogin ? 'Hide Demo Access' : 'Enter Demo Mode'}
                             </button>
-                        </form>
+                        </div>
+
+                        {showTestLogin && (
+                            <form onSubmit={handleTestLogin} className="space-y-4 mt-6 animate-in fade-in slide-in-from-top-4 duration-300">
+                                <div>
+                                    <label htmlFor="username" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                                        Username
+                                    </label>
+                                    <input
+                                        id="username"
+                                        type="text"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        className="input-field"
+                                        autoComplete="username"
+                                        placeholder="admin"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="password" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                                        Password
+                                    </label>
+                                    <input
+                                        id="password"
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="input-field"
+                                        autoComplete="current-password"
+                                        placeholder="admin"
+                                    />
+                                </div>
+
+                                {error && (
+                                    <div className="p-3 rounded" style={{
+                                        backgroundColor: 'var(--bg-tertiary)',
+                                        border: '1px solid var(--border)'
+                                    }}>
+                                        <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{error}</p>
+                                    </div>
+                                )}
+
+                                <button
+                                    type="submit"
+                                    className="btn-secondary w-full"
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Entering Demo...' : 'Enter Demo'}
+                                </button>
+                            </form>
+                        )}
 
                     </div>
 
