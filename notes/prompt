@@ -1,0 +1,290 @@
+NYTVND LifeLog (Test Auth Version)
+
+Build a science-first LifeLog web application called NYTVND LifeLog (Night Wind Operations – Life Observatory).
+
+This is not a productivity app, not a self-help app, and not a gamified tracker.
+The goal is personal observability — enabling users to see patterns in their own behavior without advice, scores, or judgment.
+
+1. Core Principles (Non-Negotiable)
+
+No XP, streaks, badges, scores, or rankings
+
+No “you should” or improvement advice
+
+No moral language (good/bad, healthy/unhealthy)
+
+Data is displayed neutrally
+
+User derives meaning independently
+
+Privacy-first mindset
+
+2. Tech Stack (Strict)
+
+Frontend: React (Next.js preferred)
+
+Backend: Firebase
+
+Firestore for data
+
+Firebase Hosting
+
+Authentication (TEMPORARY):
+
+Test username + password only
+
+Stored securely (hashed)
+
+Clearly marked as development auth
+
+Charts: Recharts or Chart.js
+
+Design: minimal, data-first UI, dark & light mode
+
+⚠️ Important:
+Auth layer must be abstracted so Google SSO can replace it later without touching business logic.
+
+3. Pre-Login Landing Page (Public)
+
+Create a public landing page before login.
+
+Landing Page Sections
+Hero
+
+Headline:
+“See what your life is actually doing.”
+
+Subtext:
+“NYTVND LifeLog is a personal observatory. No advice. No gamification. Just patterns.”
+
+CTA buttons:
+
+“How It Works”
+
+“Login (Test Mode)”
+
+How It Works
+
+Log simple daily facts
+
+Visualize long-term patterns
+
+Interpret results yourself
+
+What Is Tracked
+
+Sleep duration
+
+Workout / movement time
+
+Meditation duration
+
+Learning time (outside platforms)
+
+Optional notes
+
+What This Is Not
+
+Not a coach
+
+Not a productivity system
+
+Not a scoring app
+
+Not motivational content
+
+Footer
+
+NYTVND branding
+
+“Science-first, non-judgmental observability”
+
+Placeholder links (Docs / GitHub)
+
+4. Authentication (Test Mode Only)
+Login / Register Page
+
+Fields:
+
+Username
+
+Password
+
+Password:
+
+Hashed (bcrypt or equivalent)
+
+Never stored in plain text
+
+Clearly label UI:
+
+“Test authentication — Google SSO will replace this.”
+
+Rules
+
+No email verification
+
+No password recovery (test only)
+
+Simple auth guard for routes
+
+5. Post-Login App Structure
+Navigation
+
+Dashboard
+
+Log Activity
+
+Trends
+
+Data Export
+
+Settings
+
+6. Core Features
+A. Daily LifeLog (Manual Input)
+
+Users can log:
+
+Sleep (hours)
+
+Workout (type + duration)
+
+Meditation (duration)
+
+Learning time (duration)
+
+Optional free-text note
+
+Rules:
+
+Missing data allowed
+
+No validation like “too low / too high”
+
+No streaks
+
+No reminders
+
+B. Dashboard (Observatory View)
+
+Time-series charts
+
+Daily / weekly / monthly views
+
+Metric toggles
+
+Neutral labels only, e.g.:
+
+“Sleep duration over time”
+
+“Workout presence vs learning time”
+
+❌ No emojis
+❌ No success/failure colors
+
+C. Trends & Correlations
+
+Show correlations with disclaimer:
+
+“Observed association. Not causation.”
+
+No automated suggestions
+
+User controls comparisons
+
+D. Data Ownership
+
+Export all data as CSV / JSON
+
+Full account deletion
+
+Clear data lifecycle
+
+7. Settings
+
+Theme toggle (dark / light)
+
+Change password (test mode)
+
+Export data
+
+Delete account
+
+Logout
+
+8. UX & Copy Rules
+
+Use words like:
+
+Observe
+
+Patterns
+
+Trends
+
+Time
+
+Data
+
+Avoid words like:
+
+Improve
+
+Optimize
+
+Discipline
+
+Productivity
+
+Success
+
+Tone must feel:
+
+Calm, scientific, neutral, non-directive
+
+9. Architecture Notes (IMPORTANT)
+
+Auth logic isolated from app logic
+
+Firestore schema designed for:
+
+user
+
+daily_logs
+
+metrics
+
+No hard dependency on auth provider
+
+Ready for Google SSO replacement later
+
+10. End Goal
+
+The app should feel like:
+
+“A scientific instrument for observing one human life.”
+
+Not:
+
+A coach
+
+A judge
+
+A habit enforcer
+
+A belief system
+
+Output Expectation
+
+Clean, modular codebase
+
+Test auth functional
+
+Neutral dashboards implemented
+
+Firebase integrated
+
+SSO-ready architecture
+
+No gamification leakage
