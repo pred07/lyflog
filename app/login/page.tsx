@@ -48,7 +48,8 @@ export default function LoginPage() {
             {/* Header */}
             <header style={{ borderBottom: '1px solid var(--border)' }}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-                    <Link href="/">
+                    <Link href="/" className="flex items-center gap-3">
+                        <img src="/logo.png" alt="NYTVND LifeLog" className="h-10 w-10" />
                         <h1 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>
                             NYTVND LifeLog
                         </h1>
@@ -146,9 +147,6 @@ export default function LoginPage() {
                             </button>
                         </form>
 
-                        <p className="mt-4 text-xs text-center" style={{ color: 'var(--text-tertiary)' }}>
-                            Test accounts: admin/admin or test/test
-                        </p>
                     </div>
 
                     <div className="mt-6 text-center">

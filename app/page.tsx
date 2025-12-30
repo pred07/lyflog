@@ -19,9 +19,12 @@ export default function LandingPage() {
             {/* Header */}
             <header style={{ borderBottom: '1px solid var(--border)' }}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-                    <h1 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>
-                        NYTVND LifeLog
-                    </h1>
+                    <div className="flex items-center gap-3">
+                        <img src="/logo.png" alt="NYTVND LifeLog" className="h-10 w-10" />
+                        <h1 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>
+                            NYTVND LifeLog
+                        </h1>
+                    </div>
                     <ThemeToggle />
                 </div>
             </header>
@@ -40,7 +43,7 @@ export default function LandingPage() {
                             How It Works
                         </a>
                         <Link href="/login" className="btn-secondary">
-                            Login (Test Mode)
+                            Login
                         </Link>
                     </div>
                 </section>
@@ -179,7 +182,7 @@ export default function LandingPage() {
                             Start logging your daily data and see what emerges.
                         </p>
                         <Link href="/login" className="btn-primary">
-                            Get Started (Test Mode)
+                            Get Started
                         </Link>
                     </div>
                 </section>
