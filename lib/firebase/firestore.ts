@@ -1,11 +1,29 @@
 import { DailyLog } from '@/lib/types/log';
+import { db } from './config';
+import {
+    collection,
+    doc,
+    setDoc,
+    query,
+    where,
+    getDocs,
+    orderBy,
+    Timestamp,
+    deleteDoc
+} from 'firebase/firestore';
 
-const DEMO_MODE = false; // Set to false when Firebase is configured
-const LOGS_KEY = 'demo_logs';
+const LOGS_COLLECTION = 'daily_logs';
 
-// Demo mode: localStorage-based logs (no Firebase required)
-export async function createLogDemo(userId: string, logData: Partial<DailyLog>): Promise<DailyLog> {
-    const logs = JSON.parse(localStorage.getItem(LOGS_KEY) || '[]');
+// For test accounts, use localStorage
+const TEST_LOGS_KEY = 'test_logs';
+
+function isTestUser(userId: string): boolean {
+    return userId.startsWith('test_');
+}
+
+// Test account log storage (localStorage)
+async function createTestLog(userId: string, logData: Partial<DailyLog>): Promise<DailyLog> {
+    const logs = JSON.parse(localStorage.getItem(TEST_LOGS_KEY) || '[]');
 
     const logId = `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
@@ -27,13 +45,12 @@ export async function createLogDemo(userId: string, logData: Partial<DailyLog>):
         createdAt: log.createdAt.toISOString(),
     });
 
-    localStorage.setItem(LOGS_KEY, JSON.stringify(logs));
-
+    localStorage.setItem(TEST_LOGS_KEY, JSON.stringify(logs));
     return log;
 }
 
-export async function getUserLogsDemo(userId: string): Promise<DailyLog[]> {
-    const logs = JSON.parse(localStorage.getItem(LOGS_KEY) || '[]');
+async function getTestLogs(userId: string): Promise<DailyLog[]> {
+    const logs = JSON.parse(localStorage.getItem(TEST_LOGS_KEY) || '[]');
 
     return logs
         .filter((log: any) => log.userId === userId)
@@ -45,29 +62,24 @@ export async function getUserLogsDemo(userId: string): Promise<DailyLog[]> {
         .sort((a: DailyLog, b: DailyLog) => b.date.getTime() - a.date.getTime());
 }
 
-export async function deleteLogDemo(logId: string): Promise<void> {
-    const logs = JSON.parse(localStorage.getItem(LOGS_KEY) || '[]');
+async function deleteTestLog(logId: string): Promise<void> {
+    const logs = JSON.parse(localStorage.getItem(TEST_LOGS_KEY) || '[]');
     const filteredLogs = logs.filter((log: any) => log.logId !== logId);
-    localStorage.setItem(LOGS_KEY, JSON.stringify(filteredLogs));
+    localStorage.setItem(TEST_LOGS_KEY, JSON.stringify(filteredLogs));
 }
 
-export async function deleteAllUserLogsDemo(userId: string): Promise<void> {
-    const logs = JSON.parse(localStorage.getItem(LOGS_KEY) || '[]');
+async function deleteAllTestLogs(userId: string): Promise<void> {
+    const logs = JSON.parse(localStorage.getItem(TEST_LOGS_KEY) || '[]');
     const filteredLogs = logs.filter((log: any) => log.userId !== userId);
-    localStorage.setItem(LOGS_KEY, JSON.stringify(filteredLogs));
+    localStorage.setItem(TEST_LOGS_KEY, JSON.stringify(filteredLogs));
 }
 
-// Wrapper functions that use demo mode or Firebase based on DEMO_MODE flag
+// Main functions that route to test or Firebase
 export async function createLog(userId: string, logData: Partial<DailyLog>): Promise<DailyLog> {
-    if (DEMO_MODE) {
-        return createLogDemo(userId, logData);
+    if (isTestUser(userId)) {
+        return createTestLog(userId, logData);
     }
 
-    // Firebase implementation (original code)
-    const { db } = await import('./config');
-    const { collection, doc, setDoc, Timestamp } = await import('firebase/firestore');
-
-    const LOGS_COLLECTION = 'daily_logs';
     const logId = `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     const log: any = {
@@ -93,15 +105,10 @@ export async function createLog(userId: string, logData: Partial<DailyLog>): Pro
 }
 
 export async function getUserLogs(userId: string): Promise<DailyLog[]> {
-    if (DEMO_MODE) {
-        return getUserLogsDemo(userId);
+    if (isTestUser(userId)) {
+        return getTestLogs(userId);
     }
 
-    // Firebase implementation
-    const { db } = await import('./config');
-    const { collection, query, where, getDocs, orderBy } = await import('firebase/firestore');
-
-    const LOGS_COLLECTION = 'daily_logs';
     const logsRef = collection(db, LOGS_COLLECTION);
     const q = query(
         logsRef,
@@ -128,27 +135,20 @@ export async function getUserLogs(userId: string): Promise<DailyLog[]> {
 }
 
 export async function deleteLog(logId: string): Promise<void> {
-    if (DEMO_MODE) {
-        return deleteLogDemo(logId);
+    // Check if it's a test log
+    const testLogs = JSON.parse(localStorage.getItem(TEST_LOGS_KEY) || '[]');
+    if (testLogs.some((log: any) => log.logId === logId)) {
+        return deleteTestLog(logId);
     }
 
-    // Firebase implementation
-    const { db } = await import('./config');
-    const { doc, deleteDoc } = await import('firebase/firestore');
-
-    await deleteDoc(doc(db, 'daily_logs', logId));
+    await deleteDoc(doc(db, LOGS_COLLECTION, logId));
 }
 
 export async function deleteAllUserLogs(userId: string): Promise<void> {
-    if (DEMO_MODE) {
-        return deleteAllUserLogsDemo(userId);
+    if (isTestUser(userId)) {
+        return deleteAllTestLogs(userId);
     }
 
-    // Firebase implementation
-    const { db } = await import('./config');
-    const { collection, query, where, getDocs, deleteDoc } = await import('firebase/firestore');
-
-    const LOGS_COLLECTION = 'daily_logs';
     const logsRef = collection(db, LOGS_COLLECTION);
     const q = query(logsRef, where('userId', '==', userId));
     const querySnapshot = await getDocs(q);
