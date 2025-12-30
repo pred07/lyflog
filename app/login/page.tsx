@@ -89,7 +89,7 @@ export default function LoginPage() {
                             </div>
                             <div className="relative flex justify-center text-sm">
                                 <span className="px-2" style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-tertiary)' }}>
-                                    Or use test account
+                                    Or
                                 </span>
                             </div>
                         </div>
@@ -106,7 +106,6 @@ export default function LoginPage() {
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                     className="input-field"
-                                    placeholder="admin or test"
                                     autoComplete="username"
                                 />
                             </div>
@@ -121,7 +120,6 @@ export default function LoginPage() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="input-field"
-                                    placeholder="admin or test"
                                     autoComplete="current-password"
                                 />
                             </div>
