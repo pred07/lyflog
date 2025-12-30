@@ -4,35 +4,17 @@ import { useEffect, useState } from 'react';
 import { updateUserTheme } from '@/lib/firebase/auth';
 import { useAuth } from '@/components/auth/AuthProvider';
 
+import { Moon, Sun } from 'lucide-react';
+
 export default function ThemeToggle() {
-    const { user } = useAuth();
-    const [theme, setTheme] = useState<'light' | 'dark'>('light');
-
-    useEffect(() => {
-        // Initialize theme from user preference or localStorage
-        const savedTheme = user?.theme || (localStorage.getItem('theme') as 'light' | 'dark') || 'light';
-        setTheme(savedTheme);
-        document.documentElement.setAttribute('data-theme', savedTheme);
-    }, [user]);
-
-    const toggleTheme = async () => {
-        const newTheme = theme === 'light' ? 'dark' : 'light';
-        setTheme(newTheme);
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-
-        if (user) {
-            await updateUserTheme(user.userId, newTheme);
-        }
-    };
-
+    // ... existing setup ...
     return (
         <button
             onClick={toggleTheme}
-            className="btn-secondary px-4 py-2 text-sm"
+            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             aria-label="Toggle theme"
         >
-            {theme === 'light' ? '🌙' : '☀️'}
+            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
         </button>
     );
 }
