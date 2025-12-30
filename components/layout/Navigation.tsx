@@ -31,7 +31,7 @@ export default function Navigation() {
                 <div className="flex justify-between h-16">
                     <div className="flex items-center space-x-8">
                         <Link href="/dashboard">
-                            <img src="/logo.png" alt="NYTVND LifeLog" className="h-10 w-10" />
+                            <img src="/logo.png" alt="SYNAPSE" className="h-10 w-10" />
                         </Link>
                         <div className="hidden md:flex space-x-4">
                             {navItems.map((item) => (

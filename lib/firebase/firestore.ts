@@ -50,10 +50,29 @@ async function createTestLog(userId: string, logData: Partial<DailyLog>): Promis
 }
 
 async function getTestLogs(userId: string): Promise<DailyLog[]> {
-    const logs = JSON.parse(localStorage.getItem(TEST_LOGS_KEY) || '[]');
+    let logs = JSON.parse(localStorage.getItem(TEST_LOGS_KEY) || '[]');
 
-    return logs
-        .filter((log: any) => log.userId === userId)
+    // Filter for specific user
+    let userLogs = logs.filter((log: any) => log.userId === userId);
+
+    // If no logs exist for this test user, generate dummy data
+    if (userLogs.length === 0) {
+        const { getDummyLogs } = await import('@/lib/dummyData');
+        const dummyLogs = getDummyLogs(userId);
+
+        // Add to local storage
+        const formattedDummyLogs = dummyLogs.map(log => ({
+            ...log,
+            date: log.date.toISOString(),
+            createdAt: log.createdAt.toISOString()
+        }));
+
+        logs = [...logs, ...formattedDummyLogs];
+        localStorage.setItem(TEST_LOGS_KEY, JSON.stringify(logs));
+        userLogs = formattedDummyLogs;
+    }
+
+    return userLogs
         .map((log: any) => ({
             ...log,
             date: new Date(log.date),

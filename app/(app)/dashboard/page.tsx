@@ -4,22 +4,13 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { getUserLogs } from '@/lib/firebase/firestore';
 import { DailyLog } from '@/lib/types/log';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { format, subDays, startOfDay } from 'date-fns';
-
-type ViewMode = 'daily' | 'weekly' | 'monthly';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { format, subDays, startOfDay, isToday } from 'date-fns';
 
 export default function DashboardPage() {
     const { user } = useAuth();
     const [logs, setLogs] = useState<DailyLog[]>([]);
     const [loading, setLoading] = useState(true);
-    const [viewMode, setViewMode] = useState<ViewMode>('weekly');
-    const [activeMetrics, setActiveMetrics] = useState({
-        sleep: true,
-        workout: true,
-        meditation: true,
-        learning: true,
-    });
 
     useEffect(() => {
         if (user) {
@@ -39,8 +30,9 @@ export default function DashboardPage() {
         }
     };
 
+    // 7 Days Data Fixed
     const getChartData = () => {
-        const days = viewMode === 'daily' ? 7 : viewMode === 'weekly' ? 30 : 90;
+        const days = 7;
         const dateRange = Array.from({ length: days }, (_, i) => {
             const date = subDays(new Date(), days - 1 - i);
             return startOfDay(date);
@@ -49,9 +41,9 @@ export default function DashboardPage() {
         return dateRange.map(date => {
             const dateStr = format(date, 'yyyy-MM-dd');
             const log = logs.find(l => format(l.date, 'yyyy-MM-dd') === dateStr);
-
             return {
-                date: format(date, 'MMM dd'),
+                date: format(date, 'EEE'), // Mon, Tue, Wed...
+                fullDate: format(date, 'MMM dd'),
                 sleep: log?.sleep || null,
                 workout: log?.workout?.duration || null,
                 meditation: log?.meditation || null,
@@ -60,201 +52,85 @@ export default function DashboardPage() {
         });
     };
 
-    const toggleMetric = (metric: keyof typeof activeMetrics) => {
-        setActiveMetrics(prev => ({ ...prev, [metric]: !prev[metric] }));
+    // Get Today's Values for Cards
+    const getTodayValues = () => {
+        const todayStr = format(new Date(), 'yyyy-MM-dd');
+        const todayLog = logs.find(l => format(l.date, 'yyyy-MM-dd') === todayStr);
+        return {
+            sleep: todayLog?.sleep ?? '-',
+            workout: todayLog?.workout?.duration ?? '-',
+            meditation: todayLog?.meditation ?? '-',
+            learning: todayLog?.learning ?? '-'
+        };
     };
 
     if (loading) {
-        return (
-            <div className="max-w-7xl mx-auto px-4 py-8">
-                <p style={{ color: 'var(--text-secondary)' }}>Loading data...</p>
-            </div>
-        );
+        return <div className="p-6 text-center text-gray-500">Loading...</div>;
     }
 
     const chartData = getChartData();
+    const today = getTodayValues();
+    const lastUpdated = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
-                Dashboard
+        <div className="max-w-md mx-auto px-4 py-6">
+            {/* Header: Date */}
+            <h1 className="text-2xl font-bold mb-6" style={{ color: 'var(--text-primary)' }}>
+                {format(new Date(), 'EEEE, MMM d')}
             </h1>
-            <p className="mb-8" style={{ color: 'var(--text-secondary)' }}>
-                Observe patterns in your data over time.
-            </p>
 
-            {/* View Mode Toggle */}
-            <div className="mb-6 flex gap-2">
-                <button
-                    onClick={() => setViewMode('daily')}
-                    className={viewMode === 'daily' ? 'btn-primary' : 'btn-secondary'}
-                >
-                    Daily (7 days)
-                </button>
-                <button
-                    onClick={() => setViewMode('weekly')}
-                    className={viewMode === 'weekly' ? 'btn-primary' : 'btn-secondary'}
-                >
-                    Weekly (30 days)
-                </button>
-                <button
-                    onClick={() => setViewMode('monthly')}
-                    className={viewMode === 'monthly' ? 'btn-primary' : 'btn-secondary'}
-                >
-                    Monthly (90 days)
-                </button>
+            {/* Small Cards Grid */}
+            <div className="grid grid-cols-2 gap-3 mb-8">
+                <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+                    <p className="text-xs font-medium uppercase tracking-wider mb-1" style={{ color: 'var(--text-secondary)' }}>Sleep</p>
+                    <p className="text-2xl font-semibold" style={{ color: 'var(--chart-primary)' }}>{today.sleep}<span className="text-sm font-normal ml-1 text-gray-400">hr</span></p>
+                </div>
+                <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+                    <p className="text-xs font-medium uppercase tracking-wider mb-1" style={{ color: 'var(--text-secondary)' }}>Workout</p>
+                    <p className="text-2xl font-semibold" style={{ color: 'var(--chart-secondary)' }}>{today.workout}<span className="text-sm font-normal ml-1 text-gray-400">min</span></p>
+                </div>
+                <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+                    <p className="text-xs font-medium uppercase tracking-wider mb-1" style={{ color: 'var(--text-secondary)' }}>Meditation</p>
+                    <p className="text-2xl font-semibold" style={{ color: 'var(--chart-tertiary)' }}>{today.meditation}<span className="text-sm font-normal ml-1 text-gray-400">min</span></p>
+                </div>
+                <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+                    <p className="text-xs font-medium uppercase tracking-wider mb-1" style={{ color: 'var(--text-secondary)' }}>Learning</p>
+                    <p className="text-2xl font-semibold text-orange-400">{today.learning}<span className="text-sm font-normal ml-1 text-gray-400">min</span></p>
+                </div>
             </div>
 
-            {/* Metric Toggles */}
-            <div className="mb-6 flex flex-wrap gap-2">
-                <button
-                    onClick={() => toggleMetric('sleep')}
-                    className="btn-secondary text-sm"
-                    style={{
-                        opacity: activeMetrics.sleep ? 1 : 0.5,
-                        borderColor: activeMetrics.sleep ? 'var(--chart-primary)' : 'var(--border)',
-                    }}
-                >
-                    Sleep
-                </button>
-                <button
-                    onClick={() => toggleMetric('workout')}
-                    className="btn-secondary text-sm"
-                    style={{
-                        opacity: activeMetrics.workout ? 1 : 0.5,
-                        borderColor: activeMetrics.workout ? 'var(--chart-secondary)' : 'var(--border)',
-                    }}
-                >
-                    Workout
-                </button>
-                <button
-                    onClick={() => toggleMetric('meditation')}
-                    className="btn-secondary text-sm"
-                    style={{
-                        opacity: activeMetrics.meditation ? 1 : 0.5,
-                        borderColor: activeMetrics.meditation ? 'var(--chart-tertiary)' : 'var(--border)',
-                    }}
-                >
-                    Meditation
-                </button>
-                <button
-                    onClick={() => toggleMetric('learning')}
-                    className="btn-secondary text-sm"
-                    style={{
-                        opacity: activeMetrics.learning ? 1 : 0.5,
-                        borderColor: activeMetrics.learning ? '#ff9f40' : 'var(--border)',
-                    }}
-                >
-                    Learning
-                </button>
-            </div>
-
-            {/* Chart */}
-            <div className="card mb-8">
-                <h2 className="text-xl font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-                    Activity over time
-                </h2>
-                <ResponsiveContainer width="100%" height={400}>
+            {/* Single Simple Graph */}
+            <div className="mb-4">
+                <ResponsiveContainer width="100%" height={150}>
                     <LineChart data={chartData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                         <XAxis
                             dataKey="date"
-                            stroke="var(--text-secondary)"
-                            style={{ fontSize: '12px' }}
-                        />
-                        <YAxis
-                            stroke="var(--text-secondary)"
-                            style={{ fontSize: '12px' }}
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fill: 'var(--text-tertiary)', fontSize: 10 }}
+                            interval="preserveStartEnd"
                         />
                         <Tooltip
                             contentStyle={{
                                 backgroundColor: 'var(--bg-secondary)',
-                                border: '1px solid var(--border)',
-                                borderRadius: '4px',
-                                color: 'var(--text-primary)',
+                                border: 'none',
+                                borderRadius: '8px',
+                                fontSize: '12px'
                             }}
+                            cursor={{ stroke: 'var(--border)', strokeWidth: 1 }}
                         />
-                        <Legend />
-                        {activeMetrics.sleep && (
-                            <Line
-                                type="monotone"
-                                dataKey="sleep"
-                                stroke="var(--chart-primary)"
-                                strokeWidth={2}
-                                name="Sleep (hours)"
-                                connectNulls
-                            />
-                        )}
-                        {activeMetrics.workout && (
-                            <Line
-                                type="monotone"
-                                dataKey="workout"
-                                stroke="var(--chart-secondary)"
-                                strokeWidth={2}
-                                name="Workout (min)"
-                                connectNulls
-                            />
-                        )}
-                        {activeMetrics.meditation && (
-                            <Line
-                                type="monotone"
-                                dataKey="meditation"
-                                stroke="var(--chart-tertiary)"
-                                strokeWidth={2}
-                                name="Meditation (min)"
-                                connectNulls
-                            />
-                        )}
-                        {activeMetrics.learning && (
-                            <Line
-                                type="monotone"
-                                dataKey="learning"
-                                stroke="#ff9f40"
-                                strokeWidth={2}
-                                name="Learning (min)"
-                                connectNulls
-                            />
-                        )}
+                        <Line type="monotone" dataKey="sleep" stroke="var(--chart-primary)" strokeWidth={2} dot={false} connectNulls />
+                        <Line type="monotone" dataKey="workout" stroke="var(--chart-secondary)" strokeWidth={2} dot={false} connectNulls />
+                        <Line type="monotone" dataKey="meditation" stroke="var(--chart-tertiary)" strokeWidth={2} dot={false} connectNulls />
+                        <Line type="monotone" dataKey="learning" stroke="#ff9f40" strokeWidth={2} dot={false} connectNulls />
                     </LineChart>
                 </ResponsiveContainer>
             </div>
 
-            {/* Recent Logs */}
-            <div className="card">
-                <h2 className="text-xl font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-                    Recent entries
-                </h2>
-                {logs.length === 0 ? (
-                    <p style={{ color: 'var(--text-secondary)' }}>No logs yet. Start by logging your first entry.</p>
-                ) : (
-                    <div className="space-y-3">
-                        {logs.slice(0, 5).map(log => (
-                            <div
-                                key={log.logId}
-                                className="p-3 rounded"
-                                style={{ backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border)' }}
-                            >
-                                <div className="flex justify-between items-start mb-2">
-                                    <span className="font-medium" style={{ color: 'var(--text-primary)' }}>
-                                        {format(log.date, 'MMM dd, yyyy')}
-                                    </span>
-                                </div>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-                                    {log.sleep && <span>Sleep: {log.sleep}h</span>}
-                                    {log.workout && <span>Workout: {log.workout.duration}min</span>}
-                                    {log.meditation && <span>Meditation: {log.meditation}min</span>}
-                                    {log.learning && <span>Learning: {log.learning}min</span>}
-                                </div>
-                                {log.note && (
-                                    <p className="mt-2 text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                                        {log.note}
-                                    </p>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
+            {/* Microcopy footer */}
+            <p className="text-xs text-center" style={{ color: 'var(--text-tertiary)' }}>
+                Last updated today at {lastUpdated}
+            </p>
         </div>
     );
 }

@@ -1,4 +1,4 @@
-# NYTVND LifeLog - Quick Setup
+# SYNAPSE - Quick Setup
 
 ## ⚠️ CRITICAL: Enable Firestore Database
 

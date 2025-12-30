@@ -19,7 +19,7 @@ export default function LandingPage() {
             {/* Header */}
             <header style={{ borderBottom: '1px solid var(--border)' }}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-                    <img src="/logo.png" alt="NYTVND LifeLog" className="h-12 w-12" />
+                    <img src="/logo.png" alt="SYNAPSE" className="h-12 w-12" />
                     <ThemeToggle />
                 </div>
             </header>
@@ -31,7 +31,7 @@ export default function LandingPage() {
                         A quiet mirror during a difficult phase.
                     </h2>
                     <p className="text-xl mb-8" style={{ color: 'var(--text-secondary)' }}>
-                        NYTVND LifeLog helps you observe patterns in your behavior, energy, and daily life — without judgment, advice, or pressure to improve.
+                        SYNAPSE helps you observe patterns in your behavior, energy, and daily life — without judgment, advice, or pressure to improve.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <a href="#how-it-works" className="btn-primary">
@@ -160,7 +160,7 @@ export default function LandingPage() {
                             </ul>
                             <div className="pt-4" style={{ borderTop: '1px solid var(--border)' }}>
                                 <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                                    <strong style={{ color: 'var(--text-primary)' }}>Important:</strong> NYTVND LifeLog does not diagnose or treat medical or mental health conditions. It supports self-observation and understanding, and can be used alongside professional care.
+                                    <strong style={{ color: 'var(--text-primary)' }}>Important:</strong> SYNAPSE does not diagnose or treat medical or mental health conditions. It supports self-observation and understanding, and can be used alongside professional care.
                                 </p>
                             </div>
                         </div>

@@ -1,120 +1,83 @@
-# NYTVND LifeLog
+# SYNAPSE
 
-**"A quiet mirror during a difficult phase — not a voice telling me what to do."**
+A science-first, personal observability system designed for people navigating difficult life phases (burnout, grief, transition). It acts as a **quiet mirror**—reflecting your data without judgment, gamification, or advice.
 
-A science-first personal observability system designed for people navigating difficult phases of life such as work stress, emotional fatigue, low motivation, breakups, and periods of psychological strain.
+![SYNAPSE Dashboard](/public/hero-screenshot.png)
 
-## Important Notice
+## 🌟 Core Philosophy
 
-NYTVND LifeLog does not diagnose or treat medical or mental health conditions. It supports self-observation and understanding, and can be used alongside professional care.
+- **Observation > Intervention**: See the patterns first.
+- **Neutrality**: No "good" or "bad" labels. Just data.
+- **Privacy**: Your data is yours. 
 
-## Features
+## 🚀 How to Use
 
-- **Daily Logging**: Track sleep, workout, meditation, learning time, and optional notes
-- **Observatory Dashboard**: Visualize patterns over time with neutral, data-first charts
-- **Trends Analysis**: Explore correlations between metrics (with clear disclaimers)
-- **Data Export**: Download your complete data as CSV or JSON
-- **Privacy-First**: Full data ownership and account deletion
-- **Dark/Light Theme**: Comfortable viewing in any environment
+### 1. Daily Logging (`/log`)
+Go to the **"Log Activity"** tab daily. It takes ~30 seconds.
+- **Sleep**: Hours slept.
+- **Workout**: Type and duration (or "Rest").
+- **Meditation**: Minutes sat.
+- **Learning**: Minutes spent learning (optional).
+- **Notes**: Any context (e.g., "Late coffee", "High stress meeting").
 
-## Tech Stack
+*SYNAPSE does not diagnose or treat medical or mental health conditions. It supports self-observation and understanding, and can be used alongside professional care.*
+*Tip: You don't have to fill everything. Consistency matters more than completeness.*
 
-- **Frontend**: Next.js 14 with TypeScript
-- **Backend**: Firebase (Firestore)
+### 2. The Dashboard (`/dashboard`)
+View your **Dashboard** to see your rhythm.
+- **Views**: Toggle between 7-day, 30-day, or 90-day views.
+- **Metrics**: Click the tabs (Sleep, Workout, etc.) to switch charts.
+- **Pattern Recognition**: Look for baselines. What is your "normal"?
+
+### 3. Trends & Analysis (`/trends`)
+Use the **"Trends"** page to find connections.
+- **Scatter Plots**: Compare two metrics (e.g., "Sleep Duration" vs. "Workout Duration").
+- **Correlation**: The app calculates a simple correlation coefficient to see if variables move together.
+- **Self-Inquiry**: Does sleeping more actually lead to more activity? Or less?
+
+### 4. Settings & Data
+- **Theme**: Toggle Dark/Light mode in the header.
+- **Export**: Download all your data as CSV/JSON anytime from the **Export** tab.
+- **Privacy**: Delete account functionality is available in Settings.
+
+## 🛠️ Technology Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Database**: Firebase Firestore
+- **Auth**: Firebase Auth (Google SSO)
+- **Styling**: Tailwind CSS (Custom Design System)
 - **Charts**: Recharts
-- **Styling**: Tailwind CSS
-- **Authentication**: Test mode (username/password with bcrypt) — Google SSO ready
 
-## Getting Started
+## 📦 Setup & Installation
 
-### Prerequisites
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/pred07/lyflog.git
+   cd lyflog
+   ```
 
-- Node.js 18+ installed
-- Firebase project created
-
-### Installation
-
-1. Clone the repository
-2. Install dependencies:
+2. **Install dependencies**
    ```bash
    npm install
    ```
 
-3. Create a `.env.local` file based on `.env.example`:
-   ```bash
-   cp .env.example .env.local
-   ```
+3. **Configure Firebase**
+   - Create a project at [console.firebase.google.com](https://console.firebase.google.com)
+   - Enable **Firestore Database** and **Authentication (Google)**
+   - Copy your config to `lib/firebase/config.ts` (or use .env)
 
-4. Add your Firebase configuration to `.env.local`
-
-5. Run the development server:
+4. **Run Locally**
    ```bash
    npm run dev
    ```
 
-6. Open [http://localhost:3000](http://localhost:3000)
+## 🔐 Accounts
 
-## Firebase Setup
+- **Production**: Use "Continue with Google"
+- **Testing**: Use built-in test accounts:
+  - User: `admin`, Pass: `admin`
+  - User: `test`, Pass: `test`
 
-1. Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com)
-2. Enable Firestore Database
-3. Copy your Firebase config to `.env.local`
-4. Deploy Firestore security rules (see below)
+## 📄 License
 
-### Firestore Security Rules
-
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-    match /daily_logs/{logId} {
-      allow read, write: if request.auth != null && 
-        resource.data.userId == request.auth.uid;
-    }
-  }
-}
-```
-
-## Architecture
-
-The authentication layer is fully abstracted through `AuthProvider` to enable seamless migration from test username/password auth to Google SSO without touching business logic.
-
-### Key Files
-
-- `components/auth/AuthProvider.tsx` - Abstracted auth interface
-- `lib/firebase/auth.ts` - Auth implementation (replaceable)
-- `lib/firebase/firestore.ts` - Database operations
-- `app/(app)/` - Protected application pages
-
-## Design Philosophy
-
-- **No gamification**: No XP, streaks, badges, or scores
-- **No judgment**: No "good/bad" or "healthy/unhealthy" language
-- **Neutral presentation**: Data displayed for user interpretation
-- **No advice**: System observes, user derives meaning
-
-## Language Guidelines
-
-✅ **Use**: Observe, Patterns, Phases, Trends, Recovery, Variability, Understanding, Clarity
-
-❌ **Never use**: Heal, Cure, Fix, Overcome, Improve, Optimize, Discipline, Lazy, Weak, Success, Failure
-
-## Deployment
-
-### Firebase Hosting
-
-```bash
-npm run build
-firebase deploy
-```
-
-## License
-
-MIT
-
-## Support
-
-For issues or questions, please open an issue on GitHub.
+MIT. Built for the Night Wind Operations collection.

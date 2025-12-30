@@ -49,7 +49,7 @@ export default function LoginPage() {
             <header style={{ borderBottom: '1px solid var(--border)' }}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
                     <Link href="/">
-                        <img src="/logo.png" alt="NYTVND LifeLog" className="h-12 w-12" />
+                        <img src="/logo.png" alt="SYNAPSE" className="h-12 w-12" />
                     </Link>
                     <ThemeToggle />
                 </div>

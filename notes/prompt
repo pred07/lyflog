@@ -1,290 +1,164 @@
-NYTVND LifeLog (Test Auth Version)
+How to Use NYTVND LifeLog
 
-Build a science-first LifeLog web application called NYTVND LifeLog (Night Wind Operations – Life Observatory).
+NYTVND LifeLog is not something you work on.
+It is something you glance at.
 
-This is not a productivity app, not a self-help app, and not a gamified tracker.
-The goal is personal observability — enabling users to see patterns in their own behavior without advice, scores, or judgment.
+There is no right way to use it.
 
-1. Core Principles (Non-Negotiable)
+1. Start Simple
 
-No XP, streaks, badges, scores, or rankings
+You do not need to log everything.
 
-No “you should” or improvement advice
+On most days, logging one or two things is enough.
 
-No moral language (good/bad, healthy/unhealthy)
+Examples:
 
-Data is displayed neutrally
+Just sleep
 
-User derives meaning independently
+Just workout
 
-Privacy-first mindset
+Just a note
 
-2. Tech Stack (Strict)
+Incomplete data is normal.
+Missing days are normal.
 
-Frontend: React (Next.js preferred)
+Nothing breaks if you skip.
 
-Backend: Firebase
+2. Log What Happened, Not What You Think
 
-Firestore for data
+Log facts, not explanations.
 
-Firebase Hosting
+✅ “Slept 5.5 hours”
+❌ “Bad sleep”
 
-Authentication (TEMPORARY):
+✅ “No workout”
+❌ “Lazy day”
 
-Test username + password only
+This keeps the data honest and useful.
 
-Stored securely (hashed)
+3. Don’t Look for Improvement
 
-Clearly marked as development auth
+This app does not measure progress the way other apps do.
 
-Charts: Recharts or Chart.js
+There are:
 
-Design: minimal, data-first UI, dark & light mode
-
-⚠️ Important:
-Auth layer must be abstracted so Google SSO can replace it later without touching business logic.
-
-3. Pre-Login Landing Page (Public)
-
-Create a public landing page before login.
-
-Landing Page Sections
-Hero
-
-Headline:
-“See what your life is actually doing.”
-
-Subtext:
-“NYTVND LifeLog is a personal observatory. No advice. No gamification. Just patterns.”
-
-CTA buttons:
-
-“How It Works”
-
-“Login (Test Mode)”
-
-How It Works
-
-Log simple daily facts
-
-Visualize long-term patterns
-
-Interpret results yourself
-
-What Is Tracked
-
-Sleep duration
-
-Workout / movement time
-
-Meditation duration
-
-Learning time (outside platforms)
-
-Optional notes
-
-What This Is Not
-
-Not a coach
-
-Not a productivity system
-
-Not a scoring app
-
-Not motivational content
-
-Footer
-
-NYTVND branding
-
-“Science-first, non-judgmental observability”
-
-Placeholder links (Docs / GitHub)
-
-4. Authentication (Test Mode Only)
-Login / Register Page
-
-Fields:
-
-Username
-
-Password
-
-Password:
-
-Hashed (bcrypt or equivalent)
-
-Never stored in plain text
-
-Clearly label UI:
-
-“Test authentication — Google SSO will replace this.”
-
-Rules
-
-No email verification
-
-No password recovery (test only)
-
-Simple auth guard for routes
-
-5. Post-Login App Structure
-Navigation
-
-Dashboard
-
-Log Activity
-
-Trends
-
-Data Export
-
-Settings
-
-6. Core Features
-A. Daily LifeLog (Manual Input)
-
-Users can log:
-
-Sleep (hours)
-
-Workout (type + duration)
-
-Meditation (duration)
-
-Learning time (duration)
-
-Optional free-text note
-
-Rules:
-
-Missing data allowed
-
-No validation like “too low / too high”
+No scores
 
 No streaks
 
-No reminders
+No achievements
 
-B. Dashboard (Observatory View)
+Instead, look for:
 
-Time-series charts
+repetition
 
-Daily / weekly / monthly views
+fluctuation
 
-Metric toggles
+stability
 
-Neutral labels only, e.g.:
+change over time
 
-“Sleep duration over time”
+Clarity comes from weeks, not days.
 
-“Workout presence vs learning time”
+4. Use the Dashboard Like a Weather Report
 
-❌ No emojis
-❌ No success/failure colors
+The dashboard is not feedback.
+It is a snapshot.
 
-C. Trends & Correlations
+Ask questions like:
 
-Show correlations with disclaimer:
+“Is this week different from last week?”
 
-“Observed association. Not causation.”
+“What seems consistent?”
 
-No automated suggestions
+“What varies the most?”
 
-User controls comparisons
+Do not ask:
 
-D. Data Ownership
+“Am I doing well?”
 
-Export all data as CSV / JSON
+“Is this good or bad?”
 
-Full account deletion
+The app will never answer those.
 
-Clear data lifecycle
+5. Patterns Take Time
 
-7. Settings
+Meaningful patterns usually appear after:
 
-Theme toggle (dark / light)
+~7 days: rhythm
 
-Change password (test mode)
+~14 days: variation
 
-Export data
+~30 days: baseline
 
-Delete account
+Until then, everything looks noisy.
 
-Logout
+Noise is not failure.
 
-8. UX & Copy Rules
+6. Notes Are Context, Not Journals
 
-Use words like:
+Notes are optional.
 
-Observe
+Use them only to record:
 
-Patterns
+unusual days
 
-Trends
+external events
 
-Time
+things you might forget later
 
-Data
+Examples:
 
-Avoid words like:
+“Late work call”
 
-Improve
+“Travel day”
 
-Optimize
+“High stress meeting”
 
-Discipline
+You don’t need to write feelings unless you want to.
 
-Productivity
+7. This Is Not Therapy
 
-Success
+NYTVND LifeLog does not:
 
-Tone must feel:
+diagnose
 
-Calm, scientific, neutral, non-directive
+treat
 
-9. Architecture Notes (IMPORTANT)
+advise
 
-Auth logic isolated from app logic
+fix
 
-Firestore schema designed for:
+If you’re already seeing a professional, this app can sit alongside, not replace, that support.
 
-user
+8. You Control the Data
 
-daily_logs
+At any time, you can:
 
-metrics
+export all data
 
-No hard dependency on auth provider
+delete everything
 
-Ready for Google SSO replacement later
+stop using the app
 
-10. End Goal
+There is no penalty for leaving.
 
-The app should feel like:
+If you no longer need it, it has done its job.
 
-“A scientific instrument for observing one human life.”
+9. If You Feel Stuck
 
-Not:
+If you’re unsure what to do:
 
-A coach
+log less
 
-A judge
+look less often
 
-A habit enforcer
+simplify
 
-A belief system
+The app works best when it stays quiet.
 
-Output Expectation
+Final Reminder
 
-Clean, modular codebase
+This app exists to reduce confusion, not to create pressure.
 
-Test auth functional
-
-Neutral dashboards implemented
-
-Firebase integrated
-
-SSO-ready architecture
-
-No gamification leakage
+If it ever feels demanding, step back.
