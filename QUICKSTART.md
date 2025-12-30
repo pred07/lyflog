@@ -1,40 +1,47 @@
-# NYTVND LifeLog - Firebase Setup Instructions
+# NYTVND LifeLog - Quick Setup
 
-## ⚠️ IMPORTANT: Enable Firestore First
+## ⚠️ CRITICAL: Enable Firestore Database
 
-Before the app will work, you MUST enable Firestore in your Firebase Console:
+**Google SSO will not work until you enable Firestore!**
 
-1. Go to [Firebase Console](https://console.firebase.google.com/project/lyflog-21b81/firestore)
+### Step 1: Enable Firestore
+
+1. Go to: https://console.firebase.google.com/project/lyflog-21b81/firestore
 2. Click **"Create Database"**
 3. Choose **"Start in production mode"**
 4. Select a location (closest to your users)
 5. Click **"Enable"**
 
-## Deploy Firestore Security Rules
+### Step 2: Enable Google Authentication
 
-After enabling Firestore, deploy the security rules:
+1. Go to: https://console.firebase.google.com/project/lyflog-21b81/authentication/providers
+2. Click on **"Google"** provider
+3. Click **"Enable"**
+4. Add your email as a test user
+5. Save
+
+### Step 3: Deploy Security Rules
+
+Copy the rules from `firestore.rules` to Firebase Console → Firestore → Rules tab, or use Firebase CLI:
 
 ```bash
-npm install -g firebase-tools
-firebase login
-firebase init firestore
-# Select your project: lyflog-21b81
-# Use default file names
 firebase deploy --only firestore:rules
 ```
 
-Or manually copy the rules from `firestore.rules` to your Firebase Console.
-
-## Enable Google SSO (Optional)
-
-1. Go to Firebase Console → Authentication → Sign-in method
-2. Enable "Google" provider
-3. Add your domain to authorized domains
-
 ## Test Accounts
 
-The app includes two hardcoded test accounts:
-- **Admin**: username `admin`, password `admin` (full access)
-- **Test**: username `test`, password `test` (limited access)
+For development/testing without Google:
+- **admin** / **admin**
+- **test** / **test**
 
-These work without Firebase for quick testing.
+These work immediately without any Firebase configuration.
+
+## Troubleshooting
+
+**Error: "Failed to get document because the client is offline"**
+- This means Firestore is not enabled. Follow Step 1 above.
+
+**Google SSO button does nothing**
+- Check browser console for errors
+- Verify Google provider is enabled in Firebase Console
+- Make sure you're testing on localhost:3000 (authorized domain)
