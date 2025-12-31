@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import NextImage from 'next/image';
 import { useAuth } from '@/components/auth/AuthProvider';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 
@@ -50,7 +51,7 @@ export default function LoginPage() {
             <header style={{ borderBottom: '1px solid var(--border)' }}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
                     <Link href="/">
-                        <img src="/logo.png" alt="SYNAPSE" className="h-12 w-12" />
+                        <NextImage src="/logo.png" alt="SYNAPSE" width={48} height={48} className="h-12 w-12" />
                     </Link>
                     <ThemeToggle />
                 </div>

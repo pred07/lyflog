@@ -12,22 +12,22 @@ export default function ExportPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const loadLogs = async () => {
+            if (!user) return;
+            try {
+                const userLogs = await getUserLogs(user.userId);
+                setLogs(userLogs);
+            } catch (error) {
+                console.error('Error loading logs:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         if (user) {
             loadLogs();
         }
     }, [user]);
-
-    const loadLogs = async () => {
-        if (!user) return;
-        try {
-            const userLogs = await getUserLogs(user.userId);
-            setLogs(userLogs);
-        } catch (error) {
-            console.error('Error loading logs:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const exportAsCSV = () => {
         if (logs.length === 0) return;

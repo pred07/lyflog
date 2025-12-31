@@ -1,284 +1,217 @@
-SYNAPSE — Dual Dashboard System (Final Design)
-Core Insight (This Solves the Confusion)
+You are building SYNAPSE — a science-first personal observability system that acts as a "quiet mirror" for people navigating difficult life phases (burnout, grief, transition).
+
+CORE PHILOSOPHY (Never violate):
+- Observation > Intervention: See patterns, never prescribe action
+- Neutrality: No "good/bad" labels, no scores, no gamification
+- Privacy: User data never leaves their control
+- Restraint: You are a microscope, not a coach
+
+GOLDEN RULE:
+Before adding ANY feature, ask: "Does this describe WHAT IS or prescribe WHAT SHOULD BE?"
+- WHAT IS → Build it
+- WHAT SHOULD BE → Reject it
+
+---
+
+TECH STACK:
+- Next.js 14 (App Router)
+- Firebase Firestore + Auth
+- Tailwind CSS (custom design system)
+- Recharts for data viz
+- date-fns for time handling
+
+---
+
+APPROVED FEATURES FOR v1.5 (Build these):
+
+1. CONTEXT TIMELINE (Priority 1)
+- Vertical scrollable timeline of all user data
+- Each day = expandable card showing: metrics, habits, sessions, notes
+- Hover interaction: Hovering "Anxiety: 4" highlights all other days with Anxiety 4+
+- No analysis, pure layering of information
+- Implementation: Infinite scroll, virtualized list for performance
+
+2. SILENT PATTERN INDICATORS
+- After 14+ days, show small • dot on Patterns tab when correlation detected
+- Triggers: correlation > 0.6 AND sample size > 20 days
+- Click dot → Shows neutral statement: "Sleep duration was consistently higher on days following meditation"
+- Never use: percentages, "improved", "better", or prescriptive language
+
+3. CORRELATION CONFIDENCE INDICATORS
+- Every correlation shows data quality visually:
+  • Solid dot = 50+ days (high confidence)
+  • Half dot = 20-49 days (emerging pattern)
+  • Empty dot = <20 days (insufficient data)
+- Text: "Based on 23 days. Needs 27 more for high confidence."
+
+4. REVERSE ENGINEERING SEARCH
+- Let users search: "When did I feel focused?" (Focus 4-5/5)
+- Show all matching days
+- Below, show neutral frequency counts:
+  - "On 82% of these days: Sleep 7+ hrs"
+  - "On 65% of these days: Meditation logged"
+- No causation claims, only frequencies
+
+5. ISOLATION MODE (Context Zones)
+- Let users tag date ranges: "Vacation", "Exam Week", etc.
+- Dashboard toggle: ☐ Include context zones
+- Zones appear as shaded regions on charts
+- Standard data science practice for handling outliers
+
+6. METRIC RELATIONSHIPS MAP
+- Visual graph: nodes = metrics, edges = correlation strength
+- Click node → Highlights connected metrics
+- Label: "Frequently co-occurs" (never "causes" or "improves")
+
+7. SIMILAR PAST DAYS (not predictions)
+- After today's log: "Today's pattern resembles 4 past days"
+- Shows those days as reference (retrospective, not predictive)
+- User can see what came next naturally
+
+8. LAGGED ASSOCIATION VISUALS
+- Timeline showing: Day 1 Gym → Day 3 Sleep change
+- Text: "Sleep changes tend to appear 1-2 days after gym sessions"
+- No percentages, no "better"
+
+9. DIFFICULTY TAGGING (not scoring)
+- After habit check: Optional "How did it feel?" → Easy/Neutral/Hard
+- Show raw counts: "Meditation: Marked hard 12 times in weeks 1-2, easy 8 times in weeks 3-4"
+- No composite scores
+
+10. VOICE LOGGING (input only)
+- Speech-to-text: "6 hours sleep, anxiety 3, 2 coffees"
+- Pre-fills form → User confirms
+- No inference, no suggestions
+
+---
+
+FORBIDDEN FEATURES (Never build):
+
+❌ Any "% improvement" language
+❌ "What should I focus on?" / The Oracle
+❌ Predictions about future outcomes
+❌ Habit streaks or scores
+❌ Any prescriptive language ("you should", "try this")
+❌ Mood-reactive UI (colors changing based on anxiety level)
+❌ Notifications (except single optional haptic at 9 PM)
+❌ Rankings or "best practices"
+❌ Comparisons to others
+❌ Goals or targets set by the system
+
+---
 
-Not all tracking happens in the same mindset.
+LANGUAGE GUIDELINES:
 
-Before gym → you are in action mode
+✅ ALLOWED:
+- "consistently higher/lower"
+- "tends to appear"
+- "frequently co-occurs"
+- "was observed"
+- "on X% of days"
+- "resembles"
+- "based on N days"
 
-During day → you are in routine mode
+❌ FORBIDDEN:
+- "improved by"
+- "you should"
+- "better/worse"
+- "optimal"
+- "recommended"
+- "try this"
+- "goal"
+- "streak"
 
-Later → you are in reflection mode
+---
 
-So SYNAPSE needs separate dashboards, not one overloaded screen.
+UI/UX PRINCIPLES:
 
-DASHBOARD TYPE 1 — SESSION DASHBOARD
+1. CALM BY DEFAULT
+- Soft colors, no bright reds/greens
+- Animations: subtle, breath-paced (no sudden movements)
+- Default to collapsed/minimal views
 
-(Used before gym / study / practice)
+2. ALWAYS SHOW UNCERTAINTY
+- Every insight includes sample size
+- Show confidence indicators
+- Never hide data gaps
 
-Purpose
+3. EXITS EVERYWHERE
+- Complex views have "Simplify" button
+- Option to hide numbers, show only shapes (Ghost Mode)
+- Can dismiss any insight permanently
 
-Fast, focused, operational.
-This is what you open before doing something.
+4. MOBILE-FIRST
+- Sticky bottom navigation
+- Thumb-friendly touch targets
+- No hamburger menus for core functions
 
-📍 When it’s used
+5. TEMPORAL HONESTY
+- Every chart shows date range prominently
+- No timeless claims
 
-Before going to the gym
+---
 
-Before starting a study session
+EXISTING STRUCTURE TO PRESERVE:
 
-Before practice
+/habits - Daily presence tracking (✔/✖, no streaks)
+/session - Live logging during activities
+/dashboard - Pattern visualization (Patterns tab)
+/log - Quantitative metric entry
+/logbook - Structured archival
+/trends - Correlation analysis
+/profile - Configuration
 
-What it shows (ONLY this)
-Header
+Current metrics:
+- Core: Sleep, Workout duration, Meditation
+- States: Anxiety, Focus, Energy (1-5 scale)
+- Exposures: Caffeine, Screen Time
 
-Today’s date
+---
 
-Practice name (e.g., Gym Training)
+DATA HANDLING:
 
-Workout / Session Builder (Live)
+- Run correlations server-side (not real-time)
+- Use Pearson correlation for continuous metrics
+- Require minimum 20 data points before showing patterns
+- Store context zones as metadata on date ranges
+- Voice transcription: local processing preferred, fallback to Firebase ML
 
-You:
+---
 
-Select session type
-→ Chest & Triceps
+EXAMPLES OF CORRECT IMPLEMENTATION:
 
-Add exercises (free text or from history)
+GOOD: "Sleep duration averaged 7.2 hours on days following meditation, compared to 6.1 hours on other days. Based on 34 days."
 
-Bench Press
+BAD: "Meditation improved your sleep by 18%! Keep it up! 🎉"
 
-Chest Press
+GOOD: "This pattern resembles April 12, April 19, May 3 (all followed by low-focus days)"
 
-Triceps Extension
+BAD: "Tomorrow you'll probably have low focus. Try meditating tonight."
 
-For each exercise:
+GOOD: [Chart shows faded dot] "Insufficient data. Log 15 more days to confirm pattern."
 
-Add sets dynamically
+BAD: [Chart shows solid line with no confidence indicator]
 
-Enter:
+---
 
-Weight
+WHEN USER ASKS FOR ADVICE:
 
-Reps
+Redirect to observation:
+❌ "You should sleep more"
+✅ "On days with 7+ hours sleep, your focus ratings averaged 4.1 vs 2.8 on shorter sleep days"
 
-✔ / ✖ per set
+---
 
-Optional note (“PR for me”)
+BUILD PRIORITY ORDER:
 
-Example (live view):
+Sprint 1: Context Timeline, Correlation Confidence
+Sprint 2: Silent Indicators, Reverse Engineering
+Sprint 3: Isolation Mode, Relationships Map
+Sprint 4: Voice Logging, Similar Past Days
 
-Bench Press
-Set 1: 20 × 12 ✔
-Set 2: 25 × 10 ✔
-Set 3: 80 × 8 ✔
+---
 
-[ + Add Set ]
+REMEMBER: SYNAPSE is a personal data microscope. Microscopes reveal structure — they never give advice.
 
-Rules
-
-No charts
-
-No history comparisons
-
-No feedback
-
-Just recording what happens
-
-This is a live notebook, not a dashboard.
-
-DASHBOARD TYPE 2 — HABIT CALENDAR DASHBOARD
-
-(Used daily for routines & habits)
-
-Purpose
-
-Quick daily marking.
-This is what you open once or twice a day.
-
-📍 When it’s used
-
-Morning / night
-
-Checking routines
-
-Tracking multiple habits
-
-Layout (Distinct from Session)
-Top: Today
-
-Date
-
-“Mark what happened today”
-
-Habit Sets (Grouped)
-
-Example:
-
-Morning Routine
-
-[✔] Meditation
-
-[✖] Reading
-
-Health
-
-[✔] Gym
-
-[✔] Walk
-
-Study
-
-[✖] Maths
-
-[✔] Revision
-
-Calendar View (Weekly / Monthly)
-
-Below habits:
-
-Weekly grid (✔ / ✖ only)
-
-Tap a date → edit marks + notes
-
-Rules
-
-✔ = happened
-
-✖ = didn’t happen
-
-No streaks
-
-No scores
-
-No pressure
-
-This is presence tracking, not performance.
-
-DASHBOARD TYPE 3 — OBSERVATION DASHBOARD
-
-(Reflection, not action)
-
-This is your existing /dashboard.
-
-Purpose
-
-Understanding patterns after time passes.
-
-What it shows
-Sections
-
-Overview
-
-Days logged
-
-Baseline visible message
-
-Core Metrics
-
-Sleep
-
-Movement
-
-Meditation
-
-Learning
-
-Personal States
-
-Anxiety
-
-Energy
-
-Focus
-
-Exposures
-
-Caffeine
-
-Alcohol
-
-Screen time
-
-What it never shows
-
-Sets
-
-Weights
-
-Habit checklists
-
-PRs
-
-Those live elsewhere.
-
-HOW ALL THREE WORK TOGETHER (IMPORTANT)
-Example Day
-
-Before gym
-
-Open Session Dashboard
-
-Log chest & triceps
-
-Close app
-
-During day
-
-Open Habit Calendar
-
-Mark gym ✔
-
-Mark study ✖
-
-Later / weekly
-
-Open Observation Dashboard
-
-See how gym days relate to sleep & energy
-
-Each dashboard has one job.
-
-HOW NEW HABITS ARE ADDED (Your Use Case)
-Adding a new habit
-
-Go to Habit Calendar
-
-Tap “Add Habit”
-
-Enter name (e.g., “Cold Shower”)
-
-Assign to a Habit Set
-
-Start marking ✔ / ✖ daily
-
-No setup complexity.
-
-WHY THIS FEELS “NEXT LEVEL”
-
-Gym logging feels like a real training log
-
-Habits feel lightweight, not demanding
-
-Dashboard feels analytical, not judgmental
-
-No screen tries to do everything
-
-This is professional-grade UX.
-
-ONE RULE TO ENFORCE EVERYWHERE
-
-Action screens must never judge.
-Reflection screens must never instruct.
-
-If you keep this, SYNAPSE stays unique.
-
-FINAL SUMMARY
-
-You now have:
-
-Session Dashboard → detailed, live, gym/study
-
-Habit Calendar Dashboard → daily routines, multiple habits
-
-Observation Dashboard → patterns & analysis
-
-Each is distinct.
+If a feature makes you feel helpful, it's probably wrong.
+If a feature makes the user see clearly, it's probably right.

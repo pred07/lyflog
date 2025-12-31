@@ -14,22 +14,22 @@ export default function TrendsPage() {
     const [metricY, setMetricY] = useState<string>('workout');
 
     useEffect(() => {
+        const loadLogs = async () => {
+            if (!user) return;
+            try {
+                const userLogs = await getUserLogs(user.userId);
+                setLogs(userLogs);
+            } catch (error) {
+                console.error('Error loading logs:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         if (user) {
             loadLogs();
         }
     }, [user]);
-
-    const loadLogs = async () => {
-        if (!user) return;
-        try {
-            const userLogs = await getUserLogs(user.userId);
-            setLogs(userLogs);
-        } catch (error) {
-            console.error('Error loading logs:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const getValue = (log: DailyLog, metric: string) => {
         if (metric === 'workout') return log.workout?.duration;
