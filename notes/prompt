@@ -1,265 +1,284 @@
-SYNAPSE — “Logbook” / Sheet Feature (Design Plan)
-0️⃣ First: Name It Correctly (Important)
+SYNAPSE — Dual Dashboard System (Final Design)
+Core Insight (This Solves the Confusion)
 
-❌ Do NOT call it:
+Not all tracking happens in the same mindset.
 
-Productivity sheet
+Before gym → you are in action mode
 
-Planner
+During day → you are in routine mode
 
-Task tracker
+Later → you are in reflection mode
 
-Habit tracker
+So SYNAPSE needs separate dashboards, not one overloaded screen.
 
-✅ Call it:
+DASHBOARD TYPE 1 — SESSION DASHBOARD
 
-Logbook
+(Used before gym / study / practice)
 
-Daily Record
+Purpose
 
-Session Log
+Fast, focused, operational.
+This is what you open before doing something.
 
-Activity Sheet
+📍 When it’s used
 
-This keeps it observational, not evaluative.
+Before going to the gym
 
-1️⃣ Why This Feature Belongs (When Is It Used?)
+Before starting a study session
 
-This feature is for:
+Before practice
 
-structured activities (gym, study, rehab, practice)
+What it shows (ONLY this)
+Header
 
-sessions with details
+Today’s date
 
-things that don’t fit sliders or charts
+Practice name (e.g., Gym Training)
 
-Examples:
+Workout / Session Builder (Live)
 
-Chest day workout details
+You:
 
-Study topics covered
+Select session type
+→ Chest & Triceps
 
-Practice sessions
+Add exercises (free text or from history)
 
-Therapy homework (optional)
+Bench Press
 
-It is not for daily life mood.
+Chest Press
 
-2️⃣ Core Principle (Non-Negotiable)
+Triceps Extension
 
-The Logbook records sessions.
-The Dashboard shows patterns.
-The Logbook never scores performance.
+For each exercise:
 
-If you keep this rule, you’re safe.
+Add sets dynamically
 
-3️⃣ Logbook Structure (Excel-Like, but Controlled)
-Each Logbook Is User-Defined
+Enter:
 
-User creates a Logbook like:
+Weight
 
-“Gym Training”
+Reps
 
-“Math Study”
+✔ / ✖ per set
 
-“Meditation Practice”
+Optional note (“PR for me”)
 
-“Skill Practice”
+Example (live view):
 
-Each Logbook has:
+Bench Press
+Set 1: 20 × 12 ✔
+Set 2: 25 × 10 ✔
+Set 3: 80 × 8 ✔
 
-Custom columns
+[ + Add Set ]
 
-Custom data types
+Rules
 
-Optional checkboxes
+No charts
 
-Optional remarks
+No history comparisons
 
-4️⃣ Supported Field Types (This Is the Key)
+No feedback
 
-Allow only these field types:
+Just recording what happens
 
-✅ Field Types
+This is a live notebook, not a dashboard.
 
-Text (e.g., exercise name, topic)
+DASHBOARD TYPE 2 — HABIT CALENDAR DASHBOARD
 
-Number (e.g., weight, reps, duration)
+(Used daily for routines & habits)
 
-Checkbox (✔ / ✖)
+Purpose
 
-Select (Chest / Back / Legs)
+Quick daily marking.
+This is what you open once or twice a day.
 
-Notes (free text)
+📍 When it’s used
 
-❌ Do NOT allow:
+Morning / night
 
-Auto-calculated scores
+Checking routines
 
-Completion percentages
+Tracking multiple habits
 
-Rankings
+Layout (Distinct from Session)
+Top: Today
 
-5️⃣ Example: Gym Logbook (Your Case)
+Date
 
-Logbook: Gym Training
+“Mark what happened today”
 
-Date	Exercise	Weight (kg)	Reps	Set	Done	Notes
-12 Aug	Bench Press	15	12	1	✔	Warm-up
-12 Aug	Bench Press	20	11	2	✔	Stable
-12 Aug	Incline DB	12	10	1	✖	Fatigue
+Habit Sets (Grouped)
 
-Rules:
+Example:
 
-✔ means performed, not “success”
+Morning Routine
 
-✖ means skipped, not “failure”
+[✔] Meditation
 
-Notes are context only
+[✖] Reading
 
-6️⃣ Example: Study Logbook
+Health
 
-Logbook: Math Study
+[✔] Gym
 
-Date	Topic	Studied	Notes
-13 Aug	Integration	✔	Need revision
-13 Aug	Limits	✖	Skipped
-14 Aug	Differentiation	✔	Understood basics
+[✔] Walk
 
-Again:
+Study
+
+[✖] Maths
+
+[✔] Revision
+
+Calendar View (Weekly / Monthly)
+
+Below habits:
+
+Weekly grid (✔ / ✖ only)
+
+Tap a date → edit marks + notes
+
+Rules
 
 ✔ = happened
 
 ✖ = didn’t happen
 
-No score
+No streaks
 
-7️⃣ Where This Appears in the App
-Navigation Placement
+No scores
 
-Add one tab only:
+No pressure
 
-Logbook
+This is presence tracking, not performance.
 
-Do NOT mix it into Dashboard.
+DASHBOARD TYPE 3 — OBSERVATION DASHBOARD
 
-8️⃣ How Analysis Works (Very Important)
-Allowed Analysis (Safe)
+(Reflection, not action)
 
-From Logbooks, SYNAPSE may show:
+This is your existing /dashboard.
 
-Frequency (sessions per week)
+Purpose
 
-Distribution (which exercises/topics appear most)
+Understanding patterns after time passes.
 
-Gaps (days with no entries)
+What it shows
+Sections
 
-Time clustering (e.g., evenings vs mornings)
+Overview
 
-Language:
+Days logged
 
-“Recorded sessions”
+Baseline visible message
 
-“Observed frequency”
+Core Metrics
 
-“Common entries”
+Sleep
 
-Forbidden Analysis
+Movement
 
-❌ “Improved performance”
-❌ “Strength increased”
-❌ “Study efficiency”
-❌ “Completion rate”
-❌ “Progress score”
+Meditation
 
-The app must never evaluate skill or growth.
+Learning
 
-9️⃣ Weekly / Monthly Views (Allowed)
-Weekly View
+Personal States
 
-Rows grouped by week
+Anxiety
 
-Counts only (e.g., “4 gym sessions recorded”)
+Energy
 
-Monthly View
+Focus
 
-Heatmap of presence, not quality
+Exposures
 
-Neutral color scale
+Caffeine
 
-No “best week” labels.
+Alcohol
 
-🔟 Relationship With Other Data (Powerful but Safe)
+Screen time
 
-Logbook entries can be correlated, not judged.
+What it never shows
 
-Examples:
+Sets
 
-Gym sessions ↔ Sleep
+Weights
 
-Study sessions ↔ Focus
+Habit checklists
 
-Training days ↔ Energy variability
+PRs
 
-Shown as:
+Those live elsewhere.
 
-overlays
+HOW ALL THREE WORK TOGETHER (IMPORTANT)
+Example Day
 
-scatter plots
+Before gym
 
-neutral text
+Open Session Dashboard
 
-1️⃣1️⃣ Customization Rules (Critical)
+Log chest & triceps
 
-User can:
+Close app
 
-Create/delete logbooks
+During day
 
-Add/remove columns
+Open Habit Calendar
 
-Choose checkbox vs number
+Mark gym ✔
 
-Rename fields
+Mark study ✖
 
-System must:
+Later / weekly
 
-Never auto-add fields
+Open Observation Dashboard
 
-Never assume meaning
+See how gym days relate to sleep & energy
 
-Never normalize values
+Each dashboard has one job.
 
-1️⃣2️⃣ UX Guardrails (Prevent Overwhelm)
+HOW NEW HABITS ARE ADDED (Your Use Case)
+Adding a new habit
 
-Default: no logbooks
+Go to Habit Calendar
 
-User must explicitly create one
+Tap “Add Habit”
 
-Max 1–2 active logbooks recommended
+Enter name (e.g., “Cold Shower”)
 
-Empty state message:
+Assign to a Habit Set
 
-“Use logbooks only when detail helps.”
+Start marking ✔ / ✖ daily
 
-This protects users from over-tracking.
+No setup complexity.
 
-FINAL SANITY CHECK
+WHY THIS FEELS “NEXT LEVEL”
 
-Ask this before shipping:
+Gym logging feels like a real training log
 
-Can a user use this logbook without ever feeling judged, measured, or behind?
+Habits feel lightweight, not demanding
 
-If yes → ship
-If no → simplify
+Dashboard feels analytical, not judgmental
+
+No screen tries to do everything
+
+This is professional-grade UX.
+
+ONE RULE TO ENFORCE EVERYWHERE
+
+Action screens must never judge.
+Reflection screens must never instruct.
+
+If you keep this, SYNAPSE stays unique.
 
 FINAL SUMMARY
 
-This Logbook feature:
+You now have:
 
-Adds serious power
+Session Dashboard → detailed, live, gym/study
 
-Supports gym, study, practice
+Habit Calendar Dashboard → daily routines, multiple habits
 
-Feels like Excel without Excel’s pressure
+Observation Dashboard → patterns & analysis
 
-Fits SYNAPSE’s philosophy if isolated correctly
+Each is distinct.

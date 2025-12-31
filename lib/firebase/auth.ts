@@ -166,7 +166,7 @@ export async function updateUserTheme(userId: string, theme: 'dark' | 'light'): 
 }
 
 // Update user profile
-export async function updateUserProfile(userId: string, data: { username?: string, photoURL?: string, metrics?: any[], exposures?: any[], logbooks?: any[] }): Promise<void> {
+export async function updateUserProfile(userId: string, data: { username?: string, photoURL?: string, metrics?: any[], exposures?: any[], logbooks?: any[], habits?: any[] }): Promise<void> {
     // Skip for test accounts
     if (userId.startsWith('test_')) {
         return;

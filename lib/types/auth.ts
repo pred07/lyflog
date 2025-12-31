@@ -1,4 +1,5 @@
 import { LogbookConfig } from './logbook';
+import { HabitConfig } from './habit';
 
 export interface MetricConfig {
     id: string;
@@ -22,6 +23,7 @@ export interface User {
     metrics?: MetricConfig[];
     exposures?: ExposureConfig[];
     logbooks?: LogbookConfig[];
+    habits?: HabitConfig[];
 }
 
 export interface AuthContextType {

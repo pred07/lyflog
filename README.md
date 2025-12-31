@@ -10,44 +10,59 @@ A science-first, personal observability system designed for people navigating di
 - **Neutrality**: No "good" or "bad" labels. Just data.
 - **Privacy**: Your data is yours.
 
-## 🚀 How to Use
+## 🚀 How to Use: The Dual Dashboard System
 
-### 1. Daily Logging (`/log`)
-Go to the **"Log Activity"** tab daily. It takes ~30 seconds.
-- **Standard Metrics**: Sleep, Workout, Meditation, Learning.
-- **Custom States**: Any internal state you define (e.g., Anxiety, Focus, Energy).
-- **Exposures**: External inputs like Caffeine, Alcohol, Screen Time (tracked separately, no judgment).
-- **Notes**: Any context.
+SYNAPSE uses a **Dual Dashboard** approach (Action vs. Reflection) to separate operational tracking from analytical observation.
 
-### 2. The Dashboard (`/dashboard`)
-View your **Dashboard** to see your rhythm.
-- **4 Clear Sections**: Overview, Core Metrics, Personal States, Exposures.
-- **Visuals**: Premium **Gradient Area Charts** with reference lines showing your 7-day baseline.
-- **Adaptive**: Automatically displays your custom states and exposures.
+### 1. Daily Check (`/habits`) — *Action Mode*
+**"Did I show up?"**
+- **Purpose**: Quick presence tracking for daily routines.
+- **Usage**: Open morning/night. Mark habits as ✔ (Done) or ✖ (Missed).
+- **Philosophy**: No streaks, no scores, no pressure. Just a record of consistency.
+- **Features**: Weekly calendar view, custom habit groups.
 
-### 3. Trends & Analysis (`/trends`)
-Use the **"Trends"** page to find connections.
-- **Deep Analysis**: Plot **ANY** metric against another (including Exposures vs States).
-- **Cross-Category**: Compare "Caffeine" (exposure) vs "Sleep" (core) or "Anxiety" (personal state).
-- **Scatter Plot**: Visualize correlation strength with coefficient calculation.
+### 2. Live Log (`/session`) — *Action Mode*
+**"What did I do?"**
+- **Purpose**: Operational logging during an activity (Gym, Study, Practice).
+- **Usage**: Open *during* the session. Log exercises, sets, or topics in real-time.
+- **Philosophy**: A live notebook. No charts, no past comparisons to distract you.
+- **Features**: Session builder, set tracking, history autocomplete.
 
-### 4. Logbook (`/logbook`) — NEW
-For detailed tracking that doesn't fit daily sliders.
-- **Structured Data**: Track Gym sets, Study topics, Practice sessions in spreadsheet-like tables.
-- **Custom Columns**: Text, Number, Checkbox, Select, Notes—strict typing prevents arbitrary scoring.
-- **Demo Ready**: Admin account includes pre-filled Gym Training logbook with 10 realistic entries.
-- **Mobile-First**: Horizontal scroll with sticky date column, touch-friendly inputs.
+### 3. Patterns (`/dashboard`) — *Reflection Mode*
+**"How does it connect?"**
+- **Purpose**: Analytical observation of your long-term trends.
+- **Usage**: Check weekly to see correlations (e.g., "How does Gym affect Sleep?").
+- **Features**: 
+  - **Core Metrics**: Sleep, Workout duration, Meditation minutes (logged via `/log`).
+  - **Personal States**: Anxiety, Focus, Energy.
+  - **Exposures**: Caffeine, Screen Time.
+  - **Visuals**: Gradient area charts with baseline comparisons.
 
-### 5. User-Defined Configuration (`/profile`)
-Make the app yours in the **Profile** tab.
-- **Metrics Manager**: Add custom sliders for internal states (e.g., "Creativity", "Social Battery").
-- **Exposures Manager**: Define what external inputs to track (e.g., "Nicotine", "Late-night screens").
-- **Logbook Manager**: Create custom logbooks for specific activities.
-- **Adaptive UI**: All pages automatically adapt to your schema.
+### 4. Quantitative Log (`/log`)
+- **Purpose**: The data entry point for quantitative metrics shown in **Patterns**.
+- **Usage**: Spend 30 seconds daily to log Sleep hours, State ratings (1-5), and Exposure counts.
 
-### 6. Mobile Experience
-- **Sticky Navigation**: Thumb-friendly bottom navigation bar for seamless switching.
-- **Touch Feedback**: Subtle press animations for tactile assurance.
+### 5. Logbook (`/logbook`)
+- **Purpose**: Structured archival for detailed records that don't fit the other dashboards.
+
+### 6. Advanced Analysis (`/trends`)
+**"What correlates?"**
+- **Purpose**: Deep dive into correlations between metrics.
+- **Features**: 
+  - **Scatter Plots**: Visualize correlation strength (e.g., Caffeine vs. Anxiety).
+  - **Cross-Category Analysis**: Compare Exposures vs. Core Metrics.
+
+### 7. Configuration (`/profile`)
+**"Make it yours"**
+- **Purpose**: Customize the system to your life.
+- **Features**:
+  - **Metrics Manager**: Create custom sliders for new states (e.g., "Creativity").
+  - **Exposures Manager**: Define external inputs to track.
+  - **Logbook Manager**: Create custom structured logs.
+
+### 8. Mobile Experience
+- **Sticky Navigation**: Thumb-friendly bottom navigation bar.
+- **Touch Feedback**: Optimized touch targets and animations.
 
 ## 🛠️ Technology Stack
 
