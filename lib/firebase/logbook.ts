@@ -62,3 +62,50 @@ export const getLogbookEntries = async (userId: string, logbookId: string, limit
         updatedAt: doc.data().updatedAt?.toDate(),
     })) as LogbookEntry[];
 };
+
+// Demo data for test accounts
+export const getDemoLogbookEntries = (userId: string, logbookId: string): LogbookEntry[] => {
+    if (!userId.startsWith('test_') || logbookId !== 'gym_training') return [];
+
+    const today = new Date();
+    const entries: LogbookEntry[] = [];
+
+    // Generate 10 realistic gym entries over the past 2 weeks
+    const exercises = [
+        { name: 'Bench Press', weight: [60, 65, 70, 75], reps: [12, 10, 8, 6] },
+        { name: 'Squat', weight: [80, 85, 90, 95], reps: [10, 8, 6, 5] },
+        { name: 'Deadlift', weight: [100, 105, 110], reps: [8, 6, 5] },
+        { name: 'Overhead Press', weight: [40, 45, 50], reps: [10, 8, 6] },
+        { name: 'Pull-ups', weight: [0], reps: [12, 10, 8] },
+    ];
+
+    let entryId = 1;
+    for (let dayOffset = 14; dayOffset >= 0; dayOffset -= 2) {
+        const sessionDate = new Date(today);
+        sessionDate.setDate(today.getDate() - dayOffset);
+
+        // Pick 3-4 exercises per session
+        const sessionExercises = exercises.slice(0, 3 + (dayOffset % 2));
+
+        sessionExercises.forEach((ex, idx) => {
+            const setNum = idx % ex.weight.length;
+            entries.push({
+                id: `demo_${userId}_${entryId++}`,
+                logbookId,
+                userId,
+                date: sessionDate,
+                data: {
+                    exercise: ex.name,
+                    weight: ex.weight[setNum],
+                    reps: ex.reps[setNum],
+                    done: dayOffset > 2 || Math.random() > 0.2, // Most recent are done, older might have skips
+                    notes: idx === 0 && dayOffset === 0 ? 'Felt strong today' : ''
+                },
+                createdAt: sessionDate,
+                updatedAt: sessionDate
+            });
+        });
+    }
+
+    return entries.reverse(); // Most recent first
+};

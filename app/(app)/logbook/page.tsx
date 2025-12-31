@@ -33,8 +33,15 @@ export default function LogbookPage() {
         const loadEntries = async () => {
             setLoading(true);
             try {
-                const data = await getLogbookEntries(user.userId, activeLogbookId);
-                setEntries(data);
+                // Use demo data for test accounts
+                if (user.userId.startsWith('test_')) {
+                    const { getDemoLogbookEntries } = await import('@/lib/firebase/logbook');
+                    const demoData = getDemoLogbookEntries(user.userId, activeLogbookId);
+                    setEntries(demoData);
+                } else {
+                    const data = await getLogbookEntries(user.userId, activeLogbookId);
+                    setEntries(data);
+                }
             } catch (err) {
                 console.error(err);
             } finally {
@@ -134,8 +141,8 @@ export default function LogbookPage() {
                                 key={lb.id}
                                 onClick={() => setActiveLogbookId(lb.id)}
                                 className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${activeLogbookId === lb.id
-                                        ? 'bg-indigo-600 text-white'
-                                        : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700'
+                                    ? 'bg-indigo-600 text-white'
+                                    : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700'
                                     }`}
                             >
                                 {lb.title}
