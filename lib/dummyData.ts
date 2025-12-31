@@ -103,7 +103,7 @@ export function getDummyLogs(userId: string): DailyLog[] {
     // This helper just GENERATES it. The caller handles saving if empty.
 
     // User 1: Admin -> Stabilizing
-    if (userId === 'test_admin' || userId === 'user_admin') {
+    if (userId === 'test_admin_001' || userId === 'user_admin') {
         return generateLogs(userId, 12345, 45, 'stabilizing');
     }
 
