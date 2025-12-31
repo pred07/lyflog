@@ -37,6 +37,8 @@ SYNAPSE uses a **Dual Dashboard** approach (Action vs. Reflection) to separate o
   - **Personal States**: Anxiety, Focus, Energy.
   - **Exposures**: Caffeine, Screen Time.
   - **Visuals**: Gradient area charts with baseline comparisons.
+  - **Similar Past Days ("Deja Vu")**: Shows past days that mathematically resemble today's pattern.
+  - **Silent Indicators**: Subtle dots indicating discovered correlations.
 
 ### 4. Timeline (`/timeline`) — *Context Mode*
 **"What happened when?"**
@@ -49,6 +51,8 @@ SYNAPSE uses a **Dual Dashboard** approach (Action vs. Reflection) to separate o
 ### 5. Quantitative Log (`/log`)
 - **Purpose**: The data entry point for quantitative metrics shown in **Patterns**.
 - **Usage**: Spend 30 seconds daily to log Sleep hours, State ratings (1-5), and Exposure counts.
+- **Features**:
+  - **Voice Logging**: Tap the mic and say "Slept 7 hours, anxiety 3". AI pre-fills the form.
 
 ### 6. Logbook (`/logbook`)
 - **Purpose**: Structured archival for detailed records that don't fit the other dashboards.
@@ -59,8 +63,21 @@ SYNAPSE uses a **Dual Dashboard** approach (Action vs. Reflection) to separate o
 - **Features**: 
   - **Scatter Plots**: Visualize correlation strength (e.g., Caffeine vs. Anxiety).
   - **Cross-Category Analysis**: Compare Exposures vs. Core Metrics.
+  - **Network Map (`/trends/network`)**: Interactive force-directed graph showing how *all* your metrics connect.
+  - **Correlation Scanning**: Auto-detects significant relationships (>0.6) and highlights them.
 
-### 8. Configuration (`/profile`)
+### 8. Search & Discovery (`/search`)
+**"Find the pattern"**
+- **Purpose**: Reverse engineer your good (or bad) days.
+- **Usage**: Search for condition "Focus > 4" → See what happened on those days.
+- **Features**: Automatic frequency analysis ("On 82% of these days, you slept > 7hr").
+
+### 9. Context & Isolation (`/settings/zones`)
+**"Manage the outliers"**
+- **Isolation Mode**: Toggle in Dashboard to exclude specific periods (Vacation, Sick days) from your data analysis.
+- **Context Zones**: Define date ranges to tag as special contexts.
+
+### 10. Configuration (`/profile`)
 **"Make it yours"**
 - **Purpose**: Customize the system to your life.
 - **Features**:
@@ -68,7 +85,7 @@ SYNAPSE uses a **Dual Dashboard** approach (Action vs. Reflection) to separate o
   - **Exposures Manager**: Define external inputs to track.
   - **Logbook Manager**: Create custom structured logs.
 
-### 9. Mobile Experience
+### 11. Mobile Experience
 - **Sticky Navigation**: Thumb-friendly bottom navigation bar.
 - **Touch Feedback**: Optimized touch targets and animations.
 
