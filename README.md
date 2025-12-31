@@ -8,31 +8,28 @@ A science-first, personal observability system designed for people navigating di
 
 - **Observation > Intervention**: See the patterns first.
 - **Neutrality**: No "good" or "bad" labels. Just data.
-- **Privacy**: Your data is yours. 
+- **Privacy**: Your data is yours.
 
 ## 🚀 How to Use
 
 ### 1. Daily Logging (`/log`)
 Go to the **"Log Activity"** tab daily. It takes ~30 seconds.
 - **Sleep**: Hours slept.
-- **Workout**: Type and duration (or "Rest").
+- **Workout**: Type and duration.
 - **Meditation**: Minutes sat.
-- **Learning**: Minutes spent learning (optional).
-- **Notes**: Any context (e.g., "Late coffee", "High stress meeting").
+- **Learning**: Minutes spent learning.
+- **Notes**: Any context.
 
-*SYNAPSE does not diagnose or treat medical or mental health conditions. It supports self-observation and understanding, and can be used alongside professional care.*
-*Tip: You don't have to fill everything. Consistency matters more than completeness.*
+*SYNAPSE does not diagnose or treat medical or mental health conditions.*
 
 ### 2. The Dashboard (`/dashboard`)
 View your **Dashboard** to see your rhythm.
 - **Views**: Toggle between 7-day, 30-day, or 90-day views.
-- **Metrics**: Click the tabs (Sleep, Workout, etc.) to switch charts.
-- **Pattern Recognition**: Look for baselines. What is your "normal"?
+- **New?**: Click the **"Guide"** icon (?) in the dashboard header for a quick tour.
 
 ### 3. Trends & Analysis (`/trends`)
 Use the **"Trends"** page to find connections.
-- **Scatter Plots**: Compare two metrics (e.g., "Sleep Duration" vs. "Workout Duration").
-- **Correlation**: The app calculates a simple correlation coefficient to see if variables move together.
+- **Start Small**: Compare "Sleep" vs "Mood" (implied via notes/energy).
 - **Self-Inquiry**: Does sleeping more actually lead to more activity? Or less?
 
 ### 4. Settings & Data
@@ -44,9 +41,11 @@ Use the **"Trends"** page to find connections.
 
 - **Framework**: Next.js 14 (App Router)
 - **Database**: Firebase Firestore
-- **Auth**: Firebase Auth (Google SSO)
+- **Auth**: Firebase Auth (Google SSO + Legacy Test Accounts)
 - **Styling**: Tailwind CSS (Custom Design System)
+- **Icons**: Lucide React
 - **Charts**: Recharts
+- **Utils**: date-fns
 
 ## 📦 Setup & Installation
 

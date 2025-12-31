@@ -40,7 +40,7 @@ export default function DashboardGuide({ isOpen, onClose }: { isOpen: boolean; o
                         <div>
                             <h4 className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>At a Glance</h4>
                             <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
-                                The 4 cards showed your day's stats. The graph shows the last 7 days.
+                                The 4 cards showed your day&apos;s stats. The graph shows the last 7 days.
                             </p>
                         </div>
                     </div>
@@ -52,7 +52,7 @@ export default function DashboardGuide({ isOpen, onClose }: { isOpen: boolean; o
                         <div>
                             <h4 className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>Log Activity</h4>
                             <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
-                                Click "Log" to track Sleep, Workouts, Meditation, and Learning in seconds.
+                                Click &quot;Log&quot; to track Sleep, Workouts, Meditation, and Learning in seconds.
                             </p>
                         </div>
                     </div>
@@ -64,7 +64,7 @@ export default function DashboardGuide({ isOpen, onClose }: { isOpen: boolean; o
                         <div>
                             <h4 className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>Find Patterns</h4>
                             <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
-                                Use "Trends" to see how metrics like Sleep affect your Learning or Mood.
+                                Use &quot;Trends&quot; to see how metrics like Sleep affect your Learning or Mood.
                             </p>
                         </div>
                     </div>

@@ -31,7 +31,7 @@ export default function LandingPage() {
                         A quiet mirror during a difficult phase.
                     </h2>
                     <p className="text-xl mb-8" style={{ color: 'var(--text-secondary)' }}>
-                        SYNAPSE helps you observe patterns in your behavior, energy, and daily life — without judgment, advice, or pressure to improve.
+                        SYNAPSE helps you observe patterns in your behavior, energy, and daily life. Without judgment, advice, or pressure to improve.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <a href="#how-it-works" className="btn-primary">
