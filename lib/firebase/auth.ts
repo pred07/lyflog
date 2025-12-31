@@ -138,6 +138,20 @@ export async function updateUserTheme(userId: string, theme: 'dark' | 'light'): 
     );
 }
 
+// Update user profile
+export async function updateUserProfile(userId: string, data: { username?: string, photoURL?: string }): Promise<void> {
+    // Skip for test accounts
+    if (userId.startsWith('test_')) {
+        return;
+    }
+
+    await setDoc(
+        doc(db, 'users', userId),
+        data,
+        { merge: true }
+    );
+}
+
 // Delete user account
 export async function deleteUserAccount(userId: string): Promise<void> {
     // Don't allow deleting test accounts

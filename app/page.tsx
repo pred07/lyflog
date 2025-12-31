@@ -2,15 +2,28 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/components/auth/AuthProvider';
 import Footer from '@/components/layout/Footer';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 
 export default function LandingPage() {
+    const { user, loading } = useAuth();
+    const router = useRouter();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
-    }, []);
+        if (!loading && user) {
+            router.push('/dashboard');
+        }
+    }, [user, loading, router]);
+
+    if (loading || (user && mounted)) {
+        return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+            <div className="animate-pulse">Loading...</div>
+        </div>;
+    }
 
     if (!mounted) return null;
 
