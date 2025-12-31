@@ -7,6 +7,8 @@ import ThemeToggle from '@/components/layout/ThemeToggle';
 import { User, LogOut, Download, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import MetricsManager from '@/components/profile/MetricsManager';
+import { MetricConfig } from '@/lib/types/auth';
 
 export default function ProfilePage() {
     const { user, login } = useAuth(); // login effectively updates local user state if we re-fetch, but useAuth doesn't have explicit refresh. 
@@ -22,10 +24,12 @@ export default function ProfilePage() {
     const [name, setName] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [metrics, setMetrics] = useState<MetricConfig[]>([]);
 
     useEffect(() => {
-        if (user?.username) {
+        if (user) {
             setName(user.username);
+            setMetrics(user.metrics || []);
         }
     }, [user]);
 
@@ -35,13 +39,23 @@ export default function ProfilePage() {
         try {
             await updateUserProfile(user.userId, { username: name });
             setIsEditing(false);
-            // Ideally notify user or reload to update context
-            window.location.reload(); // Simple way to refresh context
+            window.location.reload();
         } catch (error) {
             console.error('Failed to update profile:', error);
             alert('Failed to update profile');
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleUpdateMetrics = async (newMetrics: MetricConfig[]) => {
+        if (!user) return;
+        setMetrics(newMetrics); // Optimistic
+        try {
+            await updateUserProfile(user.userId, { metrics: newMetrics });
+        } catch (error) {
+            console.error('Failed to update metrics:', error);
+            // Revert on error? For now simple log.
         }
     };
 
@@ -98,6 +112,9 @@ export default function ProfilePage() {
                 <span className="font-medium" style={{ color: 'var(--text-primary)' }}>Theme</span>
                 <ThemeToggle />
             </div>
+
+            {/* Custom Metrics */}
+            <MetricsManager metrics={metrics} onUpdate={handleUpdateMetrics} />
 
             {/* Actions */}
             <div className="space-y-4">

@@ -10,6 +10,7 @@ export interface DailyLog {
     meditation?: number; // minutes
     learning?: number; // minutes
     note?: string;
+    metrics?: Record<string, number>;
     createdAt: Date;
 }
 

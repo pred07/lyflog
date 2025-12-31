@@ -1,8 +1,16 @@
+export interface MetricConfig {
+    id: string;
+    label: string;
+    type: 'range'; // For now just range 1-5
+    max: number; // Default 5
+}
+
 export interface User {
     userId: string;
     username: string;
     createdAt: Date;
     theme: 'dark' | 'light';
+    metrics?: MetricConfig[];
 }
 
 export interface AuthContextType {

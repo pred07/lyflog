@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { createLog } from '@/lib/firebase/firestore';
 import { LogFormData } from '@/lib/types/log';
+import MetricInput from '@/components/log/MetricInput';
 
 export default function LogPage() {
     const { user } = useAuth();
@@ -16,6 +17,7 @@ export default function LogPage() {
         learning: '',
         note: '',
     });
+    const [metrics, setMetrics] = useState<Record<string, number>>({});
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
 
@@ -24,6 +26,13 @@ export default function LogPage() {
             ...formData,
             [e.target.name]: e.target.value,
         });
+    };
+
+    const handleMetricChange = (id: string, value: number) => {
+        setMetrics(prev => ({
+            ...prev,
+            [id]: value
+        }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -36,6 +45,7 @@ export default function LogPage() {
         try {
             const logData: any = {
                 date: new Date(formData.date),
+                metrics: metrics, // Save custom metrics
             };
 
             if (formData.sleep) logData.sleep = parseFloat(formData.sleep);
@@ -63,6 +73,7 @@ export default function LogPage() {
                 learning: '',
                 note: '',
             });
+            setMetrics({});
         } catch (error: any) {
             setMessage(`Error: ${error.message}`);
         } finally {
@@ -181,6 +192,24 @@ export default function LogPage() {
                         placeholder="e.g., 60"
                     />
                 </div>
+
+                {/* Custom Metrics */}
+                {user?.metrics && user.metrics.length > 0 && (
+                    <div className="pt-4 border-t border-[var(--border)]">
+                        <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>My States</h3>
+                        <div className="grid md:grid-cols-2 gap-4">
+                            {user.metrics.map(metric => (
+                                <MetricInput
+                                    key={metric.id}
+                                    label={metric.label}
+                                    max={metric.max}
+                                    value={metrics[metric.id] || 0}
+                                    onChange={(val) => handleMetricChange(metric.id, val)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* Note */}
                 <div>
