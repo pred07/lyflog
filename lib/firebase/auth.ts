@@ -50,7 +50,21 @@ function checkTestAccount(username: string, password: string): User | null {
                 : [
                     { id: 'caffeine', label: 'Caffeine', type: 'count' },
                     { id: 'alcohol', label: 'Alcohol', type: 'count' }
+                ],
+            logbooks: account.username === 'admin' ? [{
+                id: 'gym_training',
+                userId: account.userId,
+                title: 'Gym Training',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                columns: [
+                    { id: 'exercise', label: 'Exercise', type: 'text' as const },
+                    { id: 'weight', label: 'Weight (kg)', type: 'number' as const },
+                    { id: 'reps', label: 'Reps', type: 'number' as const },
+                    { id: 'done', label: 'Done', type: 'checkbox' as const },
+                    { id: 'notes', label: 'Notes', type: 'notes' as const }
                 ]
+            }] : []
         };
     }
 
@@ -152,7 +166,7 @@ export async function updateUserTheme(userId: string, theme: 'dark' | 'light'): 
 }
 
 // Update user profile
-export async function updateUserProfile(userId: string, data: { username?: string, photoURL?: string, metrics?: any[], exposures?: any[] }): Promise<void> {
+export async function updateUserProfile(userId: string, data: { username?: string, photoURL?: string, metrics?: any[], exposures?: any[], logbooks?: any[] }): Promise<void> {
     // Skip for test accounts
     if (userId.startsWith('test_')) {
         return;

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Edit3, Activity, User } from 'lucide-react';
+import { Home, Edit3, Activity, User, FileText } from 'lucide-react';
 
 export default function BottomNav() {
     const pathname = usePathname();
@@ -31,7 +31,8 @@ export default function BottomNav() {
             icon: Home,
             isActive: (path: string) => path === '/' || path === '/dashboard'
         },
-        { href: '/log', label: 'Log', icon: Edit3, isActive: (path: string) => path.startsWith('/log') },
+        { href: '/log', label: 'Log', icon: Edit3, isActive: (path: string) => path.startsWith('/log') && !path.startsWith('/logbook') },
+        { href: '/logbook', label: 'Logbook', icon: FileText, isActive: (path: string) => path.startsWith('/logbook') },
         { href: '/trends', label: 'Trends', icon: Activity, isActive: (path: string) => path.startsWith('/trends') },
         { href: '/profile', label: 'Me', icon: User, isActive: (path: string) => path.startsWith('/profile') }, // 'profile' route to be created
     ];

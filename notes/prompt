@@ -1,276 +1,265 @@
-SYNAPSE — Enhancement Plan (v1 → v1.5)
-PART A — FIX WHAT IS CURRENTLY BROKEN (PRIORITY)
-1️⃣ Custom States MUST Appear on Dashboard (Non-Negotiable)
+SYNAPSE — “Logbook” / Sheet Feature (Design Plan)
+0️⃣ First: Name It Correctly (Important)
 
-Current problem
+❌ Do NOT call it:
 
-Users add custom states
+Productivity sheet
 
-They disappear unless you go to Trends
+Planner
 
-This breaks trust immediately
+Task tracker
 
-Fix (Conceptual)
+Habit tracker
 
-Dashboard should show:
+✅ Call it:
 
-Top 3 most-logged custom states
+Logbook
 
-Same visual weight as Sleep / Workout
+Daily Record
 
-If user adds “Anxiety” or “Energy” → it appears automatically
+Session Log
 
-Rule
+Activity Sheet
 
-If a user defines something, the system must acknowledge it visibly.
+This keeps it observational, not evaluative.
 
-2️⃣ Dashboard Needs a “What Am I Looking At?” Layer
+1️⃣ Why This Feature Belongs (When Is It Used?)
 
-Right now the dashboard looks pretty but not self-explanatory.
+This feature is for:
 
-Add a quiet explanation layer (not tutorial).
+structured activities (gym, study, rehab, practice)
 
-Example (small text, once):
+sessions with details
 
-“This view shows recent patterns.
-Reference lines indicate your recent baseline.”
-
-This removes 70% confusion.
-
-PART B — RESTRUCTURE DASHBOARD (MORE, BUT ORGANIZED)
-3️⃣ Dashboard Sections (Clear Mental Model)
-
-Instead of “one long graph page”, split visually:
-
-🔹 Section 1 — Overview (Top)
-
-Last updated time
-
-Days logged (e.g., “23 days of data”)
-
-One sentence:
-
-“Patterns emerge over time. Daily variation is expected.”
-
-No buttons. No actions.
-
-🔹 Section 2 — Core Metrics (Universal)
-
-Always present:
-
-Sleep
-
-Movement (Workout)
-
-Meditation
-
-Learning
-
-These are biological / behavioral fundamentals.
-
-🔹 Section 3 — Personal States
-
-Auto-generated from user:
-
-Anxiety
-
-Focus
-
-Energy
-
-Any custom state
-
-Shown only if user logs them.
-
-🔹 Section 4 — Exposures (NEW, VERY IMPORTANT)
-
-This is where cigarettes, alcohol, porn, etc. go.
-
-PART C — ADD “EXPOSURES” (SAFE WAY)
-4️⃣ Create a Separate Category: Exposures
-
-DO NOT mix these with habits or states.
-
-Exposures = inputs that affect the system
+things that don’t fit sliders or charts
 
 Examples:
 
-Cigarettes (count)
+Chest day workout details
 
-Alcohol (units)
+Study topics covered
 
-Porn / sexual stimulation (duration)
+Practice sessions
 
-Drugs (yes/no, duration)
+Therapy homework (optional)
 
-Late-night screen time
+It is not for daily life mood.
 
-Rules (STRICT)
+2️⃣ Core Principle (Non-Negotiable)
 
-Always opt-in
+The Logbook records sessions.
+The Dashboard shows patterns.
+The Logbook never scores performance.
 
-Hidden by default
+If you keep this rule, you’re safe.
 
-No labels like “bad”, “addiction”, “relapse”
+3️⃣ Logbook Structure (Excel-Like, but Controlled)
+Each Logbook Is User-Defined
 
-No goals
+User creates a Logbook like:
 
-No warnings
+“Gym Training”
 
-Dashboard shows:
+“Math Study”
 
-frequency
+“Meditation Practice”
 
-timing
+“Skill Practice”
 
-correlation only
+Each Logbook has:
 
-Example text:
+Custom columns
 
-“Exposure frequency over time”
+Custom data types
 
-5️⃣ Correlation View: Exposure ↔ State ↔ Sleep
+Optional checkboxes
 
-This is where WOW comes from.
+Optional remarks
+
+4️⃣ Supported Field Types (This Is the Key)
+
+Allow only these field types:
+
+✅ Field Types
+
+Text (e.g., exercise name, topic)
+
+Number (e.g., weight, reps, duration)
+
+Checkbox (✔ / ✖)
+
+Select (Chest / Back / Legs)
+
+Notes (free text)
+
+❌ Do NOT allow:
+
+Auto-calculated scores
+
+Completion percentages
+
+Rankings
+
+5️⃣ Example: Gym Logbook (Your Case)
+
+Logbook: Gym Training
+
+Date	Exercise	Weight (kg)	Reps	Set	Done	Notes
+12 Aug	Bench Press	15	12	1	✔	Warm-up
+12 Aug	Bench Press	20	11	2	✔	Stable
+12 Aug	Incline DB	12	10	1	✖	Fatigue
+
+Rules:
+
+✔ means performed, not “success”
+
+✖ means skipped, not “failure”
+
+Notes are context only
+
+6️⃣ Example: Study Logbook
+
+Logbook: Math Study
+
+Date	Topic	Studied	Notes
+13 Aug	Integration	✔	Need revision
+13 Aug	Limits	✖	Skipped
+14 Aug	Differentiation	✔	Understood basics
+
+Again:
+
+✔ = happened
+
+✖ = didn’t happen
+
+No score
+
+7️⃣ Where This Appears in the App
+Navigation Placement
+
+Add one tab only:
+
+Logbook
+
+Do NOT mix it into Dashboard.
+
+8️⃣ How Analysis Works (Very Important)
+Allowed Analysis (Safe)
+
+From Logbooks, SYNAPSE may show:
+
+Frequency (sessions per week)
+
+Distribution (which exercises/topics appear most)
+
+Gaps (days with no entries)
+
+Time clustering (e.g., evenings vs mornings)
+
+Language:
+
+“Recorded sessions”
+
+“Observed frequency”
+
+“Common entries”
+
+Forbidden Analysis
+
+❌ “Improved performance”
+❌ “Strength increased”
+❌ “Study efficiency”
+❌ “Completion rate”
+❌ “Progress score”
+
+The app must never evaluate skill or growth.
+
+9️⃣ Weekly / Monthly Views (Allowed)
+Weekly View
+
+Rows grouped by week
+
+Counts only (e.g., “4 gym sessions recorded”)
+
+Monthly View
+
+Heatmap of presence, not quality
+
+Neutral color scale
+
+No “best week” labels.
+
+🔟 Relationship With Other Data (Powerful but Safe)
+
+Logbook entries can be correlated, not judged.
 
 Examples:
 
-Cigarettes ↔ Sleep
+Gym sessions ↔ Sleep
 
-Alcohol ↔ Anxiety
+Study sessions ↔ Focus
 
-Porn ↔ Focus
+Training days ↔ Energy variability
 
-Drugs ↔ Energy variability
-
-Displayed as:
-
-scatter plots
+Shown as:
 
 overlays
 
-neutral text:
+scatter plots
 
-“Observed association. Not causation.”
+neutral text
 
-NO advice.
+1️⃣1️⃣ Customization Rules (Critical)
 
-PART D — UNIVERSAL vs PERSONAL (VERY IMPORTANT SPLIT)
-6️⃣ Two Metric Classes (Make This Explicit)
-Universal Metrics (Biological)
+User can:
 
-Sleep
+Create/delete logbooks
 
-Movement
+Add/remove columns
 
-Diet (basic)
+Choose checkbox vs number
 
-Meditation
+Rename fields
 
-Learning (offline)
+System must:
 
-These are always available.
+Never auto-add fields
 
-Personal Metrics (User-Defined)
+Never assume meaning
 
-Anxiety
+Never normalize values
 
-Horniness
+1️⃣2️⃣ UX Guardrails (Prevent Overwhelm)
 
-Motivation
+Default: no logbooks
 
-Social battery
+User must explicitly create one
 
-Creativity
+Max 1–2 active logbooks recommended
 
-These are user-owned.
+Empty state message:
 
-Never mix them in labels or colors.
+“Use logbooks only when detail helps.”
 
-PART E — FIX TEST / DEMO EXPERIENCE (CRITICAL)
-7️⃣ Demo Dashboard Must Teach Usage
+This protects users from over-tracking.
 
-Your test users (admin, test) must show:
+FINAL SANITY CHECK
 
-At least:
+Ask this before shipping:
 
-2 custom states
+Can a user use this logbook without ever feeling judged, measured, or behind?
 
-1 exposure
+If yes → ship
+If no → simplify
 
-1 universal metric
+FINAL SUMMARY
 
-Visible correlations
+This Logbook feature:
 
-Missing days
+Adds serious power
 
-No “perfect improvement”
+Supports gym, study, practice
 
-Add a banner:
+Feels like Excel without Excel’s pressure
 
-“Example data to illustrate patterns.
-Your data will replace this.”
-
-Remove after first real log.
-
-PART F — THEME & POLISH ISSUES
-8️⃣ Automatic Theme Switching (Fix Scope)
-
-Allowed:
-
-System dark/light sync
-
-Manual override
-
-Not allowed:
-
-Theme changes based on mood or data
-
-Why:
-
-Mood-based UI = emotional manipulation
-
-Breaks neutrality
-
-PART G — WHAT YOU MUST NOT ADD (READ THIS TWICE)
-
-❌ Happiness index
-❌ Life percentage lived
-❌ Health score
-❌ Addiction labels
-❌ Recovery counters
-❌ Push notifications
-❌ Advice cards
-
-These will destroy trust with vulnerable users.
-
-FINAL PRODUCT NORTH STAR (DO NOT LOSE THIS)
-
-SYNAPSE is not a dashboard of self-control.
-It is a record of cause and effect.
-
-If a feature answers:
-
-“Am I doing well?”
-
-Reject it.
-
-If it answers:
-
-“What tends to happen when X is present?”
-
-It belongs.
-
-PRIORITY ORDER (DO THIS IN SEQUENCE)
-
-Custom states visible on dashboard
-
-Exposure category (separate)
-
-Dashboard sectioning
-
-Demo dashboard clarity
-
-Correlation depth
-
-Theme consistency
+Fits SYNAPSE’s philosophy if isolated correctly

@@ -12,6 +12,7 @@ export default function Navigation() {
     const navItems = [
         { href: '/dashboard', label: 'Dashboard' },
         { href: '/log', label: 'Log Activity' },
+        { href: '/logbook', label: 'Logbook' },
         { href: '/trends', label: 'Trends' },
         { href: '/export', label: 'Data Export' },
         { href: '/settings', label: 'Settings' },

@@ -1,3 +1,5 @@
+import { LogbookConfig } from './logbook';
+
 export interface MetricConfig {
     id: string;
     label: string;
@@ -19,6 +21,7 @@ export interface User {
     theme: 'dark' | 'light';
     metrics?: MetricConfig[];
     exposures?: ExposureConfig[];
+    logbooks?: LogbookConfig[];
 }
 
 export interface AuthContextType {
