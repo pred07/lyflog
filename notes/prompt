@@ -1,221 +1,276 @@
-SYNAPSE — Enhancement Plan
+SYNAPSE — Enhancement Plan (v1 → v1.5)
+PART A — FIX WHAT IS CURRENTLY BROKEN (PRIORITY)
+1️⃣ Custom States MUST Appear on Dashboard (Non-Negotiable)
 
-(Clarity-first, mobile-first, science-safe)
+Current problem
 
-PHASE 1 — CLARITY & UX REFINEMENT (Highest Priority)
-Goal
+Users add custom states
 
-Make SYNAPSE instantly understandable and effortless to use, especially for stressed users.
+They disappear unless you go to Trends
 
-Enhancements
-1️⃣ Home = Dashboard (Single Mental Model)
+This breaks trust immediately
 
-Treat Dashboard as Home
+Fix (Conceptual)
 
-Remove the feeling of “multiple sections”
+Dashboard should show:
 
-Users should never wonder where to go
+Top 3 most-logged custom states
 
-Rule:
-If it’s used daily → it belongs on Home.
+Same visual weight as Sleep / Workout
 
-2️⃣ Mobile-First Navigation (Android-like)
+If user adds “Anxiety” or “Energy” → it appears automatically
 
-Bottom navigation with 4 icons max:
+Rule
 
-Home
+If a user defines something, the system must acknowledge it visibly.
 
-Log
+2️⃣ Dashboard Needs a “What Am I Looking At?” Layer
 
-Trends
+Right now the dashboard looks pretty but not self-explanatory.
 
-Me (Profile)
+Add a quiet explanation layer (not tutorial).
 
-No menus inside menus.
+Example (small text, once):
 
-3️⃣ Profile Personalization (Light, Non-Emotional)
+“This view shows recent patterns.
+Reference lines indicate your recent baseline.”
 
-Add:
+This removes 70% confusion.
 
-Display name
+PART B — RESTRUCTURE DASHBOARD (MORE, BUT ORGANIZED)
+3️⃣ Dashboard Sections (Clear Mental Model)
 
-Simple symbol/icon (not avatars, not photos)
+Instead of “one long graph page”, split visually:
 
-Theme preference
+🔹 Section 1 — Overview (Top)
 
-Why:
-Identity grounding without emotional pressure.
+Last updated time
 
-PHASE 2 — PERSONAL STATES (Your Big Upgrade)
-Goal
+Days logged (e.g., “23 days of data”)
 
-Allow personalized tracking (happiness, calm, energy, etc.) without scoring or judgment.
+One sentence:
 
-4️⃣ User-Defined States (Optional)
+“Patterns emerge over time. Daily variation is expected.”
 
-During onboarding or settings, let users:
+No buttons. No actions.
 
-Select predefined states (Energy, Calm, Focus)
+🔹 Section 2 — Core Metrics (Universal)
 
-Rename them
+Always present:
 
-Add custom states (e.g., “contentment”, “restlessness”)
+Sleep
 
-Rules
+Movement (Workout)
 
-States are self-defined
+Meditation
 
-Logged on a simple 1–5 scale
+Learning
 
-No labels on numbers
+These are biological / behavioral fundamentals.
 
-Entirely optional
+🔹 Section 3 — Personal States
 
-5️⃣ Redefine “Happiness” Safely
+Auto-generated from user:
 
-SYNAPSE never uses the word “happiness”
+Anxiety
 
-Users may choose it as a personal label
+Focus
 
-System treats it as a neutral state
+Energy
+
+Any custom state
+
+Shown only if user logs them.
+
+🔹 Section 4 — Exposures (NEW, VERY IMPORTANT)
+
+This is where cigarettes, alcohol, porn, etc. go.
+
+PART C — ADD “EXPOSURES” (SAFE WAY)
+4️⃣ Create a Separate Category: Exposures
+
+DO NOT mix these with habits or states.
+
+Exposures = inputs that affect the system
+
+Examples:
+
+Cigarettes (count)
+
+Alcohol (units)
+
+Porn / sexual stimulation (duration)
+
+Drugs (yes/no, duration)
+
+Late-night screen time
+
+Rules (STRICT)
+
+Always opt-in
+
+Hidden by default
+
+No labels like “bad”, “addiction”, “relapse”
+
+No goals
+
+No warnings
+
+Dashboard shows:
+
+frequency
+
+timing
+
+correlation only
+
+Example text:
+
+“Exposure frequency over time”
+
+5️⃣ Correlation View: Exposure ↔ State ↔ Sleep
+
+This is where WOW comes from.
+
+Examples:
+
+Cigarettes ↔ Sleep
+
+Alcohol ↔ Anxiety
+
+Porn ↔ Focus
+
+Drugs ↔ Energy variability
 
 Displayed as:
 
-Variability
+scatter plots
 
-Range
+overlays
 
-Distribution
+neutral text:
 
-Never as:
+“Observed association. Not causation.”
 
-Score
+NO advice.
 
-Trend up/down
+PART D — UNIVERSAL vs PERSONAL (VERY IMPORTANT SPLIT)
+6️⃣ Two Metric Classes (Make This Explicit)
+Universal Metrics (Biological)
 
-Improvement
+Sleep
 
-PHASE 3 — PATTERN DEPTH (Without Advice)
-Goal
+Movement
 
-Increase “wow” through insight, not features.
+Diet (basic)
 
-6️⃣ Variance & Baselines (Silent Progress)
+Meditation
 
-Enhance dashboards to show:
+Learning (offline)
 
-Variance bands
+These are always available.
 
-Baseline emergence after ~20–30 days
+Personal Metrics (User-Defined)
 
-Stability vs fluctuation
+Anxiety
 
-Progress = clarity over time
+Horniness
 
-No numbers that say “better”.
+Motivation
 
-7️⃣ Correlation Context (Education, Not Suggestion)
+Social battery
 
-In Trends:
+Creativity
 
-Keep correlations
+These are user-owned.
 
-Add one-line scientific context
+Never mix them in labels or colors.
 
-Example:
+PART E — FIX TEST / DEMO EXPERIENCE (CRITICAL)
+7️⃣ Demo Dashboard Must Teach Usage
 
-“Sleep is known to influence nervous system regulation.”
+Your test users (admin, test) must show:
 
-Never:
+At least:
 
-“You should sleep more.”
+2 custom states
 
-PHASE 4 — ONBOARDING & DEMO EXPERIENCE
-Goal
+1 exposure
 
-Remove confusion in the first 60 seconds.
+1 universal metric
 
-8️⃣ First-Login Demo Dashboard
+Visible correlations
 
-Show 21–30 days of imperfect demo data
+Missing days
 
-Clearly labeled:
+No “perfect improvement”
 
-“Example data to illustrate patterns.”
+Add a banner:
 
-Automatically disappears after first real log
+“Example data to illustrate patterns.
+Your data will replace this.”
 
-9️⃣ One-Screen Usage Guide
+Remove after first real log.
 
-A short in-app guide with rules like:
+PART F — THEME & POLISH ISSUES
+8️⃣ Automatic Theme Switching (Fix Scope)
 
-Log less, not more
+Allowed:
 
-Missing days are fine
+System dark/light sync
 
-Look weekly, not daily
+Manual override
 
-This reduces anxiety immediately.
+Not allowed:
 
-PHASE 5 — TRUST & ETHICS (Quiet but Important)
-Goal
+Theme changes based on mood or data
 
-Make SYNAPSE feel safe and adult.
+Why:
 
-🔟 Principles / Ethics Page
+Mood-based UI = emotional manipulation
 
-Add a simple page explaining:
+Breaks neutrality
 
-No scoring
+PART G — WHAT YOU MUST NOT ADD (READ THIS TWICE)
 
-No recommendations
-
-No selling data
-
-User-owned data
-
-Not therapy
-
-This builds credibility.
-
-PHASE 6 — WHAT TO DELAY (DO NOT ADD YET)
-
-These are tempting but harmful at this stage:
-
-❌ Life percentage lived
 ❌ Happiness index
-❌ Weight / BMI
-❌ Overall scores
-❌ Notifications
-❌ Social comparison
-❌ “Goals” or “targets”
+❌ Life percentage lived
+❌ Health score
+❌ Addiction labels
+❌ Recovery counters
+❌ Push notifications
+❌ Advice cards
 
-Delay them indefinitely unless proven safe.
+These will destroy trust with vulnerable users.
 
-FINAL NORTH STAR (DO NOT LOSE THIS)
+FINAL PRODUCT NORTH STAR (DO NOT LOSE THIS)
 
-SYNAPSE exists to reduce confusion, not to optimize life.
+SYNAPSE is not a dashboard of self-control.
+It is a record of cause and effect.
 
-If a feature:
+If a feature answers:
 
-creates pressure
+“Am I doing well?”
 
-invites comparison
+Reject it.
 
-implies success/failure
+If it answers:
 
-It does not belong.
+“What tends to happen when X is present?”
 
-PRIORITY ORDER (If You Do Nothing Else)
+It belongs.
 
-Mobile-first simplification
+PRIORITY ORDER (DO THIS IN SEQUENCE)
 
-User-defined states
+Custom states visible on dashboard
 
-Variance/baseline visualization
+Exposure category (separate)
 
-Demo dashboard
+Dashboard sectioning
 
-Profile personalization
+Demo dashboard clarity
 
-Do these five, and SYNAPSE becomes distinct and credible.
+Correlation depth
+
+Theme consistency

@@ -5,6 +5,7 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { createLog } from '@/lib/firebase/firestore';
 import { LogFormData } from '@/lib/types/log';
 import MetricInput from '@/components/log/MetricInput';
+import ExposureInput from '@/components/log/ExposureInput';
 
 export default function LogPage() {
     const { user } = useAuth();
@@ -18,6 +19,7 @@ export default function LogPage() {
         note: '',
     });
     const [metrics, setMetrics] = useState<Record<string, number>>({});
+    const [exposures, setExposures] = useState<Record<string, number>>({});
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
 
@@ -35,6 +37,13 @@ export default function LogPage() {
         }));
     };
 
+    const handleExposureChange = (id: string, value: number) => {
+        setExposures(prev => ({
+            ...prev,
+            [id]: value
+        }));
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!user) return;
@@ -46,6 +55,7 @@ export default function LogPage() {
             const logData: any = {
                 date: new Date(formData.date),
                 metrics: metrics, // Save custom metrics
+                exposures: exposures, // Save exposures
             };
 
             if (formData.sleep) logData.sleep = parseFloat(formData.sleep);
@@ -74,6 +84,7 @@ export default function LogPage() {
                 note: '',
             });
             setMetrics({});
+            setExposures({});
         } catch (error: any) {
             setMessage(`Error: ${error.message}`);
         } finally {
@@ -205,6 +216,24 @@ export default function LogPage() {
                                     max={metric.max}
                                     value={metrics[metric.id] || 0}
                                     onChange={(val) => handleMetricChange(metric.id, val)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Exposures */}
+                {user?.exposures && user.exposures.length > 0 && (
+                    <div className="pt-4 border-t border-[var(--border)]">
+                        <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>Exposures</h3>
+                        <div className="grid md:grid-cols-2 gap-4">
+                            {user.exposures.map(exp => (
+                                <ExposureInput
+                                    key={exp.id}
+                                    label={exp.label}
+                                    type={exp.type}
+                                    value={exposures[exp.id] || 0}
+                                    onChange={(val) => handleExposureChange(exp.id, val)}
                                 />
                             ))}
                         </div>

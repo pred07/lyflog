@@ -37,6 +37,7 @@ async function createTestLog(userId: string, logData: Partial<DailyLog>): Promis
         learning: logData.learning,
         note: logData.note,
         metrics: logData.metrics,
+        exposures: logData.exposures,
         createdAt: new Date(),
     };
 
@@ -115,6 +116,7 @@ export async function createLog(userId: string, logData: Partial<DailyLog>): Pro
     if (logData.learning !== undefined) log.learning = logData.learning;
     if (logData.note) log.note = logData.note;
     if (logData.metrics) log.metrics = logData.metrics;
+    if (logData.exposures) log.exposures = logData.exposures;
 
     await setDoc(doc(db, LOGS_COLLECTION, logId), log);
 
@@ -151,6 +153,7 @@ export async function getUserLogs(userId: string): Promise<DailyLog[]> {
             learning: data.learning,
             note: data.note,
             metrics: data.metrics,
+            exposures: data.exposures,
             createdAt: data.createdAt.toDate(),
         };
     });

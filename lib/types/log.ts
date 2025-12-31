@@ -11,6 +11,7 @@ export interface DailyLog {
     learning?: number; // minutes
     note?: string;
     metrics?: Record<string, number>;
+    exposures?: Record<string, number>; // count, minutes, or 1/0 for boolean
     createdAt: Date;
 }
 

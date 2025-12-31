@@ -5,12 +5,20 @@ export interface MetricConfig {
     max: number; // Default 5
 }
 
+export interface ExposureConfig {
+    id: string;
+    label: string;
+    type: 'count' | 'duration' | 'boolean';
+    unit?: string;
+}
+
 export interface User {
     userId: string;
     username: string;
     createdAt: Date;
     theme: 'dark' | 'light';
     metrics?: MetricConfig[];
+    exposures?: ExposureConfig[];
 }
 
 export interface AuthContextType {

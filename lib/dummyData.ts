@@ -32,31 +32,50 @@ function generateLogs(
         let meditation: number | null = null;
         let learning: number | null = null;
         let note = "";
+        let metrics: Record<string, number> | undefined;
+        let exposures: Record<string, number> | undefined;
 
         // ALGORITHM: User 1 (Admin) - High Stress -> Stabilizing
         if (profile === 'stabilizing') {
-            // Sleep: Bad early (30 days ago), Good recent. 
-            // Normalize i (0 is today, 45 is past). 
-            // Trend: Sleep improves as `i` gets smaller.
-            const trend = 1 - (i / days); // 0 (past) -> 1 (today)
-            const baseSleep = 5 + (trend * 2.5); // 5h -> 7.5h
-            const variance = 2 - (trend * 1.5); // High variance -> Low variance
+            // Sleep Trend (Already existing logic)
+            const trend = 1 - (i / days);
+            const baseSleep = 5 + (trend * 2.5);
+            const variance = 2 - (trend * 1.5);
             sleep = Number((baseSleep + (rng.next() - 0.5) * variance).toFixed(1));
 
-            // Workout: Correlates with better sleep days
+            // Workout
             if (sleep > 6 && rng.next() > 0.4) {
                 workout = { type: 'other', duration: 30 + Math.floor(rng.next() * 30), intensity: 'moderate' };
             }
 
-            // Learning: Low when sleep is low (Correlation #1)
+            // Learning
             if (sleep > 5.5) {
                 learning = 15 + Math.floor(rng.next() * 45);
             } else {
                 learning = Math.floor(rng.next() * 15);
             }
 
-            // Meditation: Sporadic
+            // Meditation
             if (rng.next() > 0.7) meditation = 5 + Math.floor(rng.next() * 10);
+
+            // --- CUSTOM METRICS & EXPOSURES ---
+            // Anxiety: Decreases as trend increases (more stable)
+            // High Anxiety in past (i=45), Low Anxiety now (i=0)
+            const anxietyBase = 4 - (trend * 2); // 4 -> 2
+            let anxiety = Math.round(anxietyBase + (rng.next() - 0.5) * 2);
+            anxiety = Math.max(1, Math.min(5, anxiety));
+
+            // Focus: Correlated with Sleep - Anxiety
+            const focusBase = sleep > 6.5 ? 4 : 2;
+            let focus = Math.round(focusBase - (anxiety / 5) + rng.next());
+            focus = Math.max(1, Math.min(5, focus));
+
+            // Caffeine (Exposure): Count
+            // Reducing caffeine over time
+            const caffeineCount = rng.next() > trend ? 1 + Math.floor(rng.next() * 3) : 0 + Math.floor(rng.next() * 1);
+
+            metrics = { anxiety, focus };
+            exposures = { caffeine: caffeineCount, screen_time: 120 + Math.floor(rng.next() * 120) }; // High screen time
 
             if (i < 3) note = "Feeling clearer lately.";
             if (i > 25 && i < 30) note = "Rough night. Work stress high.";
@@ -64,19 +83,25 @@ function generateLogs(
         }
         // ALGORITHM: User 2 (Test) - Chaotic / Breakup
         else if (profile === 'chaotic') {
-            // Sleep: Highly variable, no clear trend
-            sleep = Number((4 + rng.next() * 5).toFixed(1)); // 4h to 9h random
+            sleep = Number((4 + rng.next() * 5).toFixed(1));
 
-            // Workout: Random, sporadic bursts
             if (rng.next() > 0.6) {
                 workout = { type: 'cardio', duration: 20 + Math.floor(rng.next() * 60), intensity: 'vigorous' };
             }
 
-            // Meditation: Rare
             if (rng.next() > 0.85) meditation = 10;
-
-            // Learning: Zero on bad days
             if (sleep > 6) learning = Math.floor(rng.next() * 60);
+
+            // Chaotic Metrics
+            const anxiety = Math.random() > 0.5 ? 4 : 2; // Bipolar-ish swings
+            const focus = sleep > 7 ? 4 : 1;
+
+            // High Exposures
+            const caffeineCount = 2 + Math.floor(rng.next() * 3);
+            const alcoholCount = rng.next() > 0.7 ? 1 + Math.floor(rng.next() * 4) : 0;
+
+            metrics = { anxiety, focus };
+            exposures = { caffeine: caffeineCount, alcohol: alcoholCount };
 
             if (i === 12) note = "Hard day.";
             if (i === 4) note = "Couldn't focus.";
@@ -91,7 +116,9 @@ function generateLogs(
             workout: workout ?? undefined,
             meditation: meditation ?? undefined,
             learning: learning ?? undefined,
-            note: note || undefined
+            note: note || undefined,
+            metrics: metrics,
+            exposures: exposures
         });
     }
     return logs;

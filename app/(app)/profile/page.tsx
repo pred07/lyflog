@@ -8,7 +8,8 @@ import { User, LogOut, Download, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import MetricsManager from '@/components/profile/MetricsManager';
-import { MetricConfig } from '@/lib/types/auth';
+import ExposureManager from '@/components/profile/ExposureManager';
+import { MetricConfig, ExposureConfig } from '@/lib/types/auth';
 
 export default function ProfilePage() {
     const { user, login } = useAuth(); // login effectively updates local user state if we re-fetch, but useAuth doesn't have explicit refresh. 
@@ -25,11 +26,13 @@ export default function ProfilePage() {
     const [isEditing, setIsEditing] = useState(false);
     const [saving, setSaving] = useState(false);
     const [metrics, setMetrics] = useState<MetricConfig[]>([]);
+    const [exposures, setExposures] = useState<ExposureConfig[]>([]);
 
     useEffect(() => {
         if (user) {
             setName(user.username);
             setMetrics(user.metrics || []);
+            setExposures(user.exposures || []);
         }
     }, [user]);
 
@@ -56,6 +59,17 @@ export default function ProfilePage() {
         } catch (error) {
             console.error('Failed to update metrics:', error);
             // Revert on error? For now simple log.
+        }
+    };
+
+    const handleUpdateExposures = async (newExposures: ExposureConfig[]) => {
+        if (!user) return;
+        setExposures(newExposures); // Optimistic
+        try {
+            await updateUserProfile(user.userId, { exposures: newExposures });
+        } catch (error) {
+            console.error('Failed to update exposures:', error);
+            // Revert
         }
     };
 
@@ -115,6 +129,9 @@ export default function ProfilePage() {
 
             {/* Custom Metrics */}
             <MetricsManager metrics={metrics} onUpdate={handleUpdateMetrics} />
+
+            {/* Exposures */}
+            <ExposureManager exposures={exposures} onUpdate={handleUpdateExposures} />
 
             {/* Actions */}
             <div className="space-y-4">
