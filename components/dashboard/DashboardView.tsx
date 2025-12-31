@@ -8,6 +8,7 @@ import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { format, subDays, startOfDay } from 'date-fns';
 import { HelpCircle } from 'lucide-react';
 import DashboardGuide from '@/components/onboarding/DashboardGuide';
+import Skeleton from '@/components/ui/Skeleton';
 
 export default function DashboardView() {
     const { user } = useAuth();
@@ -68,7 +69,27 @@ export default function DashboardView() {
     };
 
     if (loading) {
-        return <div className="p-6 text-center text-gray-500">Loading...</div>;
+        return (
+            <div className="max-w-md mx-auto px-4 py-6">
+                {/* Header Skeleton */}
+                <Skeleton className="h-8 w-48 mb-6" />
+
+                {/* Cards Grid Skeleton */}
+                <div className="grid grid-cols-2 gap-3 mb-8">
+                    {[...Array(4)].map((_, i) => (
+                        <div key={i} className="p-4 rounded-xl card h-24">
+                            <Skeleton className="h-3 w-16 mb-2" />
+                            <Skeleton className="h-8 w-12" />
+                        </div>
+                    ))}
+                </div>
+
+                {/* Chart Skeleton */}
+                <div className="mb-4">
+                    <Skeleton className="h-[150px] w-full rounded-xl" />
+                </div>
+            </div>
+        );
     }
 
     const chartData = getChartData();

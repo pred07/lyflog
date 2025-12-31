@@ -53,7 +53,7 @@ export default function BottomNav() {
                         <Link
                             key={item.href}
                             href={item.href}
-                            className="flex flex-col items-center justify-center w-full h-full space-y-1"
+                            className="flex flex-col items-center justify-center w-full h-full space-y-1 active:scale-90 transition-transform duration-100"
                             style={{
                                 color: active ? 'var(--accent)' : 'var(--text-tertiary)'
                             }}
