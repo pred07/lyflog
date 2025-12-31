@@ -15,27 +15,37 @@ A science-first, personal observability system designed for people navigating di
 ### 1. Daily Logging (`/log`)
 Go to the **"Log Activity"** tab daily. It takes ~30 seconds.
 - **Standard Metrics**: Sleep, Workout, Meditation, Learning.
-- **Custom Metrics**: Any internal state you define (e.g., Anxiety, Focus, Energy).
+- **Custom States**: Any internal state you define (e.g., Anxiety, Focus, Energy).
+- **Exposures**: External inputs like Caffeine, Alcohol, Screen Time (tracked separately, no judgment).
 - **Notes**: Any context.
 
 ### 2. The Dashboard (`/dashboard`)
 View your **Dashboard** to see your rhythm.
-- **Visuals**: premium **Gradient Area Charts** with glowing aesthetics.
-- **Context**: Dashed **Reference Lines** (e.g., 7-day Sleep avg) show how today compares to your baseline.
-- **Loading**: Smooth **Skeleton Loaders** for a fluid experience.
+- **4 Clear Sections**: Overview, Core Metrics, Personal States, Exposures.
+- **Visuals**: Premium **Gradient Area Charts** with reference lines showing your 7-day baseline.
+- **Adaptive**: Automatically displays your custom states and exposures.
 
 ### 3. Trends & Analysis (`/trends`)
 Use the **"Trends"** page to find connections.
-- **Deep Analysis**: Plot **ANY** metric against another.
-- **Custom Correlations**: Compare "Anxiety" (your custom metric) vs "Sleep" (standard) to find hidden patterns.
-- **Scatter Plot**: Visualize the relationship strength between variables.
+- **Deep Analysis**: Plot **ANY** metric against another (including Exposures vs States).
+- **Cross-Category**: Compare "Caffeine" (exposure) vs "Sleep" (core) or "Anxiety" (personal state).
+- **Scatter Plot**: Visualize correlation strength with coefficient calculation.
 
-### 4. User-Defined States (`/profile`)
+### 4. Logbook (`/logbook`) — NEW
+For detailed tracking that doesn't fit daily sliders.
+- **Structured Data**: Track Gym sets, Study topics, Practice sessions in spreadsheet-like tables.
+- **Custom Columns**: Text, Number, Checkbox, Select, Notes—strict typing prevents arbitrary scoring.
+- **Demo Ready**: Admin account includes pre-filled Gym Training logbook with 10 realistic entries.
+- **Mobile-First**: Horizontal scroll with sticky date column, touch-friendly inputs.
+
+### 5. User-Defined Configuration (`/profile`)
 Make the app yours in the **Profile** tab.
-- **Metric Manager**: Add custom sliders for any internal state you want to track (e.g., "Creativity", "Social Battery").
-- **Adaptive UI**: The Log and Trends pages automatically adapt to your custom schema.
+- **Metrics Manager**: Add custom sliders for internal states (e.g., "Creativity", "Social Battery").
+- **Exposures Manager**: Define what external inputs to track (e.g., "Nicotine", "Late-night screens").
+- **Logbook Manager**: Create custom logbooks for specific activities.
+- **Adaptive UI**: All pages automatically adapt to your schema.
 
-### 5. Mobile Experience
+### 6. Mobile Experience
 - **Sticky Navigation**: Thumb-friendly bottom navigation bar for seamless switching.
 - **Touch Feedback**: Subtle press animations for tactile assurance.
 
