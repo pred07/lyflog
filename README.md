@@ -14,28 +14,30 @@ A science-first, personal observability system designed for people navigating di
 
 ### 1. Daily Logging (`/log`)
 Go to the **"Log Activity"** tab daily. It takes ~30 seconds.
-- **Sleep**: Hours slept.
-- **Workout**: Type and duration.
-- **Meditation**: Minutes sat.
-- **Learning**: Minutes spent learning.
+- **Standard Metrics**: Sleep, Workout, Meditation, Learning.
+- **Custom Metrics**: Any internal state you define (e.g., Anxiety, Focus, Energy).
 - **Notes**: Any context.
-
-*SYNAPSE does not diagnose or treat medical or mental health conditions.*
 
 ### 2. The Dashboard (`/dashboard`)
 View your **Dashboard** to see your rhythm.
-- **Views**: Toggle between 7-day, 30-day, or 90-day views.
-- **New?**: Click the **"Guide"** icon (?) in the dashboard header for a quick tour.
+- **Visuals**: premium **Gradient Area Charts** with glowing aesthetics.
+- **Context**: Dashed **Reference Lines** (e.g., 7-day Sleep avg) show how today compares to your baseline.
+- **Loading**: Smooth **Skeleton Loaders** for a fluid experience.
 
 ### 3. Trends & Analysis (`/trends`)
 Use the **"Trends"** page to find connections.
-- **Start Small**: Compare "Sleep" vs "Mood" (implied via notes/energy).
-- **Self-Inquiry**: Does sleeping more actually lead to more activity? Or less?
+- **Deep Analysis**: Plot **ANY** metric against another.
+- **Custom Correlations**: Compare "Anxiety" (your custom metric) vs "Sleep" (standard) to find hidden patterns.
+- **Scatter Plot**: Visualize the relationship strength between variables.
 
-### 4. Settings & Data
-- **Theme**: Toggle Dark/Light mode in the header.
-- **Export**: Download all your data as CSV/JSON anytime from the **Export** tab.
-- **Privacy**: Delete account functionality is available in Settings.
+### 4. User-Defined States (`/profile`)
+Make the app yours in the **Profile** tab.
+- **Metric Manager**: Add custom sliders for any internal state you want to track (e.g., "Creativity", "Social Battery").
+- **Adaptive UI**: The Log and Trends pages automatically adapt to your custom schema.
+
+### 5. Mobile Experience
+- **Sticky Navigation**: Thumb-friendly bottom navigation bar for seamless switching.
+- **Touch Feedback**: Subtle press animations for tactile assurance.
 
 ## 🛠️ Technology Stack
 
@@ -73,7 +75,8 @@ Use the **"Trends"** page to find connections.
 ## 🔐 Accounts
 
 - **Production**: Use "Continue with Google"
-- **Testing**: Use built-in test accounts:
+- **Live Demo**: Click "View Live Demo" on the login page for instant access (uses `test_admin` profile).
+- **Testing**:
   - User: `admin`, Pass: `admin`
   - User: `test`, Pass: `test`
 
