@@ -36,8 +36,14 @@ export default function TrendsPage() {
         if (metric === 'sleep') return log.sleep;
         if (metric === 'meditation') return log.meditation;
         if (metric === 'learning') return log.learning;
-        // Custom metrics
-        return log.metrics?.[metric];
+
+        // Try Custom Metrics first
+        if (log.metrics?.[metric] !== undefined) return log.metrics[metric];
+
+        // Try Exposures
+        if (log.exposures?.[metric] !== undefined) return log.exposures[metric];
+
+        return undefined;
     };
 
     const getScatterData = () => {
@@ -89,12 +95,51 @@ export default function TrendsPage() {
         learning: 'Learning (minutes)',
     };
 
-    const customMetrics = user?.metrics?.reduce((acc, m) => ({
+    const customMetricsLabels = user?.metrics?.reduce((acc, m) => ({
         ...acc,
         [m.id]: m.label
     }), {}) || {};
 
-    const allLabels: Record<string, string> = { ...standardMetrics, ...customMetrics };
+    const exposureLabels = user?.exposures?.reduce((acc, e) => ({
+        ...acc,
+        [e.id]: `${e.label} (${e.type})`
+    }), {}) || {};
+
+    const allLabels: Record<string, string> = {
+        ...standardMetrics,
+        ...customMetricsLabels,
+        ...exposureLabels
+    };
+
+    const MetricSelect = ({ value, onChange }: { value: string, onChange: (val: string) => void }) => (
+        <select
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className="input-field"
+        >
+            <optgroup label="Core Metrics">
+                {Object.entries(standardMetrics).map(([key, label]) => (
+                    <option key={key} value={key}>{label}</option>
+                ))}
+            </optgroup>
+
+            {Object.keys(customMetricsLabels).length > 0 && (
+                <optgroup label="Personal States">
+                    {Object.entries(customMetricsLabels).map(([key, label]) => (
+                        <option key={key} value={key}>{label as string}</option>
+                    ))}
+                </optgroup>
+            )}
+
+            {Object.keys(exposureLabels).length > 0 && (
+                <optgroup label="Exposures">
+                    {Object.entries(exposureLabels).map(([key, label]) => (
+                        <option key={key} value={key}>{label as string}</option>
+                    ))}
+                </optgroup>
+            )}
+        </select>
+    );
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
@@ -122,29 +167,13 @@ export default function TrendsPage() {
                         <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
                             X-Axis Metric
                         </label>
-                        <select
-                            value={metricX}
-                            onChange={(e) => setMetricX(e.target.value)}
-                            className="input-field"
-                        >
-                            {Object.entries(allLabels).map(([key, label]) => (
-                                <option key={key} value={key}>{label}</option>
-                            ))}
-                        </select>
+                        <MetricSelect value={metricX} onChange={setMetricX} />
                     </div>
                     <div>
                         <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
                             Y-Axis Metric
                         </label>
-                        <select
-                            value={metricY}
-                            onChange={(e) => setMetricY(e.target.value)}
-                            className="input-field"
-                        >
-                            {Object.entries(allLabels).map(([key, label]) => (
-                                <option key={key} value={key}>{label}</option>
-                            ))}
-                        </select>
+                        <MetricSelect value={metricY} onChange={setMetricY} />
                     </div>
                 </div>
             </div>
