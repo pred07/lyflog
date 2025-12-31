@@ -12,10 +12,9 @@ export default function Footer() {
                     </p>
                     <div className="flex justify-center space-x-6 text-sm" style={{ color: 'var(--text-tertiary)' }}>
                         <a href="#" className="hover:underline">Documentation</a>
-                        <a href="https://github.com/pred07/lyflog" target="_blank" rel="noopener noreferrer" className="hover:underline">GitHub</a>
                     </div>
                 </div>
             </div>
-        </footer>
+        </footer >
     );
 }
