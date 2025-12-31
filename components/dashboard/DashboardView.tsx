@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { getUserLogs } from '@/lib/firebase/firestore';
 import { DailyLog } from '@/lib/types/log';
-import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { format, subDays, startOfDay } from 'date-fns';
 import { HelpCircle } from 'lucide-react';
 import DashboardGuide from '@/components/onboarding/DashboardGuide';
@@ -96,6 +96,11 @@ export default function DashboardView() {
     const today = getTodayValues();
     const lastUpdated = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+    // Calculate Sleep Average for Reference Line
+    const sleepSum = chartData.reduce((sum, d) => sum + (d.sleep || 0), 0);
+    const validSleepDays = chartData.filter(d => d.sleep !== null && d.sleep > 0).length;
+    const sleepAvg = validSleepDays > 0 ? (sleepSum / validSleepDays).toFixed(1) : null;
+
     return (
         <div className="max-w-md mx-auto px-4 py-6">
             {/* Header: Date */}
@@ -136,7 +141,21 @@ export default function DashboardView() {
             {/* Single Simple Graph */}
             <div className="mb-4">
                 <ResponsiveContainer width="100%" height={150}>
-                    <LineChart data={chartData}>
+                    <AreaChart data={chartData}>
+                        <defs>
+                            <linearGradient id="colorSleep" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="var(--chart-primary)" stopOpacity={0.4} />
+                                <stop offset="95%" stopColor="var(--chart-primary)" stopOpacity={0} />
+                            </linearGradient>
+                            <linearGradient id="colorWorkout" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="var(--chart-secondary)" stopOpacity={0.4} />
+                                <stop offset="95%" stopColor="var(--chart-secondary)" stopOpacity={0} />
+                            </linearGradient>
+                            <linearGradient id="colorMeditation" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="var(--chart-tertiary)" stopOpacity={0.4} />
+                                <stop offset="95%" stopColor="var(--chart-tertiary)" stopOpacity={0} />
+                            </linearGradient>
+                        </defs>
                         <XAxis
                             dataKey="date"
                             axisLine={false}
@@ -149,15 +168,19 @@ export default function DashboardView() {
                                 backgroundColor: 'var(--bg-secondary)',
                                 border: 'none',
                                 borderRadius: '8px',
-                                fontSize: '12px'
+                                fontSize: '12px',
+                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
                             }}
                             cursor={{ stroke: 'var(--border)', strokeWidth: 1 }}
                         />
-                        <Line type="monotone" dataKey="sleep" stroke="var(--chart-primary)" strokeWidth={2} dot={false} connectNulls />
-                        <Line type="monotone" dataKey="workout" stroke="var(--chart-secondary)" strokeWidth={2} dot={false} connectNulls />
-                        <Line type="monotone" dataKey="meditation" stroke="var(--chart-tertiary)" strokeWidth={2} dot={false} connectNulls />
-                        <Line type="monotone" dataKey="learning" stroke="#ff9f40" strokeWidth={2} dot={false} connectNulls />
-                    </LineChart>
+                        {sleepAvg && (
+                            <ReferenceLine y={parseFloat(sleepAvg)} stroke="var(--chart-primary)" strokeDasharray="3 3" opacity={0.5} />
+                        )}
+                        <Area type="monotone" dataKey="sleep" stroke="var(--chart-primary)" fillOpacity={1} fill="url(#colorSleep)" strokeWidth={2} connectNulls />
+                        <Area type="monotone" dataKey="workout" stroke="var(--chart-secondary)" fillOpacity={1} fill="url(#colorWorkout)" strokeWidth={2} connectNulls />
+                        <Area type="monotone" dataKey="meditation" stroke="var(--chart-tertiary)" fillOpacity={1} fill="url(#colorMeditation)" strokeWidth={2} connectNulls />
+                        <Area type="monotone" dataKey="learning" stroke="#ff9f40" fill="none" strokeWidth={2} connectNulls />
+                    </AreaChart>
                 </ResponsiveContainer>
             </div>
 

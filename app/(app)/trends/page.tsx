@@ -10,8 +10,8 @@ export default function TrendsPage() {
     const { user } = useAuth();
     const [logs, setLogs] = useState<DailyLog[]>([]);
     const [loading, setLoading] = useState(true);
-    const [metricX, setMetricX] = useState<'sleep' | 'workout' | 'meditation' | 'learning'>('sleep');
-    const [metricY, setMetricY] = useState<'sleep' | 'workout' | 'meditation' | 'learning'>('workout');
+    const [metricX, setMetricX] = useState<string>('sleep');
+    const [metricY, setMetricY] = useState<string>('workout');
 
     useEffect(() => {
         if (user) {
@@ -31,16 +31,25 @@ export default function TrendsPage() {
         }
     };
 
+    const getValue = (log: DailyLog, metric: string) => {
+        if (metric === 'workout') return log.workout?.duration;
+        if (metric === 'sleep') return log.sleep;
+        if (metric === 'meditation') return log.meditation;
+        if (metric === 'learning') return log.learning;
+        // Custom metrics
+        return log.metrics?.[metric];
+    };
+
     const getScatterData = () => {
         return logs
             .filter(log => {
-                const xValue = metricX === 'workout' ? log.workout?.duration : log[metricX];
-                const yValue = metricY === 'workout' ? log.workout?.duration : log[metricY];
+                const xValue = getValue(log, metricX);
+                const yValue = getValue(log, metricY);
                 return xValue !== undefined && yValue !== undefined;
             })
             .map(log => ({
-                x: metricX === 'workout' ? log.workout?.duration : log[metricX],
-                y: metricY === 'workout' ? log.workout?.duration : log[metricY],
+                x: getValue(log, metricX),
+                y: getValue(log, metricY),
             }));
     };
 
@@ -73,12 +82,19 @@ export default function TrendsPage() {
     const scatterData = getScatterData();
     const correlation = calculateCorrelation();
 
-    const metricLabels = {
+    const standardMetrics = {
         sleep: 'Sleep (hours)',
         workout: 'Workout (minutes)',
         meditation: 'Meditation (minutes)',
         learning: 'Learning (minutes)',
     };
+
+    const customMetrics = user?.metrics?.reduce((acc, m) => ({
+        ...acc,
+        [m.id]: m.label
+    }), {}) || {};
+
+    const allLabels: Record<string, string> = { ...standardMetrics, ...customMetrics };
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
@@ -108,13 +124,12 @@ export default function TrendsPage() {
                         </label>
                         <select
                             value={metricX}
-                            onChange={(e) => setMetricX(e.target.value as any)}
+                            onChange={(e) => setMetricX(e.target.value)}
                             className="input-field"
                         >
-                            <option value="sleep">Sleep</option>
-                            <option value="workout">Workout</option>
-                            <option value="meditation">Meditation</option>
-                            <option value="learning">Learning</option>
+                            {Object.entries(allLabels).map(([key, label]) => (
+                                <option key={key} value={key}>{label}</option>
+                            ))}
                         </select>
                     </div>
                     <div>
@@ -123,13 +138,12 @@ export default function TrendsPage() {
                         </label>
                         <select
                             value={metricY}
-                            onChange={(e) => setMetricY(e.target.value as any)}
+                            onChange={(e) => setMetricY(e.target.value)}
                             className="input-field"
                         >
-                            <option value="sleep">Sleep</option>
-                            <option value="workout">Workout</option>
-                            <option value="meditation">Meditation</option>
-                            <option value="learning">Learning</option>
+                            {Object.entries(allLabels).map(([key, label]) => (
+                                <option key={key} value={key}>{label}</option>
+                            ))}
                         </select>
                     </div>
                 </div>
@@ -138,7 +152,7 @@ export default function TrendsPage() {
             {/* Scatter Plot */}
             <div className="card mb-6">
                 <h2 className="text-xl font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-                    {metricLabels[metricX]} vs {metricLabels[metricY]}
+                    {allLabels[metricX]} vs {allLabels[metricY]}
                 </h2>
                 {scatterData.length === 0 ? (
                     <p style={{ color: 'var(--text-secondary)' }}>
@@ -152,14 +166,14 @@ export default function TrendsPage() {
                                 <XAxis
                                     type="number"
                                     dataKey="x"
-                                    name={metricLabels[metricX]}
+                                    name={allLabels[metricX]}
                                     stroke="var(--text-secondary)"
                                     style={{ fontSize: '12px' }}
                                 />
                                 <YAxis
                                     type="number"
                                     dataKey="y"
-                                    name={metricLabels[metricY]}
+                                    name={allLabels[metricY]}
                                     stroke="var(--text-secondary)"
                                     style={{ fontSize: '12px' }}
                                 />
