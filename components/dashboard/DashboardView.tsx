@@ -1,39 +1,89 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { getUserLogs } from '@/lib/firebase/firestore';
+import { getContextZones } from '@/lib/firebase/context';
 import { DailyLog } from '@/lib/types/log';
+import { ContextZone } from '@/lib/types/context';
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer, ReferenceLine, BarChart, Bar } from 'recharts';
-import { format, subDays, startOfDay } from 'date-fns';
-import { HelpCircle } from 'lucide-react';
+import { format, subDays, startOfDay, isWithinInterval } from 'date-fns';
+import { HelpCircle, Shield, ShieldOff } from 'lucide-react';
 import DashboardGuide from '@/components/onboarding/DashboardGuide';
 import Skeleton from '@/components/ui/Skeleton';
 import SectionHeader from './SectionHeader';
+import { findSignificantCorrelations, CorrelationResult } from '@/lib/analysis/stats';
+import SilentPatternIndicator from './SilentPatternIndicator';
+import SimilarDays from './SimilarDays';
 
 export default function DashboardView() {
     const { user } = useAuth();
     const [logs, setLogs] = useState<DailyLog[]>([]);
+    const [allLogs, setAllLogs] = useState<DailyLog[]>([]); // Store original
+    const [zones, setZones] = useState<ContextZone[]>([]);
     const [loading, setLoading] = useState(true);
     const [showGuide, setShowGuide] = useState(false);
 
+    // Isolation Mode State
+    const [isolationMode, setIsolationMode] = useState(false);
+
     useEffect(() => {
+        const loadData = async () => {
+            if (!user) return;
+            try {
+                const [userLogs, userZones] = await Promise.all([
+                    getUserLogs(user.userId),
+                    getContextZones(user.userId)
+                ]);
+                setAllLogs(userLogs);
+                setLogs(userLogs);
+                setZones(userZones);
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         if (user) {
-            loadLogs();
+            loadData();
         }
     }, [user]);
 
-    const loadLogs = async () => {
-        if (!user) return;
-        try {
-            const userLogs = await getUserLogs(user.userId);
-            setLogs(userLogs);
-        } catch (error) {
-            console.error('Error loading logs:', error);
-        } finally {
-            setLoading(false);
+    // Apply Isolation Mode Filter
+    useEffect(() => {
+        if (!isolationMode) {
+            setLogs(allLogs);
+            return;
         }
-    };
+
+        if (zones.length === 0) return;
+
+        // Filter out logs that fall within any context zone
+        const filtered = allLogs.filter(log => {
+            // Check if log date is inside any zone
+            const isInsideZone = zones.some(zone =>
+                isWithinInterval(log.date, { start: zone.startDate, end: zone.endDate })
+            );
+            return !isInsideZone;
+        });
+
+        setLogs(filtered);
+    }, [isolationMode, allLogs, zones]);
+
+
+    const patterns = useMemo(() => {
+        if (logs.length < 20) return []; // Require min 20 days as per spec
+
+        // Collect all metrics to scan
+        const coreMetrics = ['sleep', 'workout', 'meditation', 'learning'];
+        const customMetrics = user?.metrics?.map(m => m.id) || [];
+        const exposures = user?.exposures?.map(e => e.id) || [];
+
+        const allMetrics = [...coreMetrics, ...customMetrics, ...exposures];
+
+        return findSignificantCorrelations(logs, allMetrics);
+    }, [logs, user]);
 
     const getChartData = () => {
         const days = 7;
@@ -45,6 +95,11 @@ export default function DashboardView() {
         return dateRange.map(date => {
             const dateStr = format(date, 'yyyy-MM-dd');
             const log = logs.find(l => format(l.date, 'yyyy-MM-dd') === dateStr);
+
+            // Check if this specific day is inside a zone (for visual indication when isolation OFF)
+            const activeZone = !isolationMode ? zones.find(zone =>
+                isWithinInterval(date, { start: zone.startDate, end: zone.endDate })
+            ) : undefined;
 
             // Collect custom metrics
             const customMetrics = user?.metrics?.reduce((acc, m) => ({
@@ -65,6 +120,8 @@ export default function DashboardView() {
                 workout: log?.workout?.duration || 0,
                 meditation: log?.meditation || 0,
                 learning: log?.learning || 0,
+                isZone: !!activeZone,
+                zoneLabel: activeZone?.label,
                 ...customMetrics,
                 ...customExposures
             };
@@ -111,26 +168,59 @@ export default function DashboardView() {
     return (
         <div className="max-w-md mx-auto px-4 py-6 pb-24">
             {/* --- SECTION 1: OVERVIEW --- */}
-            <header className="mb-8 relative">
-                <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
-                    {format(new Date(), 'EEEE, MMM d')}
-                </h1>
-                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                    Patterns emerge over time. Daily variation is expected.
-                </p>
+            <header className="mb-8">
+                <div className="flex justify-between items-start mb-4">
+                    <div>
+                        <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
+                            {format(new Date(), 'EEEE, MMM d')}
+                        </h1>
+                        <div className="flex items-center gap-2">
+                            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                                {isolationMode
+                                    ? `Filtering ${allLogs.length - logs.length} context days.`
+                                    : 'All data included.'}
+                            </p>
+                            <SilentPatternIndicator patterns={patterns} />
+                        </div>
+                    </div>
 
-                <button
-                    onClick={() => setShowGuide(true)}
-                    className="absolute top-0 right-0 p-2 text-gray-400 hover:text-indigo-500 transition-colors"
-                >
-                    <HelpCircle size={20} />
-                </button>
+                    <div className="flex items-center gap-2">
+                        {/* Isolation Mode Toggle */}
+                        {zones.length > 0 && (
+                            <button
+                                onClick={() => setIsolationMode(!isolationMode)}
+                                className={`p-2 rounded-lg transition-colors ${isolationMode
+                                    ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400'
+                                    : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
+                                    }`}
+                                title={isolationMode ? "Disable Isolation Mode" : "Enable Isolation Mode (Hide Context Zones)"}
+                            >
+                                {isolationMode ? <Shield size={20} /> : <ShieldOff size={20} />}
+                            </button>
+                        )}
+
+                        <button
+                            onClick={() => setShowGuide(true)}
+                            className="p-2 text-gray-400 hover:text-indigo-500 transition-colors"
+                        >
+                            <HelpCircle size={20} />
+                        </button>
+                    </div>
+                </div>
                 <DashboardGuide isOpen={showGuide} onClose={() => setShowGuide(false)} />
             </header>
 
             {/* --- SECTION 2: CORE METRICS --- */}
             <section className="mb-8">
                 <SectionHeader title="Core Metrics" description="Biological foundations. Sleep, Movement, Stillness, Growth." />
+
+                {logs.length > 0 && (
+                    <SimilarDays
+                        today={logs.find(l => format(l.date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')) || {} as DailyLog}
+                        history={allLogs} // Use allLogs for history lookup (even if isolation is on, for patterns? Maybe default to Logs which respects isolation)
+                        metrics={['sleep', 'workout', 'meditation', 'learning', ...(user?.metrics?.map(m => m.id) || [])]}
+                    />
+                )}
 
                 <div className="grid grid-cols-2 gap-3 mb-6">
                     <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--bg-secondary)' }}>
@@ -212,7 +302,7 @@ export default function DashboardView() {
                         {user.exposures.map(exp => (
                             <div key={exp.id} className="p-3 rounded-lg border border-[var(--border)] bg-gray-50/50 dark:bg-gray-900/50">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm font-medium truncat" style={{ color: 'var(--text-secondary)' }}>{exp.label}</span>
+                                    <span className="text-sm font-medium truncate" style={{ color: 'var(--text-secondary)' }}>{exp.label}</span>
                                     <span className="text-xs font-mono text-gray-400">{exp.type}</span>
                                 </div>
                                 <div className="h-20">

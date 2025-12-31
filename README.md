@@ -38,21 +38,29 @@ SYNAPSE uses a **Dual Dashboard** approach (Action vs. Reflection) to separate o
   - **Exposures**: Caffeine, Screen Time.
   - **Visuals**: Gradient area charts with baseline comparisons.
 
-### 4. Quantitative Log (`/log`)
+### 4. Timeline (`/timeline`) — *Context Mode*
+**"What happened when?"**
+- **Purpose**: A linear, scrolling history of all your data (Logs, Habits, Sessions) in context.
+- **Usage**: Scroll back to see what you did on a specific day.
+- **Features**:
+    - **Unified View**: See sleep, workouts, habits, and mood in one card per day.
+    - **Day DNA**: Quick scan of your day's footprint.
+
+### 5. Quantitative Log (`/log`)
 - **Purpose**: The data entry point for quantitative metrics shown in **Patterns**.
 - **Usage**: Spend 30 seconds daily to log Sleep hours, State ratings (1-5), and Exposure counts.
 
-### 5. Logbook (`/logbook`)
+### 6. Logbook (`/logbook`)
 - **Purpose**: Structured archival for detailed records that don't fit the other dashboards.
 
-### 6. Advanced Analysis (`/trends`)
+### 7. Advanced Analysis (`/trends`)
 **"What correlates?"**
 - **Purpose**: Deep dive into correlations between metrics.
 - **Features**: 
   - **Scatter Plots**: Visualize correlation strength (e.g., Caffeine vs. Anxiety).
   - **Cross-Category Analysis**: Compare Exposures vs. Core Metrics.
 
-### 7. Configuration (`/profile`)
+### 8. Configuration (`/profile`)
 **"Make it yours"**
 - **Purpose**: Customize the system to your life.
 - **Features**:
@@ -60,7 +68,7 @@ SYNAPSE uses a **Dual Dashboard** approach (Action vs. Reflection) to separate o
   - **Exposures Manager**: Define external inputs to track.
   - **Logbook Manager**: Create custom structured logs.
 
-### 8. Mobile Experience
+### 9. Mobile Experience
 - **Sticky Navigation**: Thumb-friendly bottom navigation bar.
 - **Touch Feedback**: Optimized touch targets and animations.
 

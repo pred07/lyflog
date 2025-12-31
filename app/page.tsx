@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/auth/AuthProvider';
-import Footer from '@/components/layout/Footer';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 
 export default function LandingPage() {
@@ -197,7 +196,9 @@ export default function LandingPage() {
                 </section>
             </main>
 
-            <Footer />
+            <div className="py-12 text-center text-sm opacity-50" style={{ color: 'var(--text-secondary)' }}>
+                &quot;A mirror, not a mentor. See yourself clearly.&quot;
+            </div>
         </div>
     );
 }

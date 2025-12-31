@@ -3,6 +3,9 @@ export interface DailyLog {
     userId: string;
     date: Date;
     sleep?: number; // hours
+    anxiety?: number; // 1-5
+    energy?: number; // 1-5
+    focus?: number; // 1-5
     workout?: {
         type: string;
         duration: number; // minutes

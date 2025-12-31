@@ -5,6 +5,7 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { getUserLogs } from '@/lib/firebase/firestore';
 import { DailyLog } from '@/lib/types/log';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { calculateCorrelation, getMetricValue } from '@/lib/analysis/stats';
 
 export default function TrendsPage() {
     const { user } = useAuth();
@@ -31,50 +32,20 @@ export default function TrendsPage() {
         }
     }, [user]);
 
-    const getValue = (log: DailyLog, metric: string) => {
-        if (metric === 'workout') return log.workout?.duration;
-        if (metric === 'sleep') return log.sleep;
-        if (metric === 'meditation') return log.meditation;
-        if (metric === 'learning') return log.learning;
 
-        // Try Custom Metrics first
-        if (log.metrics?.[metric] !== undefined) return log.metrics[metric];
 
-        // Try Exposures
-        if (log.exposures?.[metric] !== undefined) return log.exposures[metric];
-
-        return undefined;
-    };
 
     const getScatterData = () => {
         return logs
             .filter(log => {
-                const xValue = getValue(log, metricX);
-                const yValue = getValue(log, metricY);
+                const xValue = getMetricValue(log, metricX);
+                const yValue = getMetricValue(log, metricY);
                 return xValue !== undefined && yValue !== undefined;
             })
             .map(log => ({
-                x: getValue(log, metricX),
-                y: getValue(log, metricY),
+                x: getMetricValue(log, metricX),
+                y: getMetricValue(log, metricY),
             }));
-    };
-
-    const calculateCorrelation = () => {
-        const data = getScatterData();
-        if (data.length < 2) return null;
-
-        const n = data.length;
-        const sumX = data.reduce((sum, d) => sum + (d.x || 0), 0);
-        const sumY = data.reduce((sum, d) => sum + (d.y || 0), 0);
-        const sumXY = data.reduce((sum, d) => sum + (d.x || 0) * (d.y || 0), 0);
-        const sumX2 = data.reduce((sum, d) => sum + Math.pow(d.x || 0, 2), 0);
-        const sumY2 = data.reduce((sum, d) => sum + Math.pow(d.y || 0, 2), 0);
-
-        const numerator = n * sumXY - sumX * sumY;
-        const denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
-
-        if (denominator === 0) return null;
-        return numerator / denominator;
     };
 
     if (loading) {
@@ -86,7 +57,7 @@ export default function TrendsPage() {
     }
 
     const scatterData = getScatterData();
-    const correlation = calculateCorrelation();
+    const correlation = calculateCorrelation(logs, metricX, metricY);
 
     const standardMetrics = {
         sleep: 'Sleep (hours)',
@@ -141,14 +112,34 @@ export default function TrendsPage() {
         </select>
     );
 
+    const getInterpretation = (corr: number, xLabel: string, yLabel: string, count: number) => {
+        // Only show interpretation if we have enough data and a meaningful correlation
+        if (count < 10 || Math.abs(corr) < 0.3) return null;
+
+        const strength = Math.abs(corr) >= 0.6 ? "consistently" : "tends to be";
+        const direction = corr > 0 ? "higher" : "lower";
+
+        // Clean labels for text (remove units/parentheses)
+        const cleanX = xLabel.split('(')[0].trim().toLowerCase();
+        const cleanY = yLabel.split('(')[0].trim(); // Keep Case for Y usually start of sentence? No, middle.
+
+        return `Observations show ${cleanY.toLowerCase()} ${strength} ${direction} on days with higher ${cleanX}.`;
+    };
+
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
                 Trends
             </h1>
-            <p className="mb-8" style={{ color: 'var(--text-secondary)' }}>
+            <p className="mb-4" style={{ color: 'var(--text-secondary)' }}>
                 Explore correlations between different metrics.
             </p>
+
+            <div className="mb-8">
+                <a href="/trends/network" className="inline-flex items-center text-sm font-medium text-indigo-500 hover:text-indigo-600 transition-colors">
+                    View Network Map →
+                </a>
+            </div>
 
             {/* Disclaimer */}
             <div className="mb-6 p-4 rounded-lg" style={{
@@ -222,17 +213,66 @@ export default function TrendsPage() {
                             </ScatterChart>
                         </ResponsiveContainer>
                         {correlation !== null && (
-                            <div className="mt-4 p-3 rounded" style={{
+                            <div className="mt-4 p-4 rounded-xl" style={{
                                 backgroundColor: 'var(--bg-tertiary)',
                                 border: '1px solid var(--border)'
                             }}>
-                                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                                    <strong>Correlation coefficient:</strong> {correlation.toFixed(3)}
-                                    <br />
-                                    <span className="text-xs">
-                                        (Range: -1 to 1. Values near 0 indicate little to no linear relationship.)
-                                    </span>
-                                </p>
+                                <div className="flex items-start gap-4">
+                                    {/* Confidence Visual Indicator */}
+                                    <div className="pt-1">
+                                        <div
+                                            className="w-4 h-4 rounded-full border border-[var(--chart-primary)]"
+                                            style={{
+                                                background: scatterData.length >= 50
+                                                    ? 'var(--chart-primary)'
+                                                    : scatterData.length >= 20
+                                                        ? 'linear-gradient(90deg, var(--chart-primary) 50%, transparent 50%)'
+                                                        : 'transparent'
+                                            }}
+                                            title={
+                                                scatterData.length >= 50 ? "High Confidence" :
+                                                    scatterData.length >= 20 ? "Emerging Pattern" : "Insufficient Data"
+                                            }
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <div className="flex items-baseline gap-2 mb-1">
+                                            <span className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
+                                                {correlation.toFixed(2)}
+                                            </span>
+                                            <span className="text-xs uppercase tracking-wider font-medium" style={{ color: 'var(--text-tertiary)' }}>
+                                                Correlation
+                                            </span>
+                                        </div>
+
+                                        {/* Silent Indicator / Interpretation */}
+                                        {(() => {
+                                            const interpretation = getInterpretation(correlation, allLabels[metricX], allLabels[metricY], scatterData.length);
+                                            return interpretation && (
+                                                <p className="text-sm font-medium mb-3 italic" style={{ color: 'var(--text-primary)' }}>
+                                                    &quot;{interpretation}&quot;
+                                                </p>
+                                            );
+                                        })()}
+
+                                        <p className="text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
+                                            {scatterData.length < 20 && (
+                                                <>Based on {scatterData.length} days. Needs {50 - scatterData.length} more for high confidence.</>
+                                            )}
+                                            {scatterData.length >= 20 && scatterData.length < 50 && (
+                                                <>Based on {scatterData.length} days. Needs {50 - scatterData.length} more for high confidence.</>
+                                            )}
+                                            {scatterData.length >= 50 && (
+                                                <>High confidence based on {scatterData.length} days.</>
+                                            )}
+                                        </p>
+
+                                        <p className="text-xs text-gray-400">
+                                            (Range: -1.0 to 1.0. Values near 0 indicate no observed relationship.)
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </>

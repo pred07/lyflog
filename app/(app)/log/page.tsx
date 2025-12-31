@@ -1,14 +1,52 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { createLog } from '@/lib/firebase/firestore';
 import { LogFormData } from '@/lib/types/log';
 import MetricInput from '@/components/log/MetricInput';
 import ExposureInput from '@/components/log/ExposureInput';
+import { useVoiceInput } from '@/hooks/useVoiceInput';
+import { parseNaturalLanguageLog } from '@/lib/analysis/parser';
+import { Mic, MicOff, Loader } from 'lucide-react';
 
 export default function LogPage() {
     const { user } = useAuth();
+    const { isListening, transcript, startListening, stopListening, isSupported } = useVoiceInput();
+    const [isProcessingVoice, setIsProcessingVoice] = useState(false);
+
+    // Auto-process transcript when listening stops
+    useEffect(() => {
+        if (!isListening && transcript) {
+            handleVoiceProcess(transcript);
+        }
+    }, [isListening, transcript]);
+
+    const handleVoiceProcess = (text: string) => {
+        setIsProcessingVoice(true);
+        const { updates, matchedKeys } = parseNaturalLanguageLog(text);
+
+        // Merge updates into form state
+        setFormData(prev => ({
+            ...prev,
+            sleep: updates.sleep ? updates.sleep.toString() : prev.sleep,
+            meditation: updates.meditation ? updates.meditation.toString() : prev.meditation,
+            learning: updates.learning ? updates.learning.toString() : prev.learning,
+            workoutDuration: updates.workout?.duration ? updates.workout.duration.toString() : prev.workoutDuration,
+            // If workout detected, maybe default type if empty?
+            workoutType: updates.workout && !prev.workoutType ? 'Workout' : prev.workoutType,
+            // Append note
+            note: prev.note ? prev.note + '\n' + text : text
+        }));
+
+        // Merge metrics
+        if (updates.metrics) {
+            setMetrics(prev => ({ ...prev, ...updates.metrics }));
+        }
+
+        setIsProcessingVoice(false);
+    };
+
     const [formData, setFormData] = useState<LogFormData>({
         date: new Date().toISOString().split('T')[0],
         sleep: '',
@@ -94,9 +132,25 @@ export default function LogPage() {
 
     return (
         <div className="max-w-3xl mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
-                Log Activity
-            </h1>
+            <div className="flex items-center justify-between mb-2">
+                <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                    Log Activity
+                </h1>
+
+                {isSupported && (
+                    <button
+                        type="button"
+                        onClick={isListening ? stopListening : startListening}
+                        className={`p-3 rounded-full transition-all ${isListening
+                                ? 'bg-red-500 text-white animate-pulse'
+                                : 'bg-indigo-500/10 text-indigo-500 hover:bg-indigo-500/20'
+                            }`}
+                        title="Voice Log"
+                    >
+                        {isListening ? <MicOff size={20} /> : <Mic size={20} />}
+                    </button>
+                )}
+            </div>
             <p className="mb-8" style={{ color: 'var(--text-secondary)' }}>
                 Record your daily observations. All fields are optional.
             </p>

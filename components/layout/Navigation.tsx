@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import NextImage from 'next/image';
 import { usePathname } from 'next/navigation';
 import ThemeToggle from './ThemeToggle';
 import { useAuth } from '@/components/auth/AuthProvider';
@@ -11,6 +12,8 @@ export default function Navigation() {
 
     const navItems = [
         { href: '/dashboard', label: 'Dashboard' },
+        { href: '/timeline', label: 'Timeline' },
+        { href: '/search', label: 'Search' },
         { href: '/log', label: 'Log Activity' },
         { href: '/session', label: 'Session' },
         { href: '/habits', label: 'Habits' },
@@ -33,7 +36,7 @@ export default function Navigation() {
                 <div className="flex justify-between h-16">
                     <div className="flex items-center space-x-8">
                         <Link href="/dashboard">
-                            <img src="/logo.png" alt="SYNAPSE" className="h-10 w-10" />
+                            <NextImage src="/logo.png" alt="SYNAPSE" width={40} height={40} className="h-10 w-10" />
                         </Link>
                         <div className="hidden md:flex space-x-4">
                             {navItems.map((item) => (
