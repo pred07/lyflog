@@ -15,7 +15,6 @@ export default function Navigation() {
         { href: '/timeline', label: 'Timeline' },
         { href: '/search', label: 'Search' },
         { href: '/log', label: 'Log Activity' },
-        { href: '/session', label: 'Session' },
         { href: '/habits', label: 'Habits' },
         { href: '/trends', label: 'Trends' },
         { href: '/zones', label: 'Zones' },

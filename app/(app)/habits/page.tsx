@@ -135,11 +135,14 @@ export default function HabitsPage() {
     const handleUpdateHabits = async (newHabits: HabitConfig[]) => {
         if (!user) return;
         try {
+            setLoading(true);
             await updateUserProfile(user.userId, { habits: newHabits });
-            // Force reload to get updated habits from user context
+            // Reload to refresh user context
             window.location.reload();
         } catch (error) {
             console.error('Failed to update habits:', error);
+            alert('Failed to update habits. Please try again.');
+            setLoading(false);
         }
     };
 
