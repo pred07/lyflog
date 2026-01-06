@@ -118,6 +118,14 @@ export async function createLog(userId: string, logData: Partial<DailyLog>): Pro
     if (logData.metrics) log.metrics = logData.metrics;
     if (logData.exposures) log.exposures = logData.exposures;
 
+    // Fixed: explicit mapping of health metrics
+    if (logData.steps) log.steps = logData.steps;
+    if (logData.water) log.water = logData.water;
+    if (logData.calories) log.calories = logData.calories;
+    if (logData.uvIndex) log.uvIndex = logData.uvIndex;
+    if (logData.heartRate) log.heartRate = logData.heartRate;
+    if (logData.weight) log.weight = logData.weight;
+
     await setDoc(doc(db, LOGS_COLLECTION, logId), log);
 
     return {

@@ -143,6 +143,36 @@ export default function HabitsPage() {
         }
     };
 
+    const handleAddGroupHabit = async (group: string) => {
+        if (!user) return;
+
+        const groupHabits = habits.filter(h => h.group === group);
+        const maxOrder = groupHabits.reduce((max, h) => Math.max(max, h.order), 0);
+
+        const newHabit: HabitConfig = {
+            id: `habit_${Date.now()}`,
+            label: 'New Habit',
+            group,
+            sheetId: selectedSheet === 'all' ? 'routine' : selectedSheet, // Default to current sheet
+            order: maxOrder + 1
+        };
+
+        const updatedHabits = [...habits, newHabit];
+        await handleUpdateHabits(updatedHabits);
+    };
+
+    const handleEditHabit = async (updatedHabit: HabitConfig) => {
+        const updatedHabits = habits.map(h =>
+            h.id === updatedHabit.id ? updatedHabit : h
+        );
+        await handleUpdateHabits(updatedHabits);
+    };
+
+    const handleDeleteHabit = async (habitId: string) => {
+        const updatedHabits = habits.filter(h => h.id !== habitId);
+        await handleUpdateHabits(updatedHabits);
+    };
+
     if (!user) return null;
 
     return (
@@ -157,6 +187,14 @@ export default function HabitsPage() {
                     <p className="text-sm text-gray-400 mt-1">{format(todayDate, 'EEEE, MMMM d, yyyy')}</p>
                 </div>
                 <div className="flex gap-2">
+                    <button
+                        onClick={() => setShowManager(true)}
+                        className="p-2 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white flex items-center gap-2"
+                        title="Add Habit"
+                    >
+                        <Plus size={20} />
+                        <span className="hidden sm:inline">Add Habit</span>
+                    </button>
                     <button
                         onClick={() => setShowManager(true)}
                         className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500"
@@ -199,6 +237,19 @@ export default function HabitsPage() {
                         </div>
                     </div>
 
+                    {/* Today's Checklist */}
+                    <div className="mb-8">
+                        <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Today</h2>
+                        <HabitChecklistView
+                            habits={filteredHabits}
+                            habitStates={habitStates}
+                            onToggle={handleToggle}
+                            onAdd={handleAddGroupHabit}
+                            onEdit={handleEditHabit}
+                            onDelete={handleDeleteHabit}
+                        />
+                    </div>
+
                     {/* Spreadsheet Calendar */}
                     <div className="mb-8">
                         <HabitSpreadsheetCalendar
@@ -207,6 +258,12 @@ export default function HabitsPage() {
                             habits={filteredHabits}
                             entries={allEntries}
                             onToggle={handleDayToggle}
+                            onRename={async (habitId, newName) => {
+                                const updatedHabits = habits.map(h =>
+                                    h.id === habitId ? { ...h, label: newName } : h
+                                );
+                                await handleUpdateHabits(updatedHabits);
+                            }}
                         />
                     </div>
 
@@ -235,6 +292,15 @@ export default function HabitsPage() {
                     onClose={() => setSelectedDate(null)}
                 />
             )}
+
+            {/* Mobile FAB */}
+            <button
+                onClick={() => setShowManager(true)}
+                className="fixed bottom-6 right-6 w-14 h-14 bg-indigo-500 hover:bg-indigo-600 active:scale-95 text-white rounded-full shadow-lg flex items-center justify-center sm:hidden z-50 transition-all"
+                aria-label="Add Habit"
+            >
+                <Plus size={28} />
+            </button>
         </div>
     );
 }

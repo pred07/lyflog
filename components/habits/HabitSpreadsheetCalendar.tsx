@@ -11,6 +11,7 @@ interface HabitSpreadsheetCalendarProps {
     habits: HabitConfig[];
     entries: HabitEntry[];
     onToggle: (habitId: string, date: Date, done: boolean) => void;
+    onRename?: (habitId: string, newName: string) => void;
 }
 
 export default function HabitSpreadsheetCalendar({
@@ -18,8 +19,31 @@ export default function HabitSpreadsheetCalendar({
     onMonthChange,
     habits,
     entries,
-    onToggle
+    entries,
+    onToggle,
+    onRename
 }: HabitSpreadsheetCalendarProps) {
+    const [editingHabitId, setEditingHabitId] = useState<string | null>(null);
+    const [editValue, setEditValue] = useState('');
+
+    const startEditing = (habit: HabitConfig) => {
+        if (!onRename) return;
+        setEditingHabitId(habit.id);
+        setEditValue(habit.label);
+    };
+
+    const handleSave = (habitId: string) => {
+        if (editValue.trim() && onRename) {
+            onRename(habitId, editValue.trim());
+        }
+        setEditingHabitId(null);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent, habitId: string) => {
+        if (e.key === 'Enter') handleSave(habitId);
+        if (e.key === 'Escape') setEditingHabitId(null);
+    };
+
     const monthStart = startOfMonth(currentMonth);
     const monthEnd = endOfMonth(monthStart);
     const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
@@ -118,7 +142,27 @@ export default function HabitSpreadsheetCalendar({
                         {habits.map((habit, habitIndex) => (
                             <tr key={habit.id} className={habitIndex % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'}>
                                 <td className="sticky left-0 z-10 px-4 py-3 text-sm font-medium border-b border-r border-gray-200 dark:border-gray-800 bg-inherit">
-                                    <div style={{ color: 'var(--text-primary)' }}>{habit.label}</div>
+                                    {editingHabitId === habit.id ? (
+                                        <input
+                                            type="text"
+                                            value={editValue}
+                                            onChange={(e) => setEditValue(e.target.value)}
+                                            onBlur={() => handleSave(habit.id)}
+                                            onKeyDown={(e) => handleKeyDown(e, habit.id)}
+                                            autoFocus
+                                            className="w-full bg-white dark:bg-gray-800 border-2 border-indigo-500 rounded px-1 py-0.5 outline-none"
+                                            style={{ color: 'var(--text-primary)' }}
+                                        />
+                                    ) : (
+                                        <div
+                                            onClick={() => startEditing(habit)}
+                                            className={onRename ? "cursor-pointer hover:text-indigo-500 transition-colors" : ""}
+                                            style={{ color: 'var(--text-primary)' }}
+                                            title={onRename ? "Click to rename" : ""}
+                                        >
+                                            {habit.label}
+                                        </div>
+                                    )}
                                     <div className="text-xs text-gray-400">{habit.group}</div>
                                 </td>
                                 {days.map(day => {

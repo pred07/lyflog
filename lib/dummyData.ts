@@ -21,6 +21,9 @@ function generateLogs(
     const rng = new SeededRandom(seed);
     const logs: DailyLog[] = [];
 
+    // Base weight for consistency
+    let currentWeight = 75.0;
+
     for (let i = 0; i < days; i++) {
         const date = subDays(new Date(), i);
         // Add random gaps (10% chance), but less likely recently for 'stabilizing'
@@ -34,6 +37,12 @@ function generateLogs(
         let note = "";
         let metrics: Record<string, number> | undefined;
         let exposures: Record<string, number> | undefined;
+        let steps: number | undefined;
+        let water: number | undefined;
+        let calories: number | undefined;
+        let uvIndex: number | undefined;
+        let heartRate: number | undefined;
+        let weight: number | undefined;
 
         // ALGORITHM: User 1 (Admin) - High Stress -> Stabilizing
         if (profile === 'stabilizing') {
@@ -57,6 +66,28 @@ function generateLogs(
 
             // Meditation
             if (rng.next() > 0.7) meditation = 5 + Math.floor(rng.next() * 10);
+
+            // Health Metrics
+            // Steps: Correlated with workout
+            const baseSteps = workout ? 8000 : 4000;
+            steps = baseSteps + Math.floor(rng.next() * 4000);
+
+            // Water: 1.5L - 3L
+            water = Number((1.5 + rng.next() * 1.5).toFixed(1));
+
+            // Calories: 2000 +/- 300
+            calories = 2000 + Math.floor((rng.next() - 0.5) * 600);
+
+            // UV Index: Random seasonality
+            uvIndex = Number((2 + rng.next() * 5).toFixed(1));
+
+            // Heart Rate: 60-70 resting
+            heartRate = 60 + Math.floor(rng.next() * 10);
+
+            // Weight: Stabilizing around 75
+            currentWeight += (rng.next() - 0.5) * 0.2;
+            weight = Number(currentWeight.toFixed(1));
+
 
             // --- CUSTOM METRICS & EXPOSURES ---
             // Anxiety: Decreases as trend increases (more stable)
@@ -92,6 +123,26 @@ function generateLogs(
             if (rng.next() > 0.85) meditation = 10;
             if (sleep > 6) learning = Math.floor(rng.next() * 60);
 
+            // Health Metrics - Chaotic
+            // Steps: Erratic
+            steps = 2000 + Math.floor(rng.next() * 10000);
+
+            // Water: Dehydrated often
+            water = Number((0.5 + rng.next() * 1.5).toFixed(1));
+
+            // Calories: Binge/Starve
+            calories = 1500 + Math.floor((rng.next() - 0.3) * 1500);
+
+            // UV Index
+            uvIndex = Number((rng.next() * 8).toFixed(1));
+
+            // Heart Rate: Higher due to stress?
+            heartRate = 65 + Math.floor(rng.next() * 20);
+
+            // Weight: Fluctuating
+            currentWeight += (rng.next() - 0.5) * 1.0;
+            weight = Number(currentWeight.toFixed(1));
+
             // Chaotic Metrics
             const anxiety = Math.random() > 0.5 ? 4 : 2; // Bipolar-ish swings
             const focus = sleep > 7 ? 4 : 1;
@@ -118,7 +169,13 @@ function generateLogs(
             learning: learning ?? undefined,
             note: note || undefined,
             metrics: metrics,
-            exposures: exposures
+            exposures: exposures,
+            steps: steps,
+            water: water,
+            calories: calories,
+            uvIndex: uvIndex,
+            heartRate: heartRate,
+            weight: weight
         });
     }
     return logs;
