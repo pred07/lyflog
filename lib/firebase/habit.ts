@@ -38,14 +38,18 @@ export const getHabitEntriesForDateRange = async (userId: string, startDate: Dat
 };
 
 // Demo data for test accounts
-export const getDemoHabitEntries = (userId: string, startDate: Date, endDate: Date): HabitEntry[] => {
+export const getDemoHabitEntries = (userId: string, startDate?: Date, endDate?: Date): HabitEntry[] => {
     if (!userId.startsWith('test_')) return [];
+
+    // Default to last 60 days if no dates provided
+    const end = endDate || new Date();
+    const start = startDate || new Date(end.getTime() - 60 * 24 * 60 * 60 * 1000);
 
     const entries: HabitEntry[] = [];
     const habitIds = ['meditation', 'reading', 'gym', 'walk', 'maths', 'revision'];
 
-    const currentDate = new Date(startDate);
-    while (currentDate <= endDate) {
+    const currentDate = new Date(start);
+    while (currentDate <= end) {
         habitIds.forEach((habitId, idx) => {
             // Simulate realistic patterns (some habits done more consistently)
             const consistency = idx < 3 ? 0.8 : 0.6; // Morning habits more consistent
