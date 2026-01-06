@@ -10,7 +10,7 @@ export default function BottomNav() {
     const navItems = [
         {
             href: '/dashboard',
-            label: 'Patterns',
+            label: 'Dashboard',
             icon: Home,
             isActive: (path: string) => path === '/' || path === '/dashboard'
         },

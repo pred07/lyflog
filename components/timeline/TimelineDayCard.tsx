@@ -35,7 +35,7 @@ export default function TimelineDayCard({ day }: TimelineDayCardProps) {
                             {log.sleep && (
                                 <div className="flex items-center gap-2">
                                     <Moon size={16} className="text-indigo-500" />
-                                    <span className="text-sm">{log.sleep}h Sleep</span>
+                                    <span className="text-sm">{typeof log.sleep === 'number' ? log.sleep.toFixed(1) : log.sleep}h Sleep</span>
                                 </div>
                             )}
                             {log.anxiety !== undefined && (
