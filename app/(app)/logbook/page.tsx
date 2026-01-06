@@ -88,6 +88,34 @@ export default function LogbookPage() {
         }
     };
 
+    const handleUpdateEntry = async (entryId: string, data: Record<string, any>) => {
+        if (!user) return;
+
+        try {
+            const { updateLogbookEntry } = await import('@/lib/firebase/logbook');
+            await updateLogbookEntry(user.userId, entryId, { data });
+            // Update local state
+            setEntries(entries.map(e => e.id === entryId ? { ...e, data, updatedAt: new Date() } : e));
+        } catch (error) {
+            console.error('Failed to update entry:', error);
+            alert('Failed to update entry. Please try again.');
+        }
+    };
+
+    const handleDeleteEntry = async (entryId: string) => {
+        if (!user) return;
+
+        try {
+            const { deleteLogbookEntry } = await import('@/lib/firebase/logbook');
+            await deleteLogbookEntry(user.userId, entryId);
+            // Remove from local state
+            setEntries(entries.filter(e => e.id !== entryId));
+        } catch (error) {
+            console.error('Failed to delete entry:', error);
+            alert('Failed to delete entry. Please try again.');
+        }
+    };
+
     if (!user) return null;
 
     const activeLogbook = user.logbooks?.find(l => l.id === activeLogbookId);
@@ -181,6 +209,8 @@ export default function LogbookPage() {
                                 <LogbookView
                                     logbook={activeLogbook}
                                     entries={entries}
+                                    onUpdate={handleUpdateEntry}
+                                    onDelete={handleDeleteEntry}
                                 />
                             )}
                         </div>
