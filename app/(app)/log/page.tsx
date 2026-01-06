@@ -205,6 +205,7 @@ export default function LogPage() {
                         step="0.5"
                         min="0"
                         max="24"
+                        inputMode="decimal"
                         value={formData.sleep}
                         onChange={handleChange}
                         className="input-field"
@@ -237,6 +238,7 @@ export default function LogPage() {
                             type="number"
                             name="workoutDuration"
                             min="0"
+                            inputMode="numeric"
                             value={formData.workoutDuration}
                             onChange={handleChange}
                             className="input-field"
@@ -255,6 +257,7 @@ export default function LogPage() {
                         type="number"
                         name="meditation"
                         min="0"
+                        inputMode="numeric"
                         value={formData.meditation}
                         onChange={handleChange}
                         className="input-field"
@@ -272,6 +275,7 @@ export default function LogPage() {
                         type="number"
                         name="learning"
                         min="0"
+                        inputMode="numeric"
                         value={formData.learning}
                         onChange={handleChange}
                         className="input-field"
@@ -293,6 +297,7 @@ export default function LogPage() {
                                 type="number"
                                 name="steps"
                                 min="0"
+                                inputMode="numeric"
                                 value={formData.steps}
                                 onChange={handleChange}
                                 className="input-field"
@@ -311,6 +316,7 @@ export default function LogPage() {
                                 name="water"
                                 min="0"
                                 step="0.1"
+                                inputMode="decimal"
                                 value={formData.water}
                                 onChange={handleChange}
                                 className="input-field"
@@ -328,6 +334,7 @@ export default function LogPage() {
                                 type="number"
                                 name="calories"
                                 min="0"
+                                inputMode="numeric"
                                 value={formData.calories}
                                 onChange={handleChange}
                                 className="input-field"
@@ -347,10 +354,11 @@ export default function LogPage() {
                                 min="0"
                                 max="15"
                                 step="0.1"
+                                inputMode="decimal"
                                 value={formData.uvIndex}
                                 onChange={handleChange}
                                 className="input-field"
-                                placeholder="e.g., 5.5"
+                                placeholder="e.g., 5"
                             />
                         </div>
 
@@ -364,6 +372,7 @@ export default function LogPage() {
                                 type="number"
                                 name="heartRate"
                                 min="0"
+                                inputMode="numeric"
                                 value={formData.heartRate}
                                 onChange={handleChange}
                                 className="input-field"
@@ -382,6 +391,7 @@ export default function LogPage() {
                                 name="weight"
                                 min="0"
                                 step="0.1"
+                                inputMode="decimal"
                                 value={formData.weight}
                                 onChange={handleChange}
                                 className="input-field"

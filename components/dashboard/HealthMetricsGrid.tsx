@@ -57,8 +57,8 @@ export default function HealthMetricsGrid({ data }: HealthMetricsProps) {
             value: data.heartRate,
             unit: 'bpm',
             icon: Heart,
-            color: 'text-rose-500',
-            bgColor: 'bg-rose-500/10'
+            color: 'text-red-500',
+            bgColor: 'bg-red-500/10'
         },
         {
             id: 'weight',
@@ -66,20 +66,16 @@ export default function HealthMetricsGrid({ data }: HealthMetricsProps) {
             value: data.weight,
             unit: 'kg',
             icon: Scale,
-            color: 'text-indigo-500',
             bgColor: 'bg-indigo-500/10'
         }
     ];
-
-    // Filter to show all (even if empty, to encourage tracking) or maybe just available?
-    // User requested "utility to calculate...", so showing them encourages use.
 
     return (
         <section className="mb-8">
             <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
                 Health Metrics
             </h3>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {metrics.map(metric => (
                     <div
                         key={metric.id}

@@ -14,7 +14,7 @@ export default function TimelineDayCard({ day }: TimelineDayCardProps) {
     if (!hasData) return null;
 
     return (
-        <div className="relative pl-8 pb-12 border-l border-gray-200 dark:border-gray-800 last:border-0 last:pb-0">
+        <div className="relative pl-6 md:pl-8 pb-12 border-l border-gray-200 dark:border-gray-800 last:border-0 last:pb-0">
             {/* Date Marker */}
             <div className="absolute -left-1.5 top-0 w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-700 ring-4 ring-white dark:ring-black" />
 
