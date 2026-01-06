@@ -1,7 +1,8 @@
 import { DayContext } from '@/lib/firebase/timeline';
 import { ContextZone } from '@/lib/types/context';
 import { format, isWithinInterval } from 'date-fns';
-import { FileText, Activity, CheckCircle, Moon, Zap, Brain, Wind, Tag, MapPin } from 'lucide-react';
+import { FileText, Activity, CheckCircle, Moon, Zap, Brain, Wind, Tag, MapPin, Dumbbell, Book, PenTool } from 'lucide-react';
+import { useAuth } from '@/components/auth/AuthProvider';
 
 interface TimelineDayCardProps {
     day: DayContext;
@@ -9,8 +10,14 @@ interface TimelineDayCardProps {
 }
 
 export default function TimelineDayCard({ day, zones = [] }: TimelineDayCardProps) {
-    const { date, log, habits, sessions } = day;
-    const hasData = log || habits.length > 0 || sessions.length > 0;
+    const { user } = useAuth();
+    const { date, log, habits, sessions, logbookEntries } = day;
+    const hasData = log || habits.length > 0 || sessions.length > 0 || (logbookEntries && logbookEntries.length > 0);
+
+    // Helper to get logbook title
+    const getLogbookTitle = (id: string) => {
+        return user?.logbooks?.find(lb => lb.id === id)?.title || id;
+    };
 
     // Check if this day falls within any zones
     const dayZones = zones.filter(zone =>
@@ -108,7 +115,45 @@ export default function TimelineDayCard({ day, zones = [] }: TimelineDayCardProp
                     </div>
                 )}
 
-                {/* 2. Habits Grid */}
+                {/* 2. Logbook Entries (Gym, Study, etc.) */}
+                {logbookEntries && logbookEntries.length > 0 && (
+                    <div className="space-y-2">
+                        {logbookEntries.map(entry => {
+                            const title = getLogbookTitle(entry.logbookId);
+                            // Simple icon logic based on title keywords
+                            const icon = title.toLowerCase().includes('gym') || title.toLowerCase().includes('workout') ? <Dumbbell size={16} /> :
+                                title.toLowerCase().includes('study') || title.toLowerCase().includes('learn') ? <Book size={16} /> :
+                                    <PenTool size={16} />;
+
+                            return (
+                                <div key={entry.id} className="p-4 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm">
+                                    <div className="flex items-center gap-2 mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                        <div className="p-1.5 rounded-md bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
+                                            {icon}
+                                        </div>
+                                        <span>{title}</span>
+                                    </div>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-2 gap-x-4 text-sm">
+                                        {Object.entries(entry.data).map(([key, value]) => {
+                                            // Skip empty values
+                                            if (value === undefined || value === null || value === '') return null;
+                                            return (
+                                                <div key={key} className="flex flex-col">
+                                                    <span className="text-xs text-gray-400 capitalize">{key}</span>
+                                                    <span className="text-gray-900 dark:text-gray-100 font-medium truncate">
+                                                        {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value.toString()}
+                                                    </span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+
+                {/* 3. Habits Grid */}
                 {habits.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                         {habits.map(habit => (

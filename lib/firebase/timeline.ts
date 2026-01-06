@@ -4,6 +4,7 @@ import { collection, query, where, getDocs, orderBy, Timestamp } from 'firebase/
 import { DailyLog } from '@/lib/types/log';
 import { HabitEntry } from '@/lib/types/habit';
 import { SessionEntry } from '@/lib/types/session';
+import { LogbookEntry } from '@/lib/types/logbook';
 import { startOfDay, endOfDay, isSameDay, format } from 'date-fns';
 
 export interface DayContext {
@@ -11,6 +12,7 @@ export interface DayContext {
     log: DailyLog | null;
     habits: HabitEntry[];
     sessions: SessionEntry[];
+    logbookEntries: LogbookEntry[];
 }
 
 export const getTimelineData = async (userId: string, startDate: Date, endDate: Date): Promise<DayContext[]> => {
@@ -27,7 +29,7 @@ export const getTimelineData = async (userId: string, startDate: Date, endDate: 
     const logsSnapshot = await getDocs(logsQuery);
     const logs = logsSnapshot.docs.map(doc => ({ ...doc.data(), date: doc.data().date.toDate() } as DailyLog));
 
-    // 2. Fetch Session Entries
+    // 2. Fetch Session Entries (Legacy)
     const sessionsRef = collection(db, 'users', userId, 'sessionEntries');
     const sessionsQuery = query(sessionsRef, where('date', '>=', startTimestamp), where('date', '<=', endTimestamp));
     const sessionsSnapshot = await getDocs(sessionsQuery);
@@ -40,8 +42,6 @@ export const getTimelineData = async (userId: string, startDate: Date, endDate: 
     } as SessionEntry));
 
     // 3. Fetch Habit Entries
-    // Habits are stored by ID usually like userId_habitId_dateStr, or in a collection if changed?
-    // Based on previous files, habit entries are documents in 'habitEntries' collection with a 'date' field.
     const habitsRef = collection(db, 'users', userId, 'habitEntries');
     const habitsQuery = query(habitsRef, where('date', '>=', startTimestamp), where('date', '<=', endTimestamp));
     const habitsSnapshot = await getDocs(habitsQuery);
@@ -50,11 +50,25 @@ export const getTimelineData = async (userId: string, startDate: Date, endDate: 
         date: doc.data().date.toDate()
     } as HabitEntry));
 
-    // 4. Aggegate by Date
-    const dayMap = new Map<string, DayContext>();
+    // 4. Fetch Logbook Entries (New)
+    const logbooksRef = collection(db, 'users', userId, 'logbookEntries');
+    const logbooksQuery = query(
+        logbooksRef,
+        where('date', '>=', startTimestamp),
+        where('date', '<=', endTimestamp),
+        where('deleted', '!=', true)
+    );
+    const logbooksSnapshot = await getDocs(logbooksQuery);
+    const logbookEntries = logbooksSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        date: doc.data().date.toDate(),
+        createdAt: doc.data().createdAt.toDate(),
+        updatedAt: doc.data().updatedAt.toDate()
+    } as LogbookEntry));
 
-    // Initialize days in range? Or just sparse? "Vertical scrollable timeline of all user data" implies we show days with data.
-    // Let's iterate through the gathered data and bucket them.
+    // 5. Aggregate by Date
+    const dayMap = new Map<string, DayContext>();
 
     const addToMap = (date: Date) => {
         const key = format(date, 'yyyy-MM-dd');
@@ -63,7 +77,8 @@ export const getTimelineData = async (userId: string, startDate: Date, endDate: 
                 date: startOfDay(date),
                 log: null,
                 habits: [],
-                sessions: []
+                sessions: [],
+                logbookEntries: []
             });
         }
         return dayMap.get(key)!;
@@ -82,6 +97,11 @@ export const getTimelineData = async (userId: string, startDate: Date, endDate: 
     habits.forEach(habit => {
         const day = addToMap(habit.date);
         day.habits.push(habit);
+    });
+
+    logbookEntries.forEach(entry => {
+        const day = addToMap(entry.date);
+        day.logbookEntries.push(entry);
     });
 
     // Convert map to sorted array (newest first)
@@ -112,15 +132,8 @@ const getDemoTimelineData = (userId: string, startDate: Date, endDate: Date): Da
                     { id: 'mock-h1', userId, habitId: 'h1', date: new Date(current), done: Math.random() > 0.5, notes: '', createdAt: new Date(current), updatedAt: new Date(current) },
                     { id: 'mock-h2', userId, habitId: 'h2', date: new Date(current), done: Math.random() > 0.5, notes: 'Felt tired', createdAt: new Date(current), updatedAt: new Date(current) }
                 ].filter(h => h.done),
-                sessions: Math.random() > 0.7 ? [{
-                    id: 's1',
-                    userId,
-                    date: new Date(current),
-                    sessionType: 'Gym - Push Day',
-                    exercises: [],
-                    createdAt: new Date(current),
-                    updatedAt: new Date(current)
-                }] : []
+                sessions: [],
+                logbookEntries: [] // Demo logic for logbook entries could be added here
             });
         }
         current.setDate(current.getDate() - 1);
