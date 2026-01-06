@@ -39,166 +39,130 @@ export default function LandingPage() {
 
             <main className="flex-1">
                 {/* Hero Section */}
-                <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-                    <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight" style={{ color: 'var(--text-primary)' }}>
-                        A quiet mirror.
+                <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
+                    <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight leading-tight" style={{ color: 'var(--text-primary)' }}>
+                        A quiet mirror for your life.
                     </h2>
-                    <p className="text-xl md:text-2xl mb-10 max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                        Observe your life&apos;s patterns without judgment. <br className="hidden md:block" />
-                        No scores. No streaks. No advice.
+                    <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                        SYNAPSE is an observational system for sleep, habits, and states.
                     </p>
+
+                    <div className="flex flex-col items-center gap-2 mb-12 text-sm font-medium tracking-wide border-t border-b border-gray-100 dark:border-gray-800 py-4 max-w-lg mx-auto" style={{ color: 'var(--text-tertiary)' }}>
+                        <span className='opacity-70'>NO SCORES • NO STREAKS • NO ADVICE</span>
+                    </div>
+
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link href="/login" className="btn-primary text-lg px-8 py-4">
-                            Log In / Demo
+                        <Link href="/login" className="btn-primary text-lg px-8 py-3 font-normal bg-gray-900 dark:bg-gray-100 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
+                            View Demo
                         </Link>
-                        <a href="#system" className="btn-secondary text-lg px-8 py-4">
-                            The System
+                        <a href="#system" className="btn-secondary text-lg px-8 py-3 font-normal">
+                            How it works
                         </a>
                     </div>
+                    <p className="mt-4 text-xs opacity-50">No account required for demo.</p>
                 </section>
 
-                {/* The System (Three Pillars) */}
+                {/* The System */}
                 <section id="system" className="py-20" style={{ backgroundColor: 'var(--bg-secondary)' }}>
                     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center mb-16">
-                            <h3 className="text-3xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
-                                The Dual Dashboard System
+                            <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
+                                Separating Action from Reflection
                             </h3>
-                            <p className="text-lg max-w-2xl mx-auto" style={{ color: 'var(--text-secondary)' }}>
-                                Separating <strong>Action</strong> (doing) from <strong>Reflection</strong> (analyzing) to reduce anxiety.
+                            <p className="text-lg max-w-2xl mx-auto leading-relaxed opacity-80" style={{ color: 'var(--text-secondary)' }}>
+                                Most trackers mix data entry with judgment. SYNAPSE separates them to reduce anxiety and cognitive load.
                             </p>
                         </div>
 
-                        <div className="grid md:grid-cols-3 gap-8">
-                            {/* Card 1: Patterns */}
-                            <div className="bg-white dark:bg-gray-900 p-8 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-4 opacity-10 font-bold text-6xl group-hover:opacity-20 transition-opacity">
-                                    01
+                        <div className="grid md:grid-cols-2 gap-12">
+                            {/* Action Mode */}
+                            <div className="p-8 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <div className="text-sm font-bold uppercase tracking-wider mb-2 text-emerald-600 dark:text-emerald-400">
+                                    Action Mode
                                 </div>
-                                <div className="text-4xl mb-6">📊</div>
-                                <h4 className="text-2xl font-bold mb-2 text-indigo-500">
-                                    Patterns
-                                </h4>
-                                <p className="text-sm font-semibold uppercase tracking-wider mb-4 opacity-60">
+                                <h4 className="text-xl font-bold mb-4">Fast Logging</h4>
+                                <p className="mb-6 opacity-80">
+                                    Capture data without friction. No charts, no feedback, no "good job" messages. Just operational recording of what is happening.
+                                </p>
+                                <ul className="space-y-2 text-sm opacity-70">
+                                    <li className="flex gap-2"><span>•</span><span>Tracks habits and exposures</span></li>
+                                    <li className="flex gap-2"><span>•</span><span>Neutral interface</span></li>
+                                    <li className="flex gap-2"><span>•</span><span>Zero judgment</span></li>
+                                </ul>
+                            </div>
+
+                            {/* Reflection Mode */}
+                            <div className="p-8 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <div className="text-sm font-bold uppercase tracking-wider mb-2 text-indigo-600 dark:text-indigo-400">
                                     Reflection Mode
-                                </p>
-                                <p style={{ color: 'var(--text-secondary)' }}>
-                                    Visualize long-term trends. See how sleep affects anxiety, or how workouts impact focus.
-                                </p>
-                            </div>
-
-                            {/* Card 2: Live Log */}
-                            <div className="bg-white dark:bg-gray-900 p-8 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-4 opacity-10 font-bold text-6xl group-hover:opacity-20 transition-opacity">
-                                    02
                                 </div>
-                                <div className="text-4xl mb-6">⚡</div>
-                                <h4 className="text-2xl font-bold mb-2 text-amber-500">
-                                    Live Log
-                                </h4>
-                                <p className="text-sm font-semibold uppercase tracking-wider mb-4 opacity-60">
-                                    Action Mode
+                                <h4 className="text-xl font-bold mb-4">Pattern Recognition</h4>
+                                <p className="mb-6 opacity-80">
+                                    Review data when you are ready. See how variables move together over time (e.g. sleep duration and focus levels).
                                 </p>
-                                <p style={{ color: 'var(--text-secondary)' }}>
-                                    A live notebook for workouts and study sessions. No charts, just pure operational recording.
-                                </p>
-                            </div>
-
-                            {/* Card 3: Daily Check */}
-                            <div className="bg-white dark:bg-gray-900 p-8 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-4 opacity-10 font-bold text-6xl group-hover:opacity-20 transition-opacity">
-                                    03
-                                </div>
-                                <div className="text-4xl mb-6">📅</div>
-                                <h4 className="text-2xl font-bold mb-2 text-emerald-500">
-                                    Daily Check
-                                </h4>
-                                <p className="text-sm font-semibold uppercase tracking-wider mb-4 opacity-60">
-                                    Action Mode
-                                </p>
-                                <p style={{ color: 'var(--text-secondary)' }}>
-                                    Track habit presence. Just mark what happened. No broken streaks, no guilt trips.
-                                </p>
+                                <ul className="space-y-2 text-sm opacity-70">
+                                    <li className="flex gap-2"><span>•</span><span>Lag-aware correlations</span></li>
+                                    <li className="flex gap-2"><span>•</span><span>Weekly exposure distributions</span></li>
+                                    <li className="flex gap-2"><span>•</span><span>Scientific observation</span></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {/* Who This Is For */}
-                <section className="py-20">
+                {/* Trust Signals (Anti-Features) */}
+                <section className="py-20 border-t border-gray-200 dark:border-gray-800">
                     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="card p-8 md:p-12 border-l-4 border-indigo-500">
-                            <h3 className="text-2xl font-bold mb-6" style={{ color: 'var(--text-primary)' }}>
-                                Designed for Transition
-                            </h3>
-                            <div className="grid md:grid-cols-2 gap-8 text-lg" style={{ color: 'var(--text-secondary)' }}>
-                                <ul className="space-y-4">
-                                    <li className="flex items-start">
-                                        <span className="mr-3 text-indigo-500">•</span>
-                                        <span>Navigating burnout or high stress</span>
-                                    </li>
-                                    <li className="flex items-start">
-                                        <span className="mr-3 text-indigo-500">•</span>
-                                        <span>Recovering from major life changes</span>
-                                    </li>
-                                </ul>
-                                <ul className="space-y-4">
-                                    <li className="flex items-start">
-                                        <span className="mr-3 text-indigo-500">•</span>
-                                        <span>Sensitive to &quot;gamified&quot; pressure</span>
-                                    </li>
-                                    <li className="flex items-start">
-                                        <span className="mr-3 text-indigo-500">•</span>
-                                        <span>Seeking clarity, not optimization</span>
-                                    </li>
-                                </ul>
+                        <h3 className="text-2xl font-bold mb-10 text-center">What SYNAPSE does not do</h3>
+                        <div className="grid md:grid-cols-3 gap-8 text-center sm:text-left">
+                            <div>
+                                <h4 className="font-bold mb-2 opacity-90">No Predictions</h4>
+                                <p className="text-sm opacity-70 leading-relaxed">The system will not tell you what to do. It assumes you are the expert on your own life.</p>
+                            </div>
+                            <div>
+                                <h4 className="font-bold mb-2 opacity-90">No Gamification</h4>
+                                <p className="text-sm opacity-70 leading-relaxed">There are no points, levels, or broken streaks. Missing a day is just data, not a failure.</p>
+                            </div>
+                            <div>
+                                <h4 className="font-bold mb-2 opacity-90">No Algorithms</h4>
+                                <p className="text-sm opacity-70 leading-relaxed">Your data feed is chronological and unfiltered. We do not optimize for engagement.</p>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {/* What This Is Not */}
-                <section className="py-20" style={{ backgroundColor: 'var(--bg-secondary)' }}>
-                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                        <h3 className="text-3xl font-bold mb-12" style={{ color: 'var(--text-primary)' }}>
-                            Anti-Features
+                {/* Audience */}
+                <section className="py-20 bg-gray-50 dark:bg-gray-900/50">
+                    <div className="max-w-3xl mx-auto px-4 text-center">
+                        <p className="text-lg font-medium mb-6 opacity-60 uppercase tracking-widest text-xs">Intended Audience</p>
+                        <h3 className="text-2xl md:text-3xl font-bold mb-8 leading-snug">
+                            Built for individuals navigating high cognitive load, transition, or disruption.
                         </h3>
-                        <div className="grid md:grid-cols-3 gap-8">
-                            <div>
-                                <div className="text-2xl mb-2 text-gray-400">✗</div>
-                                <p className="text-sm opacity-70">Missed a day? It doesn&apos;t matter. Data is just data.</p>
-                            </div>
-                            <div>
-                                <div className="text-2xl mb-2 text-gray-400">✗</div>
-                                <p className="text-sm opacity-70">You are not a number. There is no &quot;Health Score&quot; here.</p>
-                            </div>
-                            <div>
-                                <div className="text-2xl mb-2 text-gray-400">✗</div>
-                                <p className="text-sm opacity-70">We don&apos;t tell you to drink water. We just show you if you did.</p>
-                            </div>
-                        </div>
+                        <p className="opacity-70 max-w-xl mx-auto leading-relaxed">
+                            This is not a productivity tool. It is a clarity tool. It is designed for those who need to see "what is" before they can decide "what should be."
+                        </p>
                     </div>
                 </section>
 
                 {/* CTA Section */}
-                <section className="py-24 text-center">
+                <section className="py-24 text-center border-t border-gray-200 dark:border-gray-800">
                     <div className="max-w-3xl mx-auto px-4">
                         <h3 className="text-3xl font-bold mb-6" style={{ color: 'var(--text-primary)' }}>
-                            Start observing today.
+                            See the system.
                         </h3>
-                        <p className="mb-10 text-xl" style={{ color: 'var(--text-secondary)' }}>
-                            Use the <strong>Live Demo</strong> to explore without creating an account.
+                        <p className="mb-10 text-lg opacity-70 max-w-lg mx-auto">
+                            The demo allows you to explore the interface without creating an account.
                         </p>
-                        <Link href="/login" className="btn-primary text-lg px-10 py-4 shadow-xl">
-                            Enter System
+                        <Link href="/login" className="btn-primary text-lg px-10 py-4 shadow-none bg-gray-900 dark:bg-gray-100 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
+                            Explore Demo
                         </Link>
                     </div>
                 </section>
             </main>
 
-            <div className="py-12 text-center text-sm opacity-50" style={{ color: 'var(--text-secondary)' }}>
-                &quot;A mirror, not a mentor. See yourself clearly.&quot;
-            </div>
+            <footer className="py-12 text-center text-xs opacity-40 border-t border-gray-100 dark:border-gray-800">
+                <p>SYNAPSE v0.9 • Observational Intelligence</p>
+            </footer>
         </div>
     );
 }
