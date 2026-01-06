@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Trash2, Edit2, Check, X } from 'lucide-react';
+import { Plus, Trash2, Edit2, Check, X, Copy } from 'lucide-react';
 import { LogbookConfig, LogbookColumn, LogbookColumnType } from '@/lib/types/logbook';
 
 interface LogbookManagerProps {
@@ -72,6 +72,17 @@ export default function LogbookManager({ logbooks, onUpdate }: LogbookManagerPro
         if (confirm('Delete this logbook? Data will remain but definition will be lost.')) {
             onUpdate(logbooks.filter(l => l.id !== id));
         }
+    };
+
+    const handleDuplicateLogbook = (logbook: LogbookConfig) => {
+        const duplicated: LogbookConfig = {
+            ...logbook,
+            id: crypto.randomUUID(),
+            title: `${logbook.title} (Copy)`,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        };
+        onUpdate([...logbooks, duplicated]);
     };
 
     return (
@@ -161,10 +172,13 @@ export default function LogbookManager({ logbooks, onUpdate }: LogbookManagerPro
                                 <p className="text-xs text-gray-500">{lb.columns.length} columns</p>
                             </div>
                             <div className="flex gap-2">
-                                <button onClick={() => handleEditStart(lb)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-400 hover:text-indigo-500">
+                                <button onClick={() => handleEditStart(lb)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-400 hover:text-indigo-500" title="Edit">
                                     <Edit2 size={16} />
                                 </button>
-                                <button onClick={() => handleDeleteLogbook(lb.id)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-400 hover:text-red-500">
+                                <button onClick={() => handleDuplicateLogbook(lb)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-400 hover:text-blue-500" title="Duplicate">
+                                    <Copy size={16} />
+                                </button>
+                                <button onClick={() => handleDeleteLogbook(lb.id)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-400 hover:text-red-500" title="Delete">
                                     <Trash2 size={16} />
                                 </button>
                             </div>
