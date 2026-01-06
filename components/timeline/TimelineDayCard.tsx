@@ -1,14 +1,21 @@
 import { DayContext } from '@/lib/firebase/timeline';
-import { format } from 'date-fns';
-import { FileText, Activity, CheckCircle, Moon, Zap, Brain, Wind, Tag } from 'lucide-react';
+import { ContextZone } from '@/lib/types/context';
+import { format, isWithinInterval } from 'date-fns';
+import { FileText, Activity, CheckCircle, Moon, Zap, Brain, Wind, Tag, MapPin } from 'lucide-react';
 
 interface TimelineDayCardProps {
     day: DayContext;
+    zones?: ContextZone[];
 }
 
-export default function TimelineDayCard({ day }: TimelineDayCardProps) {
+export default function TimelineDayCard({ day, zones = [] }: TimelineDayCardProps) {
     const { date, log, habits, sessions } = day;
     const hasData = log || habits.length > 0 || sessions.length > 0;
+
+    // Check if this day falls within any zones
+    const dayZones = zones.filter(zone =>
+        isWithinInterval(date, { start: zone.startDate, end: zone.endDate })
+    );
 
     if (!hasData) return null;
 
@@ -17,13 +24,36 @@ export default function TimelineDayCard({ day }: TimelineDayCardProps) {
             {/* Date Marker */}
             <div className="absolute -left-1.5 top-0 w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-700 ring-4 ring-white dark:ring-black" />
 
-            <div className="mb-2">
-                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                    {format(date, 'EEEE, MMM d')}
-                </span>
-                <span className="ml-2 text-xs text-gray-500">
-                    {format(date, 'yyyy')}
-                </span>
+            <div className="mb-2 flex items-center gap-2 flex-wrap">
+                <div>
+                    <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                        {format(date, 'EEEE, MMM d')}
+                    </span>
+                    <span className="ml-2 text-xs text-gray-500">
+                        {format(date, 'yyyy')}
+                    </span>
+                </div>
+
+                {/* Zone Badges */}
+                {dayZones.length > 0 && (
+                    <div className="flex gap-1">
+                        {dayZones.map(zone => (
+                            <div
+                                key={zone.id}
+                                className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
+                                style={{
+                                    backgroundColor: `${zone.color}20`,
+                                    color: zone.color,
+                                    border: `1px solid ${zone.color}40`
+                                }}
+                                title={`Context: ${zone.label}`}
+                            >
+                                <MapPin size={10} />
+                                <span>{zone.label}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             <div className="space-y-4">

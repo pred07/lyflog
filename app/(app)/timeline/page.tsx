@@ -3,12 +3,15 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { getTimelineData, DayContext } from '@/lib/firebase/timeline';
+import { getContextZones } from '@/lib/firebase/context';
+import { ContextZone } from '@/lib/types/context';
 import TimelineDayCard from '@/components/timeline/TimelineDayCard';
 import { subDays, startOfDay, endOfDay } from 'date-fns';
 
 export default function TimelinePage() {
     const { user } = useAuth();
     const [days, setDays] = useState<DayContext[]>([]);
+    const [zones, setZones] = useState<ContextZone[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -19,8 +22,13 @@ export default function TimelinePage() {
                 const end = new Date();
                 const start = subDays(end, 29);
 
-                const timelineData = await getTimelineData(user.userId, start, end);
+                const [timelineData, userZones] = await Promise.all([
+                    getTimelineData(user.userId, start, end),
+                    getContextZones(user.userId)
+                ]);
+
                 setDays(timelineData);
+                setZones(userZones);
             } catch (error) {
                 console.error('Error loading timeline:', error);
             } finally {
@@ -67,7 +75,7 @@ export default function TimelinePage() {
                     </div>
                 ) : (
                     days.map((day) => (
-                        <TimelineDayCard key={day.date.toISOString()} day={day} />
+                        <TimelineDayCard key={day.date.toISOString()} day={day} zones={zones} />
                     ))
                 )}
             </div>
