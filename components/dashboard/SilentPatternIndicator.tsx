@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { CorrelationResult } from '@/lib/analysis/stats';
 import { Sparkles, X } from 'lucide-react';
+import ConfidenceBadge from '@/components/shared/ConfidenceBadge';
 
 interface SilentPatternIndicatorProps {
     patterns: CorrelationResult[];
@@ -69,12 +70,13 @@ export default function SilentPatternIndicator({ patterns }: SilentPatternIndica
                         <div className="space-y-4 max-h-[60vh] overflow-y-auto">
                             {patterns.map((p, i) => (
                                 <div key={i} className="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800">
-                                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200 mb-1">
+                                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200 mb-2">
                                         &quot;{getNeutralStatement(p)}&quot;
                                     </p>
+                                    <ConfidenceBadge sampleSize={p.sampleSize} />
                                     <div className="flex justify-between items-center text-xs text-gray-400 mt-2">
-                                        <span>{p.metricX} vs {p.metricY}</span>
-                                        <span>r={p.coefficient.toFixed(2)} (n={p.sampleSize})</span>
+                                        <span>{p.metricX} ↔ {p.metricY}</span>
+                                        <span>r={p.coefficient.toFixed(2)}</span>
                                     </div>
                                 </div>
                             ))}

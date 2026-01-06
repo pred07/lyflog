@@ -1,217 +1,122 @@
-You are building SYNAPSE — a science-first personal observability system that acts as a "quiet mirror" for people navigating difficult life phases (burnout, grief, transition).
+🔹 SYNAPSE — Advanced Enhancement Prompt (Concept Only)
 
-CORE PHILOSOPHY (Never violate):
-- Observation > Intervention: See patterns, never prescribe action
-- Neutrality: No "good/bad" labels, no scores, no gamification
-- Privacy: User data never leaves their control
-- Restraint: You are a microscope, not a coach
+Enhance SYNAPSE into a science-first personal observability system that helps users reduce harmful habits and stabilize healthy ones through awareness, exposure visibility, and pattern recognition — not motivation, discipline, or advice.
 
-GOLDEN RULE:
-Before adding ANY feature, ask: "Does this describe WHAT IS or prescribe WHAT SHOULD BE?"
-- WHAT IS → Build it
-- WHAT SHOULD BE → Reject it
+Core constraints (non-negotiable):
 
----
+No goals, no streaks, no scores, no rankings
 
-TECH STACK:
-- Next.js 14 (App Router)
-- Firebase Firestore + Auth
-- Tailwind CSS (custom design system)
-- Recharts for data viz
-- date-fns for time handling
+No motivational language, warnings, or “you should”
 
----
+The system never recommends actions — it only reveals patterns
 
-APPROVED FEATURES FOR v1.5 (Build these):
+Meaning is user-defined; interpretation is system-neutral
 
-1. CONTEXT TIMELINE (Priority 1)
-- Vertical scrollable timeline of all user data
-- Each day = expandable card showing: metrics, habits, sessions, notes
-- Hover interaction: Hovering "Anxiety: 4" highlights all other days with Anxiety 4+
-- No analysis, pure layering of information
-- Implementation: Infinite scroll, virtualized list for performance
+Enhancements to implement conceptually:
 
-2. SILENT PATTERN INDICATORS
-- After 14+ days, show small • dot on Patterns tab when correlation detected
-- Triggers: correlation > 0.6 AND sample size > 20 days
-- Click dot → Shows neutral statement: "Sleep duration was consistently higher on days following meditation"
-- Never use: percentages, "improved", "better", or prescriptive language
+Universal Habit & Exposure Tracking
 
-3. CORRELATION CONFIDENCE INDICATORS
-- Every correlation shows data quality visually:
-  • Solid dot = 50+ days (high confidence)
-  • Half dot = 20-49 days (emerging pattern)
-  • Empty dot = <20 days (insufficient data)
-- Text: "Based on 23 days. Needs 27 more for high confidence."
+Allow tracking of all personal habits (gym, study, meditation, routines) and all exposures (caffeine, alcohol, nicotine, porn, screen time, etc.)
 
-4. REVERSE ENGINEERING SEARCH
-- Let users search: "When did I feel focused?" (Focus 4-5/5)
-- Show all matching days
-- Below, show neutral frequency counts:
-  - "On 82% of these days: Sleep 7+ hrs"
-  - "On 65% of these days: Meditation logged"
-- No causation claims, only frequencies
+Clearly separate:
 
-5. ISOLATION MODE (Context Zones)
-- Let users tag date ranges: "Vacation", "Exam Week", etc.
-- Dashboard toggle: ☐ Include context zones
-- Zones appear as shaded regions on charts
-- Standard data science practice for handling outliers
+Practices (things users do)
 
-6. METRIC RELATIONSHIPS MAP
-- Visual graph: nodes = metrics, edges = correlation strength
-- Click node → Highlights connected metrics
-- Label: "Frequently co-occurs" (never "causes" or "improves")
+Exposures (things that act on users)
 
-7. SIMILAR PAST DAYS (not predictions)
-- After today's log: "Today's pattern resembles 4 past days"
-- Shows those days as reference (retrospective, not predictive)
-- User can see what came next naturally
+No moral labels (good/bad); only frequency, timing, and context
 
-8. LAGGED ASSOCIATION VISUALS
-- Timeline showing: Day 1 Gym → Day 3 Sleep change
-- Text: "Sleep changes tend to appear 1-2 days after gym sessions"
-- No percentages, no "better"
+Dual Action vs Reflection System
 
-9. DIFFICULTY TAGGING (not scoring)
-- After habit check: Optional "How did it feel?" → Easy/Neutral/Hard
-- Show raw counts: "Meditation: Marked hard 12 times in weeks 1-2, easy 8 times in weeks 3-4"
-- No composite scores
+Action Mode: fast, operational logging (before/during gym, study, habits)
 
-10. VOICE LOGGING (input only)
-- Speech-to-text: "6 hours sleep, anxiety 3, 2 coffees"
-- Pre-fills form → User confirms
-- No inference, no suggestions
+Reflection Mode: dashboards, correlations, timelines
 
----
+Never mix action screens with analytics or feedback
 
-FORBIDDEN FEATURES (Never build):
+Exposure Reduction via Science (Not Motivation)
 
-❌ Any "% improvement" language
-❌ "What should I focus on?" / The Oracle
-❌ Predictions about future outcomes
-❌ Habit streaks or scores
-❌ Any prescriptive language ("you should", "try this")
-❌ Mood-reactive UI (colors changing based on anxiety level)
-❌ Notifications (except single optional haptic at 9 PM)
-❌ Rankings or "best practices"
-❌ Comparisons to others
-❌ Goals or targets set by the system
+Show cumulative exposure over time (weekly/monthly distributions)
 
----
+Visualize delayed effects (Day X exposure → Day X+1/X+2 changes)
 
-LANGUAGE GUIDELINES:
+Add silent friction (extra confirmation step for exposure logging)
 
-✅ ALLOWED:
-- "consistently higher/lower"
-- "tends to appear"
-- "frequently co-occurs"
-- "was observed"
-- "on X% of days"
-- "resembles"
-- "based on N days"
+No limits, targets, or “reduction goals”
 
-❌ FORBIDDEN:
-- "improved by"
-- "you should"
-- "better/worse"
-- "optimal"
-- "recommended"
-- "try this"
-- "goal"
-- "streak"
+Silent Intelligence Layer
 
----
+After sufficient data (≥14 days), surface quiet pattern indicators
 
-UI/UX PRINCIPLES:
+Use neutral phrasing like:
 
-1. CALM BY DEFAULT
-- Soft colors, no bright reds/greens
-- Animations: subtle, breath-paced (no sudden movements)
-- Default to collapsed/minimal views
+“This condition appears frequently after…”
 
-2. ALWAYS SHOW UNCERTAINTY
-- Every insight includes sample size
-- Show confidence indicators
-- Never hide data gaps
+“These days share similar inputs”
 
-3. EXITS EVERYWHERE
-- Complex views have "Simplify" button
-- Option to hide numbers, show only shapes (Ghost Mode)
-- Can dismiss any insight permanently
+Never use percentages framed as “improvement” or “decline”
 
-4. MOBILE-FIRST
-- Sticky bottom navigation
-- Thumb-friendly touch targets
-- No hamburger menus for core functions
+Context Timeline (Life-River View)
 
-5. TEMPORAL HONESTY
-- Every chart shows date range prominently
-- No timeless claims
+A chronological daily stream showing:
 
----
+habits, sessions, states, exposures, notes
 
-EXISTING STRUCTURE TO PRESERVE:
+Clicking a day expands full context
 
-/habits - Daily presence tracking (✔/✖, no streaks)
-/session - Live logging during activities
-/dashboard - Pattern visualization (Patterns tab)
-/log - Quantitative metric entry
-/logbook - Structured archival
-/trends - Correlation analysis
-/profile - Configuration
+Enable highlighting related days (pattern similarity)
 
-Current metrics:
-- Core: Sleep, Workout duration, Meditation
-- States: Anxiety, Focus, Energy (1-5 scale)
-- Exposures: Caffeine, Screen Time
+Lag-Aware Correlation & Confidence
 
----
+Show correlations with:
 
-DATA HANDLING:
+sample size visibility
 
-- Run correlations server-side (not real-time)
-- Use Pearson correlation for continuous metrics
-- Require minimum 20 data points before showing patterns
-- Store context zones as metadata on date ranges
-- Voice transcription: local processing preferred, fallback to Firebase ML
+confidence levels (early / moderate / stable)
 
----
+Emphasize uncertainty over certainty
 
-EXAMPLES OF CORRECT IMPLEMENTATION:
+No causal claims
 
-GOOD: "Sleep duration averaged 7.2 hours on days following meditation, compared to 6.1 hours on other days. Based on 34 days."
+Personal Meaning Layer (Optional, User-Owned)
 
-BAD: "Meditation improved your sleep by 18%! Keep it up! 🎉"
+Allow users to add personal annotations like “PR”, “felt strong”, “hard day”
 
-GOOD: "This pattern resembles April 12, April 19, May 3 (all followed by low-focus days)"
+System never reacts to, aggregates, or evaluates these labels
 
-BAD: "Tomorrow you'll probably have low focus. Try meditating tonight."
+Multiple Habits Without Overload
 
-GOOD: [Chart shows faded dot] "Insufficient data. Log 15 more days to confirm pattern."
+Group habits into small Habit Sets (2–5 max per group)
 
-BAD: [Chart shows solid line with no confidence indicator]
+Track presence (✔ / ✖), not completion or success
 
----
+Weekly/monthly views show frequency only
 
-WHEN USER ASKS FOR ADVICE:
+Advanced Logbook (Excel-like, Neutral)
 
-Redirect to observation:
-❌ "You should sleep more"
-✅ "On days with 7+ hours sleep, your focus ratings averaged 4.1 vs 2.8 on shorter sleep days"
+Support structured logs for gym, study, medication, symptoms, projects
 
----
+Tables with strict field types (text, number, checkbox, notes)
 
-BUILD PRIORITY ORDER:
+No formulas, scores, or auto-evaluations
 
-Sprint 1: Context Timeline, Correlation Confidence
-Sprint 2: Silent Indicators, Reverse Engineering
-Sprint 3: Isolation Mode, Relationships Map
-Sprint 4: Voice Logging, Similar Past Days
+Ethical Guardrails
 
----
+Explicitly state: “SYNAPSE observes, it does not advise”
 
-REMEMBER: SYNAPSE is a personal data microscope. Microscopes reveal structure — they never give advice.
+Health data shown for awareness only, not guidance
 
-If a feature makes you feel helpful, it's probably wrong.
-If a feature makes the user see clearly, it's probably right.
+Easy data export and deletion
+
+Design tone:
+
+Calm, minimal, non-reactive
+
+No urgency, no praise, no punishment
+
+Emphasize clarity, stability, and time
+
+North Star:
+
+Help users reduce harmful patterns and stabilize healthy ones
+by making reality visible — not by pushing change.

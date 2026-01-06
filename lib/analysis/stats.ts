@@ -1,6 +1,16 @@
 
 import { DailyLog } from '@/lib/types/log';
 
+// Data Quality Thresholds (Silent Intelligence Layer)
+export const MIN_DAYS_FOR_PATTERNS = 14; // Minimum days before showing any patterns
+export const MIN_SAMPLE_SIZE = 20; // Minimum data points for correlation
+export const MIN_CORRELATION = 0.6; // Minimum correlation strength to show
+export const HIGH_CONFIDENCE_THRESHOLD = 50; // Days needed for high confidence
+export const MODERATE_CONFIDENCE_THRESHOLD = 35; // Days needed for moderate confidence
+export const EMERGING_CONFIDENCE_THRESHOLD = 20; // Days needed for emerging pattern
+
+export type ConfidenceLevel = 'high' | 'moderate' | 'emerging' | 'insufficient';
+
 export interface DataPoint {
     x: number | undefined;
     y: number | undefined;
@@ -41,6 +51,56 @@ export const getMetricValue = (log: DailyLog, metric: string): number | undefine
     if (log.exposures?.[metric] !== undefined) return log.exposures[metric];
 
     return undefined;
+};
+
+/**
+ * Determines if a correlation should be shown based on data quality thresholds.
+ * Implements "Silent Intelligence Layer" - patterns only revealed after sufficient data.
+ */
+export const shouldShowCorrelation = (
+    correlation: number,
+    sampleSize: number,
+    totalDaysLogged: number
+): boolean => {
+    return (
+        totalDaysLogged >= MIN_DAYS_FOR_PATTERNS &&
+        Math.abs(correlation) >= MIN_CORRELATION &&
+        sampleSize >= MIN_SAMPLE_SIZE
+    );
+};
+
+/**
+ * Gets confidence level based on sample size.
+ * Used for visual indicators (solid/half/empty dots).
+ */
+export const getConfidenceLevel = (sampleSize: number): ConfidenceLevel => {
+    if (sampleSize >= HIGH_CONFIDENCE_THRESHOLD) return 'high';
+    if (sampleSize >= MODERATE_CONFIDENCE_THRESHOLD) return 'moderate';
+    if (sampleSize >= EMERGING_CONFIDENCE_THRESHOLD) return 'emerging';
+    return 'insufficient';
+};
+
+/**
+ * Calculates how many more days are needed for high confidence.
+ */
+export const getDaysNeededForHighConfidence = (sampleSize: number): number => {
+    return Math.max(0, HIGH_CONFIDENCE_THRESHOLD - sampleSize);
+};
+
+/**
+ * Generates neutral statement for pattern description.
+ * Never uses "improved", "better", "worse" - only observational language.
+ */
+export const generateNeutralStatement = (
+    metricX: string,
+    metricY: string,
+    correlation: number,
+    sampleSize: number
+): string => {
+    const direction = correlation > 0 ? 'higher' : 'lower';
+    const strength = Math.abs(correlation) > 0.8 ? 'consistently' : 'frequently';
+
+    return `${metricX} was ${strength} ${direction} on days with elevated ${metricY}. Based on ${sampleSize} days.`;
 };
 
 /**
