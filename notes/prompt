@@ -1,122 +1,86 @@
-🔹 SYNAPSE — Advanced Enhancement Prompt (Concept Only)
+🔹 SYNAPSE — Landing Page Refinement Prompt (Concept Only)
 
-Enhance SYNAPSE into a science-first personal observability system that helps users reduce harmful habits and stabilize healthy ones through awareness, exposure visibility, and pattern recognition — not motivation, discipline, or advice.
+Refine the SYNAPSE landing page to communicate clarity, scientific intent, and calm confidence within 10–15 seconds of reading.
 
-Core constraints (non-negotiable):
+Core goals:
 
-No goals, no streaks, no scores, no rankings
+Instantly explain what SYNAPSE is and why it exists
 
-No motivational language, warnings, or “you should”
+Filter for users who prefer understanding over motivation
 
-The system never recommends actions — it only reveals patterns
+Reduce anxiety, pressure, and cognitive load
 
-Meaning is user-defined; interpretation is system-neutral
+Avoid feature overload or marketing tone
 
-Enhancements to implement conceptually:
+Constraints (must follow):
 
-Universal Habit & Exposure Tracking
+No hype language, no promises, no productivity claims
 
-Allow tracking of all personal habits (gym, study, meditation, routines) and all exposures (caffeine, alcohol, nicotine, porn, screen time, etc.)
+No motivational framing, goals, or “improve your life” messaging
 
-Clearly separate:
+No advice, predictions, or future-oriented claims
 
-Practices (things users do)
+Tone must be neutral, observational, and adult
 
-Exposures (things that act on users)
+Required improvements:
 
-No moral labels (good/bad); only frequency, timing, and context
+Above-the-Fold Clarity
 
-Dual Action vs Reflection System
+Clearly state that SYNAPSE helps users observe patterns in daily life (sleep, habits, focus, stress)
 
-Action Mode: fast, operational logging (before/during gym, study, habits)
+Emphasize “mirror, not mentor” immediately
 
-Reflection Mode: dashboards, correlations, timelines
+Make “No scores. No streaks. No advice.” visually secondary but unmistakable
 
-Never mix action screens with analytics or feedback
+System Explanation (Why, Not Just What)
 
-Exposure Reduction via Science (Not Motivation)
+Explain why Action and Reflection are separated
 
-Show cumulative exposure over time (weekly/monthly distributions)
+Frame this separation as reducing anxiety and self-judgment
 
-Visualize delayed effects (Day X exposure → Day X+1/X+2 changes)
+Use scientific, non-emotional language
 
-Add silent friction (extra confirmation step for exposure logging)
+Mode Descriptions
 
-No limits, targets, or “reduction goals”
+Ensure each mode explains what it intentionally does not do
 
-Silent Intelligence Layer
+Avoid causal or outcome-based phrasing (“affects”, “improves”)
 
-After sufficient data (≥14 days), surface quiet pattern indicators
+Replace with association-based language (“tend to move together”)
 
-Use neutral phrasing like:
+Audience Framing
 
-“This condition appears frequently after…”
+Describe users in neutral terms (transition, disruption, high load)
 
-“These days share similar inputs”
+Avoid emotionally charged or identity-based language
 
-Never use percentages framed as “improvement” or “decline”
+Make it clear this is not therapy, coaching, or productivity software
 
-Context Timeline (Life-River View)
+Anti-Features as Trust Signals
 
-A chronological daily stream showing:
+Highlight what SYNAPSE deliberately avoids
 
-habits, sessions, states, exposures, notes
+Add explicit statement that the system does not predict, rank, or recommend
 
-Clicking a day expands full context
+Frame absence of pressure as a design decision, not a limitation
 
-Enable highlighting related days (pattern similarity)
+CTA Tone Adjustment
 
-Lag-Aware Correlation & Confidence
+Replace action-heavy CTAs with low-pressure language
 
-Show correlations with:
+Emphasize exploration over commitment
 
-sample size visibility
+Clearly state demo requires no account
 
-confidence levels (early / moderate / stable)
+Visual & Copy Tone
 
-Emphasize uncertainty over certainty
+Calm, minimal, restrained
 
-No causal claims
+No urgency cues, no bright contrast, no emotional triggers
 
-Personal Meaning Layer (Optional, User-Owned)
+Language should feel like documentation, not marketing
 
-Allow users to add personal annotations like “PR”, “felt strong”, “hard day”
+Success criterion:
+A first-time visitor should leave thinking:
 
-System never reacts to, aggregates, or evaluates these labels
-
-Multiple Habits Without Overload
-
-Group habits into small Habit Sets (2–5 max per group)
-
-Track presence (✔ / ✖), not completion or success
-
-Weekly/monthly views show frequency only
-
-Advanced Logbook (Excel-like, Neutral)
-
-Support structured logs for gym, study, medication, symptoms, projects
-
-Tables with strict field types (text, number, checkbox, notes)
-
-No formulas, scores, or auto-evaluations
-
-Ethical Guardrails
-
-Explicitly state: “SYNAPSE observes, it does not advise”
-
-Health data shown for awareness only, not guidance
-
-Easy data export and deletion
-
-Design tone:
-
-Calm, minimal, non-reactive
-
-No urgency, no praise, no punishment
-
-Emphasize clarity, stability, and time
-
-North Star:
-
-Help users reduce harmful patterns and stabilize healthy ones
-by making reality visible — not by pushing change.
+“This system won’t judge me or push me — it will help me see.”

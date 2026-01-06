@@ -19,7 +19,6 @@ export default function HabitSpreadsheetCalendar({
     onMonthChange,
     habits,
     entries,
-    entries,
     onToggle,
     onRename
 }: HabitSpreadsheetCalendarProps) {
