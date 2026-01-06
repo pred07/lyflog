@@ -4,7 +4,16 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, AuthContextType } from '@/lib/types/auth';
 import { loginWithGoogle, loginWithTestAccount, logout as firebaseLogout, onAuthChange, getUserProfile } from '@/lib/firebase/auth';
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({
+    user: null,
+    loading: true,
+    login: async () => { throw new Error('AuthContext not initialized'); },
+    loginGoogle: async () => { throw new Error('AuthContext not initialized'); },
+    loginTest: async () => { throw new Error('AuthContext not initialized'); },
+    register: async () => { throw new Error('AuthContext not initialized'); },
+    logout: async () => { throw new Error('AuthContext not initialized'); },
+    refreshUser: async () => { throw new Error('AuthContext not initialized'); },
+});
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
@@ -48,6 +57,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(null);
         localStorage.removeItem('nytvnd_user');
     };
+
+
 
     // Refresh user data from Firestore
     const refreshUser = async () => {

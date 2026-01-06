@@ -1,86 +1,165 @@
-🔹 SYNAPSE — Landing Page Refinement Prompt (Concept Only)
+ntiGravity Automation Prompt — Google SSO Parity Check
 
-Refine the SYNAPSE landing page to communicate clarity, scientific intent, and calm confidence within 10–15 seconds of reading.
+Objective
+Automatically verify that Google SSO users are real users (not demo) and that custom metrics persist correctly across refresh and navigation.
 
-Core goals:
+Context
+The app has:
 
-Instantly explain what SYNAPSE is and why it exists
+A demo/test account with preloaded metrics
 
-Filter for users who prefer understanding over motivation
+Google SSO for real users
+Bug suspected: demo fallback overriding real SSO users.
 
-Reduce anxiety, pressure, and cognitive load
+🔹 What AntiGravity should simulate
 
-Avoid feature overload or marketing tone
+Fresh Google SSO User Session
 
-Constraints (must follow):
+Simulate login using Google SSO
 
-No hype language, no promises, no productivity claims
+Treat this as a first-time user (no existing Firestore doc)
 
-No motivational framing, goals, or “improve your life” messaging
+Auth Verification
 
-No advice, predictions, or future-oriented claims
+Capture and log:
 
-Tone must be neutral, observational, and adult
+Firebase Auth UID
 
-Required improvements:
+Email
 
-Above-the-Fold Clarity
+Assert:
 
-Clearly state that SYNAPSE helps users observe patterns in daily life (sleep, habits, focus, stress)
+UID is non-null
 
-Emphasize “mirror, not mentor” immediately
+Session remains stable across navigation
 
-Make “No scores. No streaks. No advice.” visually secondary but unmistakable
+Firestore Mapping Check
 
-System Explanation (Why, Not Just What)
+Verify Firestore document is created at:
 
-Explain why Action and Reflection are separated
+users/{auth.uid}
 
-Frame this separation as reducing anxiety and self-judgment
+Assert:
 
-Use scientific, non-emotional language
+No fallback to hardcoded/demo user IDs
 
-Mode Descriptions
+No username/email-based document keys
 
-Ensure each mode explains what it intentionally does not do
+Custom Metric Persistence Test
 
-Avoid causal or outcome-based phrasing (“affects”, “improves”)
+Navigate to Profile
 
-Replace with association-based language (“tend to move together”)
+Add a custom metric (e.g., “Anxiety”)
 
-Audience Framing
+Assert immediately:
 
-Describe users in neutral terms (transition, disruption, high load)
+Metric appears in Profile state
 
-Avoid emotionally charged or identity-based language
+Metric appears in Dashboard
 
-Make it clear this is not therapy, coaching, or productivity software
+Metric appears in Trends
 
-Anti-Features as Trust Signals
+Hard Refresh Validation
 
-Highlight what SYNAPSE deliberately avoids
+Perform full page reload
 
-Add explicit statement that the system does not predict, rank, or recommend
+Rehydrate auth + user state
 
-Frame absence of pressure as a design decision, not a limitation
+Assert:
 
-CTA Tone Adjustment
+Same UID is active
 
-Replace action-heavy CTAs with low-pressure language
+Metric still exists
 
-Emphasize exploration over commitment
+No demo data injected
 
-Clearly state demo requires no account
+Navigation Consistency
 
-Visual & Copy Tone
+Move across:
 
-Calm, minimal, restrained
+Profile → Dashboard → Trends → Timeline
 
-No urgency cues, no bright contrast, no emotional triggers
+Assert:
 
-Language should feel like documentation, not marketing
+Active UID unchanged
 
-Success criterion:
-A first-time visitor should leave thinking:
+Metrics list consistent everywhere
 
-“This system won’t judge me or push me — it will help me see.”
+Demo Isolation Assertion
+
+Ensure demo-only logic (checkTestAccount, mock data loaders) is:
+
+Not executed
+
+Not referenced
+
+Fail test immediately if demo logic runs post-SSO
+
+🔹 Invariants AntiGravity must enforce
+
+Invariant 1
+If auth.uid exists → demo fallback is forbidden.
+
+Invariant 2
+Firestore user doc ID must always equal auth.uid.
+
+Invariant 3
+Custom metrics created by a user must survive:
+
+refresh
+
+navigation
+
+state rehydration
+
+🔹 Output expected from AntiGravity
+
+Pass / Fail report
+
+If fail:
+
+Exact step where demo override occurs
+
+File / logic path responsible
+
+Confirmation that:
+
+Google SSO users have full feature parity with admin/demo users
+
+🧠 Why this works
+
+You are converting:
+
+❌ manual trust
+
+❌ UI-based guessing
+
+into:
+
+✅ auth invariants
+
+✅ data ownership guarantees
+
+This is exactly how mature systems are tested.
+
+🚨 One extra (strongly recommended)
+
+Ask AntiGravity to add a temporary runtime badge:
+
+DEMO MODE
+
+GOOGLE SSO MODE
+
+Visible in the UI footer or header.
+
+This makes silent fallback bugs impossible to miss.
+
+Final clarity
+
+✔ Yes, this can be fully automated
+
+✔ AntiGravity is the right tool
+
+✔ This is a logic bug, not Firebase
+
+✔ Once fixed, it won’t return if invariants are enforced

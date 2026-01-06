@@ -107,9 +107,14 @@ export async function loginWithGoogle(): Promise<User> {
             username: userData.username,
             createdAt: userData.createdAt.toDate(),
             theme: userData.theme,
+            metrics: userData.metrics || [],
+            exposures: userData.exposures || [],
+            logbooks: userData.logbooks || [],
+            habits: userData.habits || []
         };
     }
 }
+
 
 // Test account login (for admin/admin and test/test)
 export async function loginWithTestAccount(username: string, password: string): Promise<User> {
