@@ -18,6 +18,7 @@ export default function Navigation() {
         { href: '/session', label: 'Session' },
         { href: '/habits', label: 'Habits' },
         { href: '/trends', label: 'Trends' },
+        { href: '/zones', label: 'Zones' },
         { href: '/export', label: 'Data Export' },
         { href: '/settings', label: 'Settings' },
     ];
