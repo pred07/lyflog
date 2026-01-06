@@ -73,5 +73,12 @@ export const parseNaturalLanguageLog = (text: string): ParseResult => {
         }
     });
 
+    // 3. Tags (Hashtags)
+    const hashtags = text.match(/#[a-zA-Z0-9_]+/g);
+    if (hashtags) {
+        updates.tags = hashtags.map(t => t.slice(1)); // Remove #
+        matchedKeys.push('tags');
+    }
+
     return { updates, matchedKeys };
 };

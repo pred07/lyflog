@@ -1,7 +1,6 @@
-
 import { DayContext } from '@/lib/firebase/timeline';
 import { format } from 'date-fns';
-import { FileText, Activity, CheckCircle, Moon, Zap, Brain, Wind } from 'lucide-react';
+import { FileText, Activity, CheckCircle, Moon, Zap, Brain, Wind, Tag } from 'lucide-react';
 
 interface TimelineDayCardProps {
     day: DayContext;
@@ -62,6 +61,18 @@ export default function TimelineDayCard({ day }: TimelineDayCardProps) {
                         {log.note && (
                             <div className="text-sm text-gray-600 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800 pt-3 mt-1 italic">
                                 &quot;{log.note}&quot;
+                            </div>
+                        )}
+
+                        {/* Tags (Phase 2) */}
+                        {log.tags && log.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-3 pt-2 border-t border-gray-100 dark:border-gray-800">
+                                {log.tags.map(tag => (
+                                    <div key={tag} className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300">
+                                        <Tag size={10} className="text-indigo-400" />
+                                        <span>{tag}</span>
+                                    </div>
+                                ))}
                             </div>
                         )}
                     </div>

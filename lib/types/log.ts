@@ -26,6 +26,7 @@ export interface DailyLog {
     note?: string;
     metrics?: Record<string, number>;
     exposures?: Record<string, number>; // count, minutes, or 1/0 for boolean
+    tags?: string[]; // Personal meaning annotations (Phase 2)
     createdAt: Date;
 }
 
@@ -43,4 +44,5 @@ export interface LogFormData {
     heartRate: string;
     weight: string;
     note: string;
+    tags: string; // Comma separated for input
 }

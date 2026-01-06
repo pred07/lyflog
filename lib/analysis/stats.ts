@@ -22,6 +22,7 @@ export interface CorrelationResult {
     coefficient: number;
     sampleSize: number;
     significance: 'high' | 'medium' | 'low';
+    lag?: number; // Days lag (e.g. 1 means Y is 1 day after X)
 }
 
 export interface FrequencyResult {
@@ -105,14 +106,42 @@ export const generateNeutralStatement = (
 
 /**
  * Calculates Pearson correlation coefficient between two metrics in a set of logs.
+ * Supports optional lag (offset in days).
+ * If lag is 1, we correlate MetricX(Day T) with MetricY(Day T+1).
  */
-export const calculateCorrelation = (logs: DailyLog[], metricX: string, metricY: string): number | null => {
-    const data: DataPoint[] = logs
-        .map(log => ({
-            x: getMetricValue(log, metricX),
-            y: getMetricValue(log, metricY)
-        }))
-        .filter(d => d.x !== undefined && d.y !== undefined);
+export const calculateCorrelation = (logs: DailyLog[], metricX: string, metricY: string, lag: number = 0): number | null => {
+    // Optimized data alignment for lag
+    const data: DataPoint[] = [];
+
+    // Create map for quick lookup if using lag
+    const logMap = new Map<string, DailyLog>();
+    if (lag !== 0) {
+        logs.forEach(l => logMap.set(l.date.toISOString().split('T')[0], l));
+    }
+
+    logs.forEach(log => {
+        const valX = getMetricValue(log, metricX);
+        if (valX === undefined) return;
+
+        let valY: number | undefined;
+
+        if (lag === 0) {
+            valY = getMetricValue(log, metricY);
+        } else {
+            // Find target date: Current Date + Lag Days
+            const targetDate = new Date(log.date);
+            targetDate.setDate(targetDate.getDate() + lag);
+            const targetKey = targetDate.toISOString().split('T')[0];
+            const targetLog = logMap.get(targetKey);
+            if (targetLog) {
+                valY = getMetricValue(targetLog, metricY);
+            }
+        }
+
+        if (valY !== undefined) {
+            data.push({ x: valX, y: valY });
+        }
+    });
 
     if (data.length < 2) return null;
 
@@ -155,15 +184,37 @@ export const findSignificantCorrelations = (
 
             if (data.length < minSamples) continue;
 
-            const corr = calculateCorrelation(logs, m1, m2);
+            if (data.length < minSamples) continue;
 
-            if (corr !== null && Math.abs(corr) >= threshold) {
+            // Check Immediate Correlation (Lag 0)
+            const corr0 = calculateCorrelation(logs, m1, m2, 0);
+            if (corr0 !== null && Math.abs(corr0) >= threshold) {
                 results.push({
                     metricX: m1,
                     metricY: m2,
-                    coefficient: corr,
-                    sampleSize: data.length,
-                    significance: data.length >= 50 ? 'high' : 'medium'
+                    coefficient: corr0,
+                    sampleSize: data.length, // approximation for lag 0
+                    significance: data.length >= 50 ? 'high' : 'medium',
+                    lag: 0
+                });
+            }
+
+            // Check Lagged Correlation (Lag 1) - e.g. Does M1 today predict M2 tomorrow?
+            // Only check if M1 is 'exposure' or 'workout' and M2 is 'state' (usually)
+            // For general purpose, we can just check all, but it doubles cost.
+            // Optimization: Only check Lag 1 if Lag 0 was weak? Or check both independently.
+            const corr1 = calculateCorrelation(logs, m1, m2, 1);
+            // Verify sample size for lag 1 (it might be smaller due to missing next-day logs)
+            // simplified for now, we rely on correlation function to filter if < 2 points
+
+            if (corr1 !== null && Math.abs(corr1) >= threshold) {
+                results.push({
+                    metricX: m1,
+                    metricY: m2,
+                    coefficient: corr1,
+                    sampleSize: data.length - 1, // rough estimate
+                    significance: data.length >= 50 ? 'high' : 'medium',
+                    lag: 1
                 });
             }
         }

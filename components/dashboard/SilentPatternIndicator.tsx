@@ -15,15 +15,11 @@ export default function SilentPatternIndicator({ patterns }: SilentPatternIndica
     if (patterns.length === 0) return null;
 
     const getNeutralStatement = (p: CorrelationResult) => {
-        const strength = Math.abs(p.coefficient) >= 0.7 ? "strongly associated with" : "associated with";
         const direction = p.coefficient > 0 ? "higher" : "lower";
 
-        // e.g. "Sleep was associated with higher Energy"
-        // This is a bit tricky to generate perfectly neutrally without knowing the metric names well.
-        // Let's stick to the prompt's example:
-        // "Sleep duration was consistently higher on days following meditation" -> This implies lag.
-        // Our correlation is same-day for now.
-        // "Observations show [MetricY] tends to be [higher/lower] on days with higher [MetricX]"
+        if (p.lag && p.lag > 0) {
+            return `${p.metricY} tends to be ${direction} the day following higher ${p.metricX}.`;
+        }
 
         return `${p.metricY} tends to be ${direction} on days with higher ${p.metricX}.`;
     };
@@ -75,7 +71,14 @@ export default function SilentPatternIndicator({ patterns }: SilentPatternIndica
                                     </p>
                                     <ConfidenceBadge sampleSize={p.sampleSize} />
                                     <div className="flex justify-between items-center text-xs text-gray-400 mt-2">
-                                        <span>{p.metricX} ↔ {p.metricY}</span>
+                                        <div className="flex items-center gap-2">
+                                            <span>{p.metricX} {p.lag ? '→' : '↔'} {p.metricY}</span>
+                                            {p.lag && p.lag > 0 && (
+                                                <span className="px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-500 text-[10px] font-medium">
+                                                    delayed
+                                                </span>
+                                            )}
+                                        </div>
                                         <span>r={p.coefficient.toFixed(2)}</span>
                                     </div>
                                 </div>

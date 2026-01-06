@@ -6,6 +6,7 @@ import { createLog } from '@/lib/firebase/firestore';
 import { LogFormData } from '@/lib/types/log';
 import MetricInput from '@/components/log/MetricInput';
 import ExposureInput from '@/components/log/ExposureInput';
+import TagInput from '@/components/shared/TagInput';
 import { useVoiceInput } from '@/hooks/useVoiceInput';
 import { parseNaturalLanguageLog } from '@/lib/analysis/parser';
 import { Mic, MicOff, Loader } from 'lucide-react';
@@ -44,6 +45,13 @@ export default function LogPage() {
             setMetrics(prev => ({ ...prev, ...updates.metrics }));
         }
 
+        // Merge tags
+        if (updates.tags && updates.tags.length > 0) {
+            // Safely handle potential undefined with fallback
+            const newTags = updates.tags || [];
+            setTags(prev => Array.from(new Set([...prev, ...newTags])));
+        }
+
         setIsProcessingVoice(false);
     };
 
@@ -61,7 +69,11 @@ export default function LogPage() {
         heartRate: '',
         weight: '',
         note: '',
+        tags: ''
     });
+
+    // Separate state for tags array
+    const [tags, setTags] = useState<string[]>([]);
     const [metrics, setMetrics] = useState<Record<string, number>>({});
     const [exposures, setExposures] = useState<Record<string, number>>({});
     const [saving, setSaving] = useState(false);
@@ -100,6 +112,7 @@ export default function LogPage() {
                 date: new Date(formData.date),
                 metrics: metrics, // Save custom metrics
                 exposures: exposures, // Save exposures
+                tags: tags, // Include tags in payload
             };
 
             if (formData.sleep) logData.sleep = parseFloat(formData.sleep);
@@ -141,9 +154,11 @@ export default function LogPage() {
                 heartRate: '',
                 weight: '',
                 note: '',
+                tags: ''
             });
             setMetrics({});
             setExposures({});
+            setTags([]); // Reset tags
         } catch (error: any) {
             setMessage(`Error: ${error.message}`);
         } finally {

@@ -16,6 +16,7 @@ import { findSignificantCorrelations, CorrelationResult, shouldShowCorrelation }
 import SilentPatternIndicator from './SilentPatternIndicator';
 import SimilarDays from './SimilarDays';
 import HealthMetricsGrid from './HealthMetricsGrid';
+import ExposureDistribution from './ExposureDistribution';
 
 export default function DashboardView() {
     const { user } = useAuth();
@@ -311,24 +312,17 @@ export default function DashboardView() {
             {/* --- SECTION 4: EXPOSURES --- */}
             {user?.exposures && user.exposures.length > 0 && (
                 <section className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
-                    <SectionHeader title="Exposures" description="External inputs. Frequency and Volume." />
+                    <SectionHeader title="Exposures" description="External inputs. Weekly distribution and trends." />
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {user.exposures.map(exp => (
-                            <div key={exp.id} className="p-3 rounded-lg border border-[var(--border)] bg-gray-50/50 dark:bg-gray-900/50">
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm font-medium truncate" style={{ color: 'var(--text-secondary)' }}>{exp.label}</span>
-                                    <span className="text-xs font-mono text-gray-400">{exp.type}</span>
-                                </div>
-                                <div className="h-20">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={chartData}>
-                                            <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ backgroundColor: 'var(--bg-secondary)', border: 'none', borderRadius: '4px', fontSize: '10px' }} />
-                                            <Bar dataKey={exp.id} fill="var(--text-secondary)" radius={[2, 2, 0, 0]} opacity={0.5} />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </div>
-                            </div>
+                            <ExposureDistribution
+                                key={exp.id}
+                                label={exp.label}
+                                exposureKey={exp.id}
+                                logs={logs} // Respects isolation mode if it filters logs
+                                color="var(--text-secondary)"
+                            />
                         ))}
                     </div>
                 </section>
