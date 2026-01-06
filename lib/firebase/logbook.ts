@@ -49,6 +49,8 @@ export const getLogbookEntries = async (userId: string, logbookId: string, limit
     const q = query(
         entriesRef,
         where('logbookId', '==', logbookId),
+        where('deleted', '!=', true), // Filter out deleted entries
+        orderBy('deleted'), // Required for != query
         orderBy('date', 'desc'),
         limit(limitCount)
     );
@@ -61,6 +63,20 @@ export const getLogbookEntries = async (userId: string, logbookId: string, limit
         createdAt: doc.data().createdAt?.toDate(),
         updatedAt: doc.data().updatedAt?.toDate(),
     })) as LogbookEntry[];
+};
+
+export const updateLogbookEntry = async (userId: string, entryId: string, updates: Partial<Omit<LogbookEntry, 'id' | 'userId' | 'createdAt'>>) => {
+    const entryRef = doc(db, 'users', userId, 'logbookEntries', entryId);
+    await updateDoc(entryRef, {
+        ...updates,
+        updatedAt: new Date()
+    });
+};
+
+export const deleteLogbookEntry = async (userId: string, entryId: string) => {
+    const entryRef = doc(db, 'users', userId, 'logbookEntries', entryId);
+    await updateDoc(entryRef, { deleted: true, updatedAt: new Date() });
+    // Soft delete - mark as deleted instead of hard delete
 };
 
 // Demo data for test accounts
