@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, AuthContextType } from '@/lib/types/auth';
-import { loginWithGoogle, loginWithTestAccount, logout as firebaseLogout, onAuthChange } from '@/lib/firebase/auth';
+import { loginWithGoogle, loginWithTestAccount, logout as firebaseLogout, onAuthChange, getUserProfile } from '@/lib/firebase/auth';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -49,6 +49,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.removeItem('nytvnd_user');
     };
 
+    // Refresh user data from Firestore
+    const refreshUser = async () => {
+        if (!user) return;
+
+        try {
+            const updatedUser = await getUserProfile(user.userId);
+            if (updatedUser) {
+                setUser(updatedUser);
+                // Update localStorage for test accounts
+                if (updatedUser.userId.startsWith('test_')) {
+                    localStorage.setItem('nytvnd_user', JSON.stringify(updatedUser));
+                }
+            }
+        } catch (error) {
+            console.error('Failed to refresh user:', error);
+        }
+    };
+
     // Legacy methods for compatibility
     const login = loginTest;
     const register = async () => {
@@ -63,7 +81,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             logout,
             loading,
             loginGoogle,
-            loginTest
+            loginTest,
+            refreshUser
         }}>
             {children}
         </AuthContext.Provider>

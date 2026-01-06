@@ -12,15 +12,7 @@ import ExposureManager from '@/components/profile/ExposureManager';
 import { MetricConfig, ExposureConfig } from '@/lib/types/auth';
 
 export default function ProfilePage() {
-    const { user, login } = useAuth(); // login effectively updates local user state if we re-fetch, but useAuth doesn't have explicit refresh. 
-    // Actually useAuth state update might rely on onAuthStateChanged. 
-    // If we update firestore, onAuthStateChanged listener in AuthProvider might not trigger unless we force it or local state is updated.
-    // AuthProvider logic: listens to `onAuthChange` which gets doc from Firestore. 
-    // So if we update Firestore, we might need to trigger a re-fetch or manually update local state.
-    // Let's rely on page refresh or optimistic update for now. 
-    // AuthProvider doesn't export a refresh function. 
-    // We can assume user reloads or navigates.
-
+    const { user, login, logout, refreshUser } = useAuth(); // Get refreshUser from hook at component level
     const router = useRouter();
     const [name, setName] = useState('');
     const [isEditing, setIsEditing] = useState(false);
@@ -56,6 +48,8 @@ export default function ProfilePage() {
         setMetrics(newMetrics); // Optimistic
         try {
             await updateUserProfile(user.userId, { metrics: newMetrics });
+            // Refresh user data to show changes immediately
+            await refreshUser?.();
         } catch (error) {
             console.error('Failed to update metrics:', error);
             // Revert on error? For now simple log.
@@ -67,13 +61,13 @@ export default function ProfilePage() {
         setExposures(newExposures); // Optimistic
         try {
             await updateUserProfile(user.userId, { exposures: newExposures });
+            // Refresh user data to show changes immediately
+            await refreshUser?.();
         } catch (error) {
             console.error('Failed to update exposures:', error);
             // Revert
         }
     };
-
-    const { logout } = useAuth();
 
     const handleLogout = async () => {
         await logout();

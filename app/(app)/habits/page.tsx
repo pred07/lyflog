@@ -6,19 +6,17 @@ import { HabitConfig, HabitEntry } from '@/lib/types/habit';
 import { saveHabitEntry, getHabitEntriesForDateRange, getDemoHabitEntries } from '@/lib/firebase/habit';
 import { updateUserProfile } from '@/lib/firebase/auth';
 import HabitChecklistView from '@/components/habits/HabitChecklistView';
-import HabitCalendarGrid from '@/components/habits/HabitCalendarGrid';
-import HabitCalendarMonth from '@/components/habits/HabitCalendarMonth';
+import HabitSpreadsheetCalendar from '@/components/habits/HabitSpreadsheetCalendar';
 import HabitManager from '@/components/habits/HabitManager';
 import DayHabitEditor from '@/components/habits/DayHabitEditor';
-import { format, startOfWeek, endOfWeek, addWeeks, subWeeks, isSameDay, startOfMonth, endOfMonth } from 'date-fns';
-import { ChevronLeft, ChevronRight, Settings, Plus, Calendar } from 'lucide-react';
+import { format, isSameDay, startOfMonth, endOfMonth } from 'date-fns';
+import { Settings, Plus } from 'lucide-react';
 
 export default function HabitsPage() {
     const { user } = useAuth();
     const [todayDate] = useState(new Date());
-    const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
-    const [currentWeekStart, setCurrentWeekStart] = useState(startOfWeek(new Date()));
     const [currentMonth, setCurrentMonth] = useState(new Date());
+    const [selectedSheet, setSelectedSheet] = useState<string>('all'); // Track selected sheet
 
     const [habitStates, setHabitStates] = useState<Record<string, boolean>>({});
     const [allEntries, setAllEntries] = useState<HabitEntry[]>([]);
@@ -26,14 +24,28 @@ export default function HabitsPage() {
     const [showManager, setShowManager] = useState(false);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-    const habits: HabitConfig[] = user?.habits || [
-        { id: 'meditation', label: 'Meditation', group: 'Morning Routine', order: 1 },
-        { id: 'reading', label: 'Reading', group: 'Morning Routine', order: 2 },
-        { id: 'gym', label: 'Gym', group: 'Health', order: 1 },
-        { id: 'walk', label: 'Walk', group: 'Health', order: 2 },
-        { id: 'maths', label: 'Maths', group: 'Study', order: 1 },
-        { id: 'revision', label: 'Revision', group: 'Study', order: 2 },
+    // Default sheets if user hasn't created any
+    const defaultSheets = [
+        { id: 'routine', label: 'Routine', order: 1, color: '#6366f1' },
+        { id: 'gym', label: 'Gym', order: 2, color: '#ec4899' },
+        { id: 'work', label: 'Work', order: 3, color: '#f59e0b' }
     ];
+
+    const habitSheets = user?.habitSheets || defaultSheets;
+
+    const habits: HabitConfig[] = user?.habits || [
+        { id: 'meditation', label: 'Meditation', group: 'Morning Routine', sheetId: 'routine', order: 1 },
+        { id: 'reading', label: 'Reading', group: 'Morning Routine', sheetId: 'routine', order: 2 },
+        { id: 'gym', label: 'Gym', group: 'Health', sheetId: 'gym', order: 1 },
+        { id: 'walk', label: 'Walk', group: 'Health', sheetId: 'routine', order: 2 },
+        { id: 'maths', label: 'Maths', group: 'Study', sheetId: 'work', order: 1 },
+        { id: 'revision', label: 'Revision', group: 'Study', sheetId: 'work', order: 2 },
+    ];
+
+    // Filter habits by selected sheet
+    const filteredHabits = selectedSheet === 'all'
+        ? habits
+        : habits.filter(h => h.sheetId === selectedSheet);
 
     useEffect(() => {
         if (!user) return;
@@ -42,44 +54,34 @@ export default function HabitsPage() {
             setLoading(true);
             try {
                 // Determine date range based on view
-                let startDate, endDate;
+                let entries: HabitEntry[] = [];
 
-                if (viewMode === 'week') {
-                    startDate = currentWeekStart;
-                    endDate = endOfWeek(currentWeekStart);
-                } else {
-                    startDate = startOfWeek(startOfMonth(currentMonth));
-                    endDate = endOfWeek(endOfMonth(currentMonth));
-                }
-
-                let entries;
                 if (user.userId.startsWith('test_')) {
-                    entries = getDemoHabitEntries(user.userId, startDate, endDate);
+                    entries = getDemoHabitEntries(user.userId);
                 } else {
-                    entries = await getHabitEntriesForDateRange(user.userId, startDate, endDate);
+                    const monthStart = startOfMonth(currentMonth);
+                    const monthEnd = endOfMonth(currentMonth);
+                    entries = await getHabitEntriesForDateRange(user.userId, monthStart, monthEnd);
                 }
 
                 setAllEntries(entries);
 
-                // Filter today's entries
-                const todayStr = format(todayDate, 'yyyy-MM-dd');
-                const todayEntries = entries.filter(e => format(e.date, 'yyyy-MM-dd') === todayStr);
-
+                // Set today's states
+                const todayEntries = entries.filter(e => isSameDay(e.date, todayDate));
                 const states: Record<string, boolean> = {};
                 todayEntries.forEach(entry => {
                     states[entry.habitId] = entry.done;
                 });
-
                 setHabitStates(states);
             } catch (error) {
-                console.error('Failed to load habits:', error);
+                console.error('Failed to load habit entries:', error);
             } finally {
                 setLoading(false);
             }
         };
 
         loadHabits();
-    }, [user, todayDate, currentWeekStart, currentMonth, viewMode]);
+    }, [user, currentMonth, todayDate]);
 
     const handleToggle = async (habitId: string) => {
         if (!user) return;
@@ -103,18 +105,18 @@ export default function HabitsPage() {
         setSelectedDate(date);
     };
 
-    const handleDayToggle = async (habitId: string, done: boolean, note?: string) => {
-        if (!user || !selectedDate) return;
+    const handleDayToggle = async (habitId: string, date: Date, done: boolean) => {
+        if (!user) return;
 
         // Update local state
-        const updatedEntries = allEntries.filter(e => !(isSameDay(e.date, selectedDate) && e.habitId === habitId));
+        const updatedEntries = allEntries.filter(e => !(isSameDay(e.date, date) && e.habitId === habitId));
         const newEntry: HabitEntry = {
-            id: `${habitId}_${format(selectedDate, 'yyyy-MM-dd')}`,
+            id: `${habitId}_${format(date, 'yyyy-MM-dd')}`,
             userId: user.userId,
             habitId,
-            date: selectedDate,
+            date: date,
             done,
-            notes: note || '',
+            notes: '',
             createdAt: new Date(),
             updatedAt: new Date()
         };
@@ -123,7 +125,7 @@ export default function HabitsPage() {
         // Save to Firestore (skip for test accounts)
         if (!user.userId.startsWith('test_')) {
             try {
-                await saveHabitEntry(user.userId, habitId, selectedDate, done, note);
+                await saveHabitEntry(user.userId, habitId, date, done);
             } catch (error) {
                 console.error('Failed to save habit:', error);
             }
@@ -140,10 +142,6 @@ export default function HabitsPage() {
             console.error('Failed to update habits:', error);
         }
     };
-
-    const goToPreviousWeek = () => setCurrentWeekStart(subWeeks(currentWeekStart, 1));
-    const goToNextWeek = () => setCurrentWeekStart(addWeeks(currentWeekStart, 1));
-    const goToThisWeek = () => setCurrentWeekStart(startOfWeek(new Date()));
 
     if (!user) return null;
 
@@ -173,82 +171,43 @@ export default function HabitsPage() {
                 <div className="text-center py-12 text-gray-400">Loading...</div>
             ) : (
                 <>
-                    {/* Today's Checklist */}
-                    <div className="mb-8">
-                        <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-                            Today
-                        </h2>
-                        <HabitChecklistView
-                            habits={habits}
-                            habitStates={habitStates}
-                            onToggle={handleToggle}
-                        />
+                    {/* Sheet Tabs */}
+                    <div className="mb-6">
+                        <div className="flex gap-2 overflow-x-auto pb-2">
+                            <button
+                                onClick={() => setSelectedSheet('all')}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${selectedSheet === 'all'
+                                    ? 'bg-indigo-500 text-white shadow-md'
+                                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                                    }`}
+                            >
+                                All Habits
+                            </button>
+                            {habitSheets.map(sheet => (
+                                <button
+                                    key={sheet.id}
+                                    onClick={() => setSelectedSheet(sheet.id)}
+                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${selectedSheet === sheet.id
+                                        ? 'text-white shadow-md'
+                                        : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                                        }`}
+                                    style={selectedSheet === sheet.id ? { backgroundColor: sheet.color || '#6366f1' } : {}}
+                                >
+                                    {sheet.label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
-                    {/* Weekly/Monthly Calendar */}
+                    {/* Spreadsheet Calendar */}
                     <div className="mb-8">
-                        <div className="flex justify-between items-center mb-4">
-                            <div className="flex gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                                <button
-                                    onClick={() => setViewMode('week')}
-                                    className={`px-3 py-1 text-sm font-medium rounded-md transition-all ${viewMode === 'week'
-                                        ? 'bg-white dark:bg-gray-700 shadow text-indigo-600 dark:text-indigo-400'
-                                        : 'text-gray-500 hover:text-gray-700'
-                                        }`}
-                                >
-                                    Week
-                                </button>
-                                <button
-                                    onClick={() => setViewMode('month')}
-                                    className={`px-3 py-1 text-sm font-medium rounded-md transition-all ${viewMode === 'month'
-                                        ? 'bg-white dark:bg-gray-700 shadow text-indigo-600 dark:text-indigo-400'
-                                        : 'text-gray-500 hover:text-gray-700'
-                                        }`}
-                                >
-                                    Month
-                                </button>
-                            </div>
-
-                            {viewMode === 'week' && (
-                                <div className="flex items-center gap-2">
-                                    <button
-                                        onClick={goToPreviousWeek}
-                                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500"
-                                    >
-                                        <ChevronLeft size={20} />
-                                    </button>
-                                    <button
-                                        onClick={goToThisWeek}
-                                        className="px-3 py-1 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500"
-                                    >
-                                        This Week
-                                    </button>
-                                    <button
-                                        onClick={goToNextWeek}
-                                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500"
-                                    >
-                                        <ChevronRight size={20} />
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {viewMode === 'week' ? (
-                            <HabitCalendarGrid
-                                weekStart={currentWeekStart}
-                                habits={habits}
-                                entries={allEntries}
-                                onDateClick={handleDateClick}
-                            />
-                        ) : (
-                            <HabitCalendarMonth
-                                currentMonth={currentMonth}
-                                onMonthChange={setCurrentMonth}
-                                habits={habits}
-                                entries={allEntries}
-                                onDateClick={handleDateClick}
-                            />
-                        )}
+                        <HabitSpreadsheetCalendar
+                            currentMonth={currentMonth}
+                            onMonthChange={setCurrentMonth}
+                            habits={filteredHabits}
+                            entries={allEntries}
+                            onToggle={handleDayToggle}
+                        />
                     </div>
 
                     {/* Guideline */}
@@ -272,7 +231,7 @@ export default function HabitsPage() {
                     date={selectedDate}
                     habits={habits}
                     entries={allEntries.filter(e => isSameDay(e.date, selectedDate))}
-                    onToggle={handleDayToggle}
+                    onToggle={(habitId, done, note) => handleDayToggle(habitId, selectedDate, done)}
                     onClose={() => setSelectedDate(null)}
                 />
             )}

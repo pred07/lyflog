@@ -151,6 +151,37 @@ export function onAuthChange(callback: (user: User | null) => void): () => void 
     });
 }
 
+// Get user profile from Firestore
+export async function getUserProfile(userId: string): Promise<User | null> {
+    // For test accounts, return from checkTestAccount logic
+    if (userId.startsWith('test_')) {
+        const testAccount = TEST_ACCOUNTS.find(acc => acc.userId === userId);
+        if (testAccount) {
+            return checkTestAccount(testAccount.username, testAccount.password);
+        }
+        return null;
+    }
+
+    const userRef = doc(db, 'users', userId);
+    const userDoc = await getDoc(userRef);
+
+    if (!userDoc.exists()) {
+        return null;
+    }
+
+    const userData = userDoc.data();
+    return {
+        userId: userData.userId,
+        username: userData.username,
+        createdAt: userData.createdAt.toDate(),
+        theme: userData.theme,
+        metrics: userData.metrics || [],
+        exposures: userData.exposures || [],
+        logbooks: userData.logbooks || [],
+        habits: userData.habits || []
+    };
+}
+
 // Update user theme
 export async function updateUserTheme(userId: string, theme: 'dark' | 'light'): Promise<void> {
     // Skip for test accounts

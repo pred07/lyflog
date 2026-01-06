@@ -24,6 +24,7 @@ export interface User {
     exposures?: ExposureConfig[];
     logbooks?: LogbookConfig[];
     habits?: HabitConfig[];
+    habitSheets?: import('./habit').HabitSheet[];
 }
 
 export interface AuthContextType {
@@ -34,4 +35,5 @@ export interface AuthContextType {
     loading: boolean;
     loginGoogle?: () => Promise<void>;
     loginTest?: (username: string, password: string) => Promise<void>;
+    refreshUser?: () => Promise<void>;
 }

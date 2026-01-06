@@ -54,6 +54,12 @@ export default function LogPage() {
         workoutDuration: '',
         meditation: '',
         learning: '',
+        steps: '',
+        water: '',
+        calories: '',
+        uvIndex: '',
+        heartRate: '',
+        weight: '',
         note: '',
     });
     const [metrics, setMetrics] = useState<Record<string, number>>({});
@@ -105,6 +111,15 @@ export default function LogPage() {
             }
             if (formData.meditation) logData.meditation = parseInt(formData.meditation);
             if (formData.learning) logData.learning = parseInt(formData.learning);
+
+            // New health metrics
+            if (formData.steps) logData.steps = parseInt(formData.steps);
+            if (formData.water) logData.water = parseFloat(formData.water);
+            if (formData.calories) logData.calories = parseInt(formData.calories);
+            if (formData.uvIndex) logData.uvIndex = parseFloat(formData.uvIndex);
+            if (formData.heartRate) logData.heartRate = parseInt(formData.heartRate);
+            if (formData.weight) logData.weight = parseFloat(formData.weight);
+
             if (formData.note) logData.note = formData.note;
 
             await createLog(user.userId, logData);
@@ -119,6 +134,12 @@ export default function LogPage() {
                 workoutDuration: '',
                 meditation: '',
                 learning: '',
+                steps: '',
+                water: '',
+                calories: '',
+                uvIndex: '',
+                heartRate: '',
+                weight: '',
                 note: '',
             });
             setMetrics({});
@@ -142,8 +163,8 @@ export default function LogPage() {
                         type="button"
                         onClick={isListening ? stopListening : startListening}
                         className={`p-3 rounded-full transition-all ${isListening
-                                ? 'bg-red-500 text-white animate-pulse'
-                                : 'bg-indigo-500/10 text-indigo-500 hover:bg-indigo-500/20'
+                            ? 'bg-red-500 text-white animate-pulse'
+                            : 'bg-indigo-500/10 text-indigo-500 hover:bg-indigo-500/20'
                             }`}
                         title="Voice Log"
                     >
@@ -256,6 +277,118 @@ export default function LogPage() {
                         className="input-field"
                         placeholder="e.g., 60"
                     />
+                </div>
+
+                {/* Health Metrics Section */}
+                <div className="pt-4 border-t border-[var(--border)]">
+                    <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>Health Metrics</h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                        {/* Steps */}
+                        <div>
+                            <label htmlFor="steps" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                                Steps
+                            </label>
+                            <input
+                                id="steps"
+                                type="number"
+                                name="steps"
+                                min="0"
+                                value={formData.steps}
+                                onChange={handleChange}
+                                className="input-field"
+                                placeholder="e.g., 10000"
+                            />
+                        </div>
+
+                        {/* Water */}
+                        <div>
+                            <label htmlFor="water" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                                Water (liters)
+                            </label>
+                            <input
+                                id="water"
+                                type="number"
+                                name="water"
+                                min="0"
+                                step="0.1"
+                                value={formData.water}
+                                onChange={handleChange}
+                                className="input-field"
+                                placeholder="e.g., 2.5"
+                            />
+                        </div>
+
+                        {/* Calories */}
+                        <div>
+                            <label htmlFor="calories" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                                Calories
+                            </label>
+                            <input
+                                id="calories"
+                                type="number"
+                                name="calories"
+                                min="0"
+                                value={formData.calories}
+                                onChange={handleChange}
+                                className="input-field"
+                                placeholder="e.g., 2000"
+                            />
+                        </div>
+
+                        {/* UV Index */}
+                        <div>
+                            <label htmlFor="uvIndex" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                                UV Index
+                            </label>
+                            <input
+                                id="uvIndex"
+                                type="number"
+                                name="uvIndex"
+                                min="0"
+                                max="15"
+                                step="0.1"
+                                value={formData.uvIndex}
+                                onChange={handleChange}
+                                className="input-field"
+                                placeholder="e.g., 5.5"
+                            />
+                        </div>
+
+                        {/* Heart Rate */}
+                        <div>
+                            <label htmlFor="heartRate" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                                Heart Rate (bpm)
+                            </label>
+                            <input
+                                id="heartRate"
+                                type="number"
+                                name="heartRate"
+                                min="0"
+                                value={formData.heartRate}
+                                onChange={handleChange}
+                                className="input-field"
+                                placeholder="e.g., 65"
+                            />
+                        </div>
+
+                        {/* Weight */}
+                        <div>
+                            <label htmlFor="weight" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                                Weight (kg)
+                            </label>
+                            <input
+                                id="weight"
+                                type="number"
+                                name="weight"
+                                min="0"
+                                step="0.1"
+                                value={formData.weight}
+                                onChange={handleChange}
+                                className="input-field"
+                                placeholder="e.g., 70.5"
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 {/* Custom Metrics */}
