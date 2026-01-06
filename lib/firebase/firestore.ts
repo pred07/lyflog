@@ -126,7 +126,8 @@ export async function createLog(userId: string, logData: Partial<DailyLog>): Pro
     if (logData.heartRate) log.heartRate = logData.heartRate;
     if (logData.weight) log.weight = logData.weight;
 
-    await setDoc(doc(db, LOGS_COLLECTION, logId), log);
+    // Save to user subcollection
+    await setDoc(doc(db, 'users', userId, 'dailyLogs', logId), log);
 
     return {
         ...log,
@@ -140,10 +141,9 @@ export async function getUserLogs(userId: string): Promise<DailyLog[]> {
         return getTestLogs(userId);
     }
 
-    const logsRef = collection(db, LOGS_COLLECTION);
+    const logsRef = collection(db, 'users', userId, 'dailyLogs');
     const q = query(
         logsRef,
-        where('userId', '==', userId),
         orderBy('date', 'desc')
     );
 
@@ -167,14 +167,14 @@ export async function getUserLogs(userId: string): Promise<DailyLog[]> {
     });
 }
 
-export async function deleteLog(logId: string): Promise<void> {
+export async function deleteLog(userId: string, logId: string): Promise<void> {
     // Check if it's a test log
     const testLogs = JSON.parse(localStorage.getItem(TEST_LOGS_KEY) || '[]');
     if (testLogs.some((log: any) => log.logId === logId)) {
         return deleteTestLog(logId);
     }
 
-    await deleteDoc(doc(db, LOGS_COLLECTION, logId));
+    await deleteDoc(doc(db, 'users', userId, 'dailyLogs', logId));
 }
 
 export async function deleteAllUserLogs(userId: string): Promise<void> {
@@ -182,9 +182,8 @@ export async function deleteAllUserLogs(userId: string): Promise<void> {
         return deleteAllTestLogs(userId);
     }
 
-    const logsRef = collection(db, LOGS_COLLECTION);
-    const q = query(logsRef, where('userId', '==', userId));
-    const querySnapshot = await getDocs(q);
+    const logsRef = collection(db, 'users', userId, 'dailyLogs');
+    const querySnapshot = await getDocs(logsRef);
 
     const deletePromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref));
     await Promise.all(deletePromises);
