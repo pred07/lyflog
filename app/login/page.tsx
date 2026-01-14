@@ -69,7 +69,7 @@ export default function LoginPage() {
                             onClick={handleGoogleLogin}
                             className="w-full mb-6 px-4 py-3 rounded-lg border flex items-center justify-center gap-3 transition-colors"
                             style={{
-                                backgroundColor: 'var(--bg-primary)',
+                                backgroundColor: 'var(--bg-card)',
                                 borderColor: 'var(--border)',
                                 color: 'var(--text-primary)',
                             }}
@@ -109,7 +109,7 @@ export default function LoginPage() {
                                             setLoading(false);
                                         });
                                 }}
-                                className="inline-flex items-center justify-center px-6 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-colors"
+                                className="inline-flex items-center justify-center px-6 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors dark:bg-indigo-500 dark:hover:bg-indigo-400"
                             >
                                 {loading ? 'Loading Demo...' : 'View Live Demo'}
                             </button>
@@ -125,7 +125,7 @@ export default function LoginPage() {
                         </Link>
                     </div>
                 </div>
-            </main>
-        </div>
+            </main >
+        </div >
     );
 }

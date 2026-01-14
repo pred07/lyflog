@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Edit3, Activity, User, FileText, CheckSquare, Clock } from 'lucide-react';
+import { Home, Edit3, User } from 'lucide-react';
 
 export default function BottomNav() {
     const pathname = usePathname();
@@ -14,10 +14,18 @@ export default function BottomNav() {
             icon: Home,
             isActive: (path: string) => path === '/' || path === '/dashboard'
         },
-        { href: '/timeline', label: 'Timeline', icon: Clock, isActive: (path: string) => path.startsWith('/timeline') },
-        { href: '/log', label: 'Log', icon: Edit3, isActive: (path: string) => path.startsWith('/log') && !path.startsWith('/logbook') },
-        { href: '/habits', label: 'Daily Check', icon: CheckSquare, isActive: (path: string) => path.startsWith('/habits') },
-        { href: '/profile', label: 'Me', icon: User, isActive: (path: string) => path.startsWith('/profile') },
+        {
+            href: '/log',
+            label: 'Log',
+            icon: Edit3,
+            isActive: (path: string) => path.startsWith('/log')
+        },
+        {
+            href: '/profile',
+            label: 'Me',
+            icon: User,
+            isActive: (path: string) => path.startsWith('/profile')
+        },
     ];
 
     return (

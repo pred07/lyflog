@@ -12,12 +12,9 @@ export default function Navigation() {
 
     const navItems = [
         { href: '/dashboard', label: 'Dashboard' },
-        { href: '/timeline', label: 'Timeline' },
-        { href: '/search', label: 'Search' },
         { href: '/log', label: 'Log Activity' },
-        { href: '/habits', label: 'Habits' },
-        { href: '/trends', label: 'Trends' },
-        { href: '/zones', label: 'Zones' },
+        { href: '/reflect', label: 'Reflect' },
+        { href: '/insights', label: 'Insights' },
         { href: '/export', label: 'Data Export' },
         { href: '/settings', label: 'Settings' },
     ];

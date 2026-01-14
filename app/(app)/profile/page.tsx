@@ -7,24 +7,17 @@ import ThemeToggle from '@/components/layout/ThemeToggle';
 import { User, LogOut, Download, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import MetricsManager from '@/components/profile/MetricsManager';
-import ExposureManager from '@/components/profile/ExposureManager';
-import { MetricConfig, ExposureConfig } from '@/lib/types/auth';
 
 export default function ProfilePage() {
-    const { user, login, logout, refreshUser } = useAuth(); // Get refreshUser from hook at component level
+    const { user, logout } = useAuth();
     const router = useRouter();
     const [name, setName] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [saving, setSaving] = useState(false);
-    const [metrics, setMetrics] = useState<MetricConfig[]>([]);
-    const [exposures, setExposures] = useState<ExposureConfig[]>([]);
 
     useEffect(() => {
         if (user) {
             setName(user.username);
-            setMetrics(user.metrics || []);
-            setExposures(user.exposures || []);
         }
     }, [user]);
 
@@ -43,32 +36,6 @@ export default function ProfilePage() {
         }
     };
 
-    const handleUpdateMetrics = async (newMetrics: MetricConfig[]) => {
-        if (!user) return;
-        setMetrics(newMetrics); // Optimistic
-        try {
-            await updateUserProfile(user.userId, { metrics: newMetrics });
-            // Refresh user data to show changes immediately
-            await refreshUser?.();
-        } catch (error) {
-            console.error('Failed to update metrics:', error);
-            // Revert on error? For now simple log.
-        }
-    };
-
-    const handleUpdateExposures = async (newExposures: ExposureConfig[]) => {
-        if (!user) return;
-        setExposures(newExposures); // Optimistic
-        try {
-            await updateUserProfile(user.userId, { exposures: newExposures });
-            // Refresh user data to show changes immediately
-            await refreshUser?.();
-        } catch (error) {
-            console.error('Failed to update exposures:', error);
-            // Revert
-        }
-    };
-
     const handleLogout = async () => {
         await logout();
         router.push('/');
@@ -78,7 +45,7 @@ export default function ProfilePage() {
 
     return (
         <div className="max-w-md mx-auto px-4 py-8 pb-24">
-            <h1 className="text-3xl font-bold mb-8" style={{ color: 'var(--text-primary)' }}>Me</h1>
+            <h1 className="text-3xl font-bold mb-8" style={{ color: 'var(--text-primary)' }}>Profile</h1>
 
             {/* Identity Section */}
             <div className="card mb-6 flex items-center space-x-4">
@@ -120,12 +87,6 @@ export default function ProfilePage() {
                 <span className="font-medium" style={{ color: 'var(--text-primary)' }}>Theme</span>
                 <ThemeToggle />
             </div>
-
-            {/* Custom Metrics */}
-            <MetricsManager metrics={metrics} onUpdate={handleUpdateMetrics} />
-
-            {/* Exposures */}
-            <ExposureManager exposures={exposures} onUpdate={handleUpdateExposures} />
 
             {/* Actions */}
             <div className="space-y-4">

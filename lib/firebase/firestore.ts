@@ -31,13 +31,12 @@ async function createTestLog(userId: string, logData: Partial<DailyLog>): Promis
         logId,
         userId,
         date: logData.date || new Date(),
-        sleep: logData.sleep,
-        workout: logData.workout,
-        meditation: logData.meditation,
-        learning: logData.learning,
+        workoutDone: logData.workoutDone || false,
+        workoutDuration: logData.workoutDuration,
+        mood: logData.mood || 3,
+        energy: logData.energy || 3,
+        stress: logData.stress || 3,
         note: logData.note,
-        metrics: logData.metrics,
-        exposures: logData.exposures,
         createdAt: new Date(),
     };
 
@@ -107,24 +106,15 @@ export async function createLog(userId: string, logData: Partial<DailyLog>): Pro
         logId,
         userId,
         date: logData.date ? Timestamp.fromDate(logData.date) : Timestamp.now(),
+        workoutDone: logData.workoutDone || false,
+        mood: logData.mood || 3,
+        energy: logData.energy || 3,
+        stress: logData.stress || 3,
         createdAt: Timestamp.now(),
     };
 
-    if (logData.sleep !== undefined) log.sleep = logData.sleep;
-    if (logData.workout) log.workout = logData.workout;
-    if (logData.meditation !== undefined) log.meditation = logData.meditation;
-    if (logData.learning !== undefined) log.learning = logData.learning;
+    if (logData.workoutDuration !== undefined) log.workoutDuration = logData.workoutDuration;
     if (logData.note) log.note = logData.note;
-    if (logData.metrics) log.metrics = logData.metrics;
-    if (logData.exposures) log.exposures = logData.exposures;
-
-    // Fixed: explicit mapping of health metrics
-    if (logData.steps) log.steps = logData.steps;
-    if (logData.water) log.water = logData.water;
-    if (logData.calories) log.calories = logData.calories;
-    if (logData.uvIndex) log.uvIndex = logData.uvIndex;
-    if (logData.heartRate) log.heartRate = logData.heartRate;
-    if (logData.weight) log.weight = logData.weight;
 
     // Save to user subcollection
     await setDoc(doc(db, 'users', userId, 'dailyLogs', logId), log);
@@ -155,13 +145,12 @@ export async function getUserLogs(userId: string): Promise<DailyLog[]> {
             logId: data.logId,
             userId: data.userId,
             date: data.date.toDate(),
-            sleep: data.sleep,
-            workout: data.workout,
-            meditation: data.meditation,
-            learning: data.learning,
+            workoutDone: data.workoutDone || false,
+            workoutDuration: data.workoutDuration,
+            mood: data.mood || 3,
+            energy: data.energy || 3,
+            stress: data.stress || 3,
             note: data.note,
-            metrics: data.metrics,
-            exposures: data.exposures,
             createdAt: data.createdAt.toDate(),
         };
     });

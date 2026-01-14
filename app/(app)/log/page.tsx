@@ -1,81 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { createLog } from '@/lib/firebase/firestore';
 import { LogFormData } from '@/lib/types/log';
-import MetricInput from '@/components/log/MetricInput';
-import ExposureInput from '@/components/log/ExposureInput';
-import TagInput from '@/components/shared/TagInput';
-import { useVoiceInput } from '@/hooks/useVoiceInput';
-import { parseNaturalLanguageLog } from '@/lib/analysis/parser';
-import { Mic, MicOff, Loader } from 'lucide-react';
 
 export default function LogPage() {
     const { user } = useAuth();
-    const { isListening, transcript, startListening, stopListening, isSupported } = useVoiceInput();
-    const [isProcessingVoice, setIsProcessingVoice] = useState(false);
-
-    // Auto-process transcript when listening stops
-    useEffect(() => {
-        if (!isListening && transcript) {
-            handleVoiceProcess(transcript);
-        }
-    }, [isListening, transcript]);
-
-    const handleVoiceProcess = (text: string) => {
-        setIsProcessingVoice(true);
-        const { updates, matchedKeys } = parseNaturalLanguageLog(text);
-
-        // Merge updates into form state
-        setFormData(prev => ({
-            ...prev,
-            sleep: updates.sleep ? updates.sleep.toString() : prev.sleep,
-            meditation: updates.meditation ? updates.meditation.toString() : prev.meditation,
-            learning: updates.learning ? updates.learning.toString() : prev.learning,
-            workoutDuration: updates.workout?.duration ? updates.workout.duration.toString() : prev.workoutDuration,
-            // If workout detected, maybe default type if empty?
-            workoutType: updates.workout && !prev.workoutType ? 'Workout' : prev.workoutType,
-            // Append note
-            note: prev.note ? prev.note + '\n' + text : text
-        }));
-
-        // Merge metrics
-        if (updates.metrics) {
-            setMetrics(prev => ({ ...prev, ...updates.metrics }));
-        }
-
-        // Merge tags
-        if (updates.tags && updates.tags.length > 0) {
-            // Safely handle potential undefined with fallback
-            const newTags = updates.tags || [];
-            setTags(prev => Array.from(new Set([...prev, ...newTags])));
-        }
-
-        setIsProcessingVoice(false);
-    };
-
     const [formData, setFormData] = useState<LogFormData>({
         date: new Date().toISOString().split('T')[0],
-        sleep: '',
-        workoutType: '',
+        workoutDone: 'false',
         workoutDuration: '',
-        meditation: '',
-        learning: '',
-        steps: '',
-        water: '',
-        calories: '',
-        uvIndex: '',
-        heartRate: '',
-        weight: '',
+        mood: '3',
+        energy: '3',
+        stress: '3',
         note: '',
-        tags: ''
     });
-
-    // Separate state for tags array
-    const [tags, setTags] = useState<string[]>([]);
-    const [metrics, setMetrics] = useState<Record<string, number>>({});
-    const [exposures, setExposures] = useState<Record<string, number>>({});
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
 
@@ -86,18 +26,13 @@ export default function LogPage() {
         });
     };
 
-    const handleMetricChange = (id: string, value: number) => {
-        setMetrics(prev => ({
-            ...prev,
-            [id]: value
-        }));
-    };
-
-    const handleExposureChange = (id: string, value: number) => {
-        setExposures(prev => ({
-            ...prev,
-            [id]: value
-        }));
+    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({
+            ...formData,
+            workoutDone: e.target.checked ? 'true' : 'false',
+            // Clear duration if unchecked
+            workoutDuration: e.target.checked ? formData.workoutDuration : '',
+        });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -110,30 +45,18 @@ export default function LogPage() {
         try {
             const logData: any = {
                 date: new Date(formData.date),
-                metrics: metrics, // Save custom metrics
-                exposures: exposures, // Save exposures
-                tags: tags, // Include tags in payload
+                workoutDone: formData.workoutDone === 'true',
+                mood: parseInt(formData.mood),
+                energy: parseInt(formData.energy),
+                stress: parseInt(formData.stress),
             };
 
-            if (formData.sleep) logData.sleep = parseFloat(formData.sleep);
-            if (formData.workoutType && formData.workoutDuration) {
-                logData.workout = {
-                    type: formData.workoutType,
-                    duration: parseInt(formData.workoutDuration),
-                };
+            if (formData.workoutDuration) {
+                logData.workoutDuration = parseInt(formData.workoutDuration);
             }
-            if (formData.meditation) logData.meditation = parseInt(formData.meditation);
-            if (formData.learning) logData.learning = parseInt(formData.learning);
-
-            // New health metrics
-            if (formData.steps) logData.steps = parseInt(formData.steps);
-            if (formData.water) logData.water = parseFloat(formData.water);
-            if (formData.calories) logData.calories = parseInt(formData.calories);
-            if (formData.uvIndex) logData.uvIndex = parseFloat(formData.uvIndex);
-            if (formData.heartRate) logData.heartRate = parseInt(formData.heartRate);
-            if (formData.weight) logData.weight = parseFloat(formData.weight);
-
-            if (formData.note) logData.note = formData.note;
+            if (formData.note) {
+                logData.note = formData.note;
+            }
 
             await createLog(user.userId, logData);
 
@@ -142,23 +65,13 @@ export default function LogPage() {
             // Reset form
             setFormData({
                 date: new Date().toISOString().split('T')[0],
-                sleep: '',
-                workoutType: '',
+                workoutDone: 'false',
                 workoutDuration: '',
-                meditation: '',
-                learning: '',
-                steps: '',
-                water: '',
-                calories: '',
-                uvIndex: '',
-                heartRate: '',
-                weight: '',
+                mood: '3',
+                energy: '3',
+                stress: '3',
                 note: '',
-                tags: ''
             });
-            setMetrics({});
-            setExposures({});
-            setTags([]); // Reset tags
         } catch (error: any) {
             setMessage(`Error: ${error.message}`);
         } finally {
@@ -166,29 +79,15 @@ export default function LogPage() {
         }
     };
 
-    return (
-        <div className="max-w-3xl mx-auto px-4 py-8">
-            <div className="flex items-center justify-between mb-2">
-                <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                    Log Activity
-                </h1>
+    const workoutChecked = formData.workoutDone === 'true';
 
-                {isSupported && (
-                    <button
-                        type="button"
-                        onClick={isListening ? stopListening : startListening}
-                        className={`p-3 rounded-full transition-all ${isListening
-                            ? 'bg-red-500 text-white animate-pulse'
-                            : 'bg-indigo-500/10 text-indigo-500 hover:bg-indigo-500/20'
-                            }`}
-                        title="Voice Log"
-                    >
-                        {isListening ? <MicOff size={20} /> : <Mic size={20} />}
-                    </button>
-                )}
-            </div>
+    return (
+        <div className="max-w-2xl mx-auto px-4 py-8">
+            <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
+                Daily Log
+            </h1>
             <p className="mb-8" style={{ color: 'var(--text-secondary)' }}>
-                Record your daily observations. All fields are optional.
+                Track your daily activity and subjective states. All fields optional except date.
             </p>
 
             <form onSubmit={handleSubmit} className="card space-y-6">
@@ -208,249 +107,131 @@ export default function LogPage() {
                     />
                 </div>
 
-                {/* Sleep */}
-                <div>
-                    <label htmlFor="sleep" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                        Sleep (hours)
-                    </label>
-                    <input
-                        id="sleep"
-                        type="number"
-                        name="sleep"
-                        step="0.5"
-                        min="0"
-                        max="24"
-                        inputMode="decimal"
-                        value={formData.sleep}
-                        onChange={handleChange}
-                        className="input-field"
-                        placeholder="e.g., 7.5"
-                    />
-                </div>
-
-                {/* Workout */}
-                <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                        <label htmlFor="workoutType" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                            Workout Type
-                        </label>
-                        <input
-                            id="workoutType"
-                            type="text"
-                            name="workoutType"
-                            value={formData.workoutType}
-                            onChange={handleChange}
-                            className="input-field"
-                            placeholder="e.g., Running, Yoga"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="workoutDuration" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                            Workout Duration (minutes)
-                        </label>
-                        <input
-                            id="workoutDuration"
-                            type="number"
-                            name="workoutDuration"
-                            min="0"
-                            inputMode="numeric"
-                            value={formData.workoutDuration}
-                            onChange={handleChange}
-                            className="input-field"
-                            placeholder="e.g., 30"
-                        />
-                    </div>
-                </div>
-
-                {/* Meditation */}
-                <div>
-                    <label htmlFor="meditation" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                        Meditation (minutes)
-                    </label>
-                    <input
-                        id="meditation"
-                        type="number"
-                        name="meditation"
-                        min="0"
-                        inputMode="numeric"
-                        value={formData.meditation}
-                        onChange={handleChange}
-                        className="input-field"
-                        placeholder="e.g., 15"
-                    />
-                </div>
-
-                {/* Learning */}
-                <div>
-                    <label htmlFor="learning" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                        Learning Time (minutes)
-                    </label>
-                    <input
-                        id="learning"
-                        type="number"
-                        name="learning"
-                        min="0"
-                        inputMode="numeric"
-                        value={formData.learning}
-                        onChange={handleChange}
-                        className="input-field"
-                        placeholder="e.g., 60"
-                    />
-                </div>
-
-                {/* Health Metrics Section */}
+                {/* Workout Section */}
                 <div className="pt-4 border-t border-[var(--border)]">
-                    <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>Health Metrics</h3>
-                    <div className="grid md:grid-cols-2 gap-4">
-                        {/* Steps */}
+                    <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>
+                        Physical Activity
+                    </h3>
+
+                    <div className="flex items-center mb-4">
+                        <input
+                            id="workoutDone"
+                            type="checkbox"
+                            checked={workoutChecked}
+                            onChange={handleCheckboxChange}
+                            className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
+                        />
+                        <label htmlFor="workoutDone" className="ml-2 text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                            Workout completed today
+                        </label>
+                    </div>
+
+                    {workoutChecked && (
                         <div>
-                            <label htmlFor="steps" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                                Steps
+                            <label htmlFor="workoutDuration" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                                Duration (minutes)
                             </label>
                             <input
-                                id="steps"
+                                id="workoutDuration"
                                 type="number"
-                                name="steps"
-                                min="0"
-                                inputMode="numeric"
-                                value={formData.steps}
+                                name="workoutDuration"
+                                min="1"
+                                max="300"
+                                value={formData.workoutDuration}
                                 onChange={handleChange}
                                 className="input-field"
-                                placeholder="e.g., 10000"
+                                placeholder="e.g., 30"
                             />
                         </div>
+                    )}
+                </div>
 
-                        {/* Water */}
+                {/* Subjective States */}
+                <div className="pt-4 border-t border-[var(--border)]">
+                    <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>
+                        Subjective States (1-5 scale)
+                    </h3>
+
+                    <div className="space-y-6">
+                        {/* Mood */}
                         <div>
-                            <label htmlFor="water" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                                Water (liters)
-                            </label>
+                            <div className="flex justify-between mb-2">
+                                <label htmlFor="mood" className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                                    Mood
+                                </label>
+                                <span className="text-sm font-semibold" style={{ color: 'var(--accent)' }}>
+                                    {formData.mood}
+                                </span>
+                            </div>
                             <input
-                                id="water"
-                                type="number"
-                                name="water"
-                                min="0"
-                                step="0.1"
-                                inputMode="decimal"
-                                value={formData.water}
+                                id="mood"
+                                type="range"
+                                name="mood"
+                                min="1"
+                                max="5"
+                                value={formData.mood}
                                 onChange={handleChange}
-                                className="input-field"
-                                placeholder="e.g., 2.5"
+                                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
                             />
+                            <div className="flex justify-between text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
+                                <span>Low</span>
+                                <span>High</span>
+                            </div>
                         </div>
 
-                        {/* Calories */}
+                        {/* Energy */}
                         <div>
-                            <label htmlFor="calories" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                                Calories
-                            </label>
+                            <div className="flex justify-between mb-2">
+                                <label htmlFor="energy" className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                                    Energy
+                                </label>
+                                <span className="text-sm font-semibold" style={{ color: 'var(--accent)' }}>
+                                    {formData.energy}
+                                </span>
+                            </div>
                             <input
-                                id="calories"
-                                type="number"
-                                name="calories"
-                                min="0"
-                                inputMode="numeric"
-                                value={formData.calories}
+                                id="energy"
+                                type="range"
+                                name="energy"
+                                min="1"
+                                max="5"
+                                value={formData.energy}
                                 onChange={handleChange}
-                                className="input-field"
-                                placeholder="e.g., 2000"
+                                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
                             />
+                            <div className="flex justify-between text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
+                                <span>Low</span>
+                                <span>High</span>
+                            </div>
                         </div>
 
-                        {/* UV Index */}
+                        {/* Stress */}
                         <div>
-                            <label htmlFor="uvIndex" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                                UV Index
-                            </label>
+                            <div className="flex justify-between mb-2">
+                                <label htmlFor="stress" className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                                    Stress
+                                </label>
+                                <span className="text-sm font-semibold" style={{ color: 'var(--accent)' }}>
+                                    {formData.stress}
+                                </span>
+                            </div>
                             <input
-                                id="uvIndex"
-                                type="number"
-                                name="uvIndex"
-                                min="0"
-                                max="15"
-                                step="0.1"
-                                inputMode="decimal"
-                                value={formData.uvIndex}
+                                id="stress"
+                                type="range"
+                                name="stress"
+                                min="1"
+                                max="5"
+                                value={formData.stress}
                                 onChange={handleChange}
-                                className="input-field"
-                                placeholder="e.g., 5"
+                                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
                             />
-                        </div>
-
-                        {/* Heart Rate */}
-                        <div>
-                            <label htmlFor="heartRate" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                                Heart Rate (bpm)
-                            </label>
-                            <input
-                                id="heartRate"
-                                type="number"
-                                name="heartRate"
-                                min="0"
-                                inputMode="numeric"
-                                value={formData.heartRate}
-                                onChange={handleChange}
-                                className="input-field"
-                                placeholder="e.g., 65"
-                            />
-                        </div>
-
-                        {/* Weight */}
-                        <div>
-                            <label htmlFor="weight" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-                                Weight (kg)
-                            </label>
-                            <input
-                                id="weight"
-                                type="number"
-                                name="weight"
-                                min="0"
-                                step="0.1"
-                                inputMode="decimal"
-                                value={formData.weight}
-                                onChange={handleChange}
-                                className="input-field"
-                                placeholder="e.g., 70.5"
-                            />
+                            <div className="flex justify-between text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
+                                <span>Low</span>
+                                <span>High</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                {/* Custom Metrics */}
-                {user?.metrics && user.metrics.length > 0 && (
-                    <div className="pt-4 border-t border-[var(--border)]">
-                        <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>My States</h3>
-                        <div className="grid md:grid-cols-2 gap-4">
-                            {user.metrics.map(metric => (
-                                <MetricInput
-                                    key={metric.id}
-                                    label={metric.label}
-                                    max={metric.max}
-                                    value={metrics[metric.id] || 0}
-                                    onChange={(val) => handleMetricChange(metric.id, val)}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* Exposures */}
-                {user?.exposures && user.exposures.length > 0 && (
-                    <div className="pt-4 border-t border-[var(--border)]">
-                        <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--text-secondary)' }}>Exposures</h3>
-                        <div className="grid md:grid-cols-2 gap-4">
-                            {user.exposures.map(exp => (
-                                <ExposureInput
-                                    key={exp.id}
-                                    label={exp.label}
-                                    type={exp.type}
-                                    value={exposures[exp.id] || 0}
-                                    onChange={(val) => handleExposureChange(exp.id, val)}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                )}
 
                 {/* Note */}
                 <div>
@@ -460,12 +241,16 @@ export default function LogPage() {
                     <textarea
                         id="note"
                         name="note"
-                        rows={4}
+                        rows={2}
                         value={formData.note}
                         onChange={handleChange}
                         className="input-field resize-none"
                         placeholder="Any observations or context..."
+                        maxLength={200}
                     />
+                    <p className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
+                        {formData.note.length}/200 characters
+                    </p>
                 </div>
 
                 {message && (

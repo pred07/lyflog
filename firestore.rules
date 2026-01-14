@@ -13,20 +13,19 @@ service cloud.firestore {
 
     // Users collection
     match /users/{userId} {
-      // Allow reading/writing own user document
       allow read, write: if isOwner(userId);
-      // Allow creation if auth uid matches document id
-      allow create: if isOwner(userId);
+
+      // Subcollections (like dailyLogs, contentZones, etc.)
+      match /{document=**} {
+        allow read, write: if isOwner(userId);
+      }
     }
     
-    // Daily logs collection
+    // Legacy support for older structure (optional, but good for safety)
     match /daily_logs/{logId} {
-      // Allow users to read/write/delete their own logs
-      allow read, list, delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || resource == null);
-      // Allow creation if the new document's userId matches auth uid
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
       allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      // Allow updates if userId doesn't change
-      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
     }
   }
 }
